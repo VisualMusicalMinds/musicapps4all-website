@@ -19,105 +19,127 @@
 
     <nav class="main-nav">
         <div class="container">
-            <a href="#" class="nav-button">How it Works</a>
-            <a href="#" class="nav-button">Creators</a>
-            <a href="#" class="nav-button">Teachers</a>
-            <a href="#" class="nav-button">About Us</a>
+            <a href="#" class="nav-button" data-target="how-it-works">How it Works</a>
+            <a href="#" class="nav-button" data-target="creators">Creators</a>
+            <a href="#" class="nav-button" data-target="teachers">Teachers</a>
+            <a href="#" class="nav-button" data-target="about-us">About Us</a>
         </div>
     </nav>
 
-    <main class="container">
-        <!-- Music Creator Apps Category -->
-        <section class="app-category">
-            <h2 class="category-title">Music Creator Apps</h2>
-            <div class="app-grid">
-                <a class="app-tile creator" href="/improviser/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-improviser-cover.jpg" alt="Improviser">
-                    <div class="app-info">
-                        <h3>Improviser</h3>
-                        <p>Create spontaneous melodies</p>
-                    </div>
-                </a>
-                <a class="app-tile creator" href="/chord-tower/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-chord-tower-cover.jpg" alt="Chord Tower">
-                    <div class="app-info">
-                        <h3>Chord Tower</h3>
-                        <p>Build harmonies layer by layer</p>
-                    </div>
-                </a>
-                <a class="app-tile creator" href="/melody-tower/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-melody-tower-cover.jpg" alt="Melody Tower">
-                    <div class="app-info">
-                        <h3>Melody Tower</h3>
-                        <p>Construct beautiful melodies</p>
-                    </div>
-                </a>
-                <a class="app-tile creator" href="/rhythm-poetry/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-rhythm-poetry-cover.jpg" alt="Rhythm Poetry">
-                    <div class="app-info">
-                        <h3>Rhythm Poetry</h3>
-                        <p>Express rhythm through words</p>
-                    </div>
-                </a>
-                <a class="app-tile creator" href="/song-writer/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-song-writer-cover.jpg" alt="Song Writer">
-                    <div class="app-info">
-                        <h3>Song Writer</h3>
-                        <p>Compose your own songs</p>
-                    </div>
-                </a>
-                <a class="app-tile creator" href="/chord-charter/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-chord-charter-cover.jpg" alt="Chord Charter">
-                    <div class="app-info">
-                        <h3>Chord Charter</h3>
-                        <p>Map out chord progressions</p>
-                    </div>
-                </a>
-            </div>
-        </section>
+    <div id="main-content">
+        <main class="container">
+            <!-- Music Creator Apps Category -->
+            <section class="app-category">
+                <h2 class="category-title">Music Creator Apps</h2>
+                <div class="app-grid">
+                    <a class="app-tile creator" href="/improviser/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-improviser-cover.jpg" alt="Improviser">
+                        <div class="app-info">
+                            <h3>Improviser</h3>
+                            <p>Create spontaneous melodies</p>
+                        </div>
+                    </a>
+                    <a class="app-tile creator" href="/chord-tower/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-chord-tower-cover.jpg" alt="Chord Tower">
+                        <div class="app-info">
+                            <h3>Chord Tower</h3>
+                            <p>Build harmonies layer by layer</p>
+                        </div>
+                    </a>
+                    <a class="app-tile creator" href="/melody-tower/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-melody-tower-cover.jpg" alt="Melody Tower">
+                        <div class="app-info">
+                            <h3>Melody Tower</h3>
+                            <p>Construct beautiful melodies</p>
+                        </div>
+                    </a>
+                    <a class="app-tile creator" href="/rhythm-poetry/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-rhythm-poetry-cover.jpg" alt="Rhythm Poetry">
+                        <div class="app-info">
+                            <h3>Rhythm Poetry</h3>
+                            <p>Express rhythm through words</p>
+                        </div>
+                    </a>
+                    <a class="app-tile creator" href="/song-writer/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-song-writer-cover.jpg" alt="Song Writer">
+                        <div class="app-info">
+                            <h3>Song Writer</h3>
+                            <p>Compose your own songs</p>
+                        </div>
+                    </a>
+                    <a class="app-tile creator" href="/chord-charter/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-chord-charter-cover.jpg" alt="Chord Charter">
+                        <div class="app-info">
+                            <h3>Chord Charter</h3>
+                            <p>Map out chord progressions</p>
+                        </div>
+                    </a>
+                </div>
+            </section>
 
-        <!-- Instrument Apps Category -->
-        <section class="app-category">
-            <h2 class="category-title">Instrument Apps</h2>
-            <div class="app-grid">
-                <a class="app-tile instrument" href="/Recorder/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-recorder-cover.jpg" alt="Recorder">
-                    <div class="app-info">
-                        <h3>Recorder</h3>
-                        <p>Capture your musical ideas</p>
-                    </div>
-                </a>
-                <a class="app-tile instrument" href="/virtual-drum-kit/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-virtual-drum-kit-cover.jpg" alt="Virtual Drum Kit">
-                    <div class="app-info">
-                        <h3>Virtual Drum Kit</h3>
-                        <p>Play rhythms on virtual drums</p>
-                    </div>
-                </a>
-            </div>
-        </section>
+            <!-- Instrument Apps Category -->
+            <section class="app-category">
+                <h2 class="category-title">Instrument Apps</h2>
+                <div class="app-grid">
+                    <a class="app-tile instrument" href="/Recorder/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-recorder-cover.jpg" alt="Recorder">
+                        <div class="app-info">
+                            <h3>Recorder</h3>
+                            <p>Capture your musical ideas</p>
+                        </div>
+                    </a>
+                    <a class="app-tile instrument" href="/virtual-drum-kit/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-virtual-drum-kit-cover.jpg" alt="Virtual Drum Kit">
+                        <div class="app-info">
+                            <h3>Virtual Drum Kit</h3>
+                            <p>Play rhythms on virtual drums</p>
+                        </div>
+                    </a>
+                </div>
+            </section>
 
-        <!-- Activities Category -->
-        <section class="app-category">
-            <h2 class="category-title">Activities</h2>
-            <div class="app-grid">
-                <a class="app-tile activity" href="/music-symbol-maker/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-music-symbol-maker-cover.jpg" alt="Music Symbol Maker">
-                    <div class="app-info">
-                        <h3>Music Symbol Maker</h3>
-                        <p>Create custom music notation</p>
-                    </div>
-                </a>
-                <a class="app-tile activity" href="/keyboard-builder-game/" target="_blank" rel="noopener">
-                    <img src="https://musicapps4all.github.io/assets/MA4A-keyboard-builder-cover.jpg" alt="Keyboard Builder">
-                    <div class="app-info">
-                        <h3>Keyboard Builder</h3>
-                        <p>Design your own keyboard layout</p>
-                    </div>
-                </a>
-            </div>
-        </section>
-    </main>
+            <!-- Activities Category -->
+            <section class="app-category">
+                <h2 class="category-title">Activities</h2>
+                <div class="app-grid">
+                    <a class="app-tile activity" href="/music-symbol-maker/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-music-symbol-maker-cover.jpg" alt="Music Symbol Maker">
+                        <div class="app-info">
+                            <h3>Music Symbol Maker</h3>
+                            <p>Create custom music notation</p>
+                        </div>
+                    </a>
+                    <a class="app-tile activity" href="/keyboard-builder-game/" target="_blank" rel="noopener">
+                        <img src="https://musicapps4all.github.io/assets/MA4A-keyboard-builder-cover.jpg" alt="Keyboard Builder">
+                        <div class="app-info">
+                            <h3>Keyboard Builder</h3>
+                            <p>Design your own keyboard layout</p>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <div id="tab-content-container" class="container">
+        <div id="how-it-works" class="tab-content" style="display: none;">
+            <h2>How it Works</h2>
+            <p>Placeholder text for How it Works</p>
+        </div>
+        <div id="creators" class="tab-content" style="display: none;">
+            <h2>Creators</h2>
+            <p>Placeholder text for Creators</p>
+        </div>
+        <div id="teachers" class="tab-content" style="display: none;">
+            <h2>Teachers</h2>
+            <p>Placeholder text for Teachers</p>
+        </div>
+        <div id="about-us" class="tab-content" style="display: none;">
+            <h2>About Us</h2>
+            <p>Placeholder text for About Us</p>
+        </div>
+    </div>
+
 
     <footer>
         <div class="container">
