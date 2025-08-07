@@ -1,17 +1,17 @@
 const images = [
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0001.png', name: 'Treble Clef' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0002.png', name: 'Bass Clef' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0003.png', name: 'Sharp Sign' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0004.png', name: 'Flat Sign' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0005.png', name: 'Quarter Note' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0006.png', name: 'Quarter Rest' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0007.png', name: 'Eighth Note' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0008.png', name: 'Eighth Rest' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0009.png', name: 'Sixteenth Note' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0010.png', name: 'Sixteenth Rest' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0011.png', name: 'Whole Note' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0012.png', name: 'Half Note' },
-  { url: 'https://eagleviewmusic.com/images/MusicalSymbolColoring0013.png', name: 'Double Eighths' }
+  { url: './assets/MusicalSymbolColoring0001.png', name: 'Treble Clef' },
+  { url: './assets/MusicalSymbolColoring0002.png', name: 'Bass Clef' },
+  { url: './assets/MusicalSymbolColoring0003.png', name: 'Sharp Sign' },
+  { url: './assets/MusicalSymbolColoring0004.png', name: 'Flat Sign' },
+  { url: './assets/MusicalSymbolColoring0005.png', name: 'Quarter Note' },
+  { url: './assets/MusicalSymbolColoring0006.png', name: 'Quarter Rest' },
+  { url: './assets/MusicalSymbolColoring0007.png', name: 'Eighth Note' },
+  { url: './assets/MusicalSymbolColoring0008.png', name: 'Eighth Rest' },
+  { url: './assets/MusicalSymbolColoring0009.png', name: 'Sixteenth Note' },
+  { url: './assets/MusicalSymbolColoring0010.png', name: 'Sixteenth Rest' },
+  { url: './assets/MusicalSymbolColoring0011.png', name: 'Whole Note' },
+  { url: './assets/MusicalSymbolColoring0012.png', name: 'Half Note' },
+  { url: './assets/MusicalSymbolColoring0013.png', name: 'Double Eighths' }
 ];
 let currentIndex = 0;
 let imageDrawings = new Array(images.length).fill(null);
