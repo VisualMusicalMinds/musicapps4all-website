@@ -97,7 +97,7 @@
   <div class="app-center-container">
     <div class="scaling-outer" id="scaling-outer">
       <div class="scaling-wrapper" id="scaling-wrapper">
-        <img id="recorderImage" src="https://eagleviewmusic.com/images/Recorder%20Pngs0001.png" alt="Recorder" />
+        <img id="recorderImage" src="./assets/Recorder Pngs0001.png" alt="Recorder" />
         <div class="note-container" id="noteContainer"></div>
       </div>
     </div>
@@ -107,16 +107,16 @@
     const keybindings = ['1','2','3','4','5','6','7','8','9','0'];
 
     const notes = [
-      { label: "C", pitch: "C4", color: "#FF0000", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0002.png" },
-      { label: "D", pitch: "D4", color: "#FFA500", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0003.png" },
-      { label: "E", pitch: "E4", color: "#FFFF00", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0004.png" },
-      { label: "F#", pitch: "F#4", color: "#00FF00", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0006.png" },
-      { label: "G", pitch: "G4", color: "#40E0D0", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0007.png" },
-      { label: "A", pitch: "A4", color: "#0000FF", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0008.png" },
-      { label: "B", pitch: "B4", color: "#800080", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0009.png" },
-      { label: "C", pitch: "C5", color: "#FF0000", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0010.png" },
-      { label: "D", pitch: "D5", color: "#FFA500", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0011.png" },
-      { label: "E", pitch: "E5", color: "#FFFF00", image: "https://eagleviewmusic.com/images/Recorder%20Pngs0012.png" },
+      { label: "C", pitch: "C4", color: "#FF0000", image: "./assets/Recorder Pngs0002.png" },
+      { label: "D", pitch: "D4", color: "#FFA500", image: "./assets/Recorder Pngs0003.png" },
+      { label: "E", pitch: "E4", color: "#FFFF00", image: "./assets/Recorder Pngs0004.png" },
+      { label: "F#", pitch: "F#4", color: "#00FF00", image: "./assets/Recorder Pngs0006.png" },
+      { label: "G", pitch: "G4", color: "#40E0D0", image: "./assets/Recorder Pngs0007.png" },
+      { label: "A", pitch: "A4", color: "#0000FF", image: "./assets/Recorder Pngs0008.png" },
+      { label: "B", pitch: "B4", color: "#800080", image: "./assets/Recorder Pngs0009.png" },
+      { label: "C", pitch: "C5", color: "#FF0000", image: "./assets/Recorder Pngs0010.png" },
+      { label: "D", pitch: "D5", color: "#FFA500", image: "./assets/Recorder Pngs0011.png" },
+      { label: "E", pitch: "E5", color: "#FFFF00", image: "./assets/Recorder Pngs0012.png" },
     ];
 
     const noteContainer = document.getElementById("noteContainer");
@@ -246,14 +246,14 @@
     document.body.addEventListener('mousedown', e => {
       if (!e.target.classList.contains('note-box')) {
         const image = document.getElementById('recorderImage');
-        image.src = "https://eagleviewmusic.com/images/Recorder%20Pngs0001.png";
+        image.src = "./assets/Recorder Pngs0001.png";
       }
     });
 
     document.body.addEventListener('touchstart', e => {
       if (!e.target.classList.contains('note-box')) {
         const image = document.getElementById('recorderImage');
-        image.src = "https://eagleviewmusic.com/images/Recorder%20Pngs0001.png";
+        image.src = "./assets/Recorder Pngs0001.png";
       }
     }, { passive: true });
 
