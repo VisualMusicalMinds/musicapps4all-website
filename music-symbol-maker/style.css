@@ -9,7 +9,7 @@ body, html {
 }
 /* Added variable for header height */
 :root {
-  --header-offset: 46px; /* Adjust if you change header font-size or padding */
+  --header-offset: 39px; /* Adjust if you change header font-size or padding */
 }
 
 .container {
