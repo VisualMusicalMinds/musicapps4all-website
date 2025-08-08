@@ -6,7 +6,7 @@ html, body, #app-wrapper, .main-content {
   display: flex; 
   flex-direction: column; 
   height: 100vh;
-  padding-top: 40px; /* Pushes content down to clear fixed header */
+  padding-top: 30px; /* Pushes content down to clear fixed header */
 }
 .controls-bar {
   width: 100vw;
