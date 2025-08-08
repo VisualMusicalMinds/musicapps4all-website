@@ -11,12 +11,16 @@ body, html {
 :root {
   --header-offset: 56px; /* Adjust if you change header font-size or padding */
 }
+
 .container {
   display: flex;
   flex-direction: row;
-  height: 100%;
+  /* NEW: push below fixed header + reclaim space */
+  margin-top: var(--header-offset);
+  height: calc(100% - var(--header-offset));
   width: 100%;
 }
+
 .sidebar {
   width: 25%; /* Changed from fixed 240px to 25% of container width */
   min-width: 220px; /* Increased minimum width to ensure controls fit */
@@ -282,7 +286,7 @@ button.selected {
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
-    /* Recompute height for column layout */
+    /* Recompute height for column layout (still below header) */
     height: calc(100% - var(--header-offset));
   }
   .sidebar {
@@ -315,7 +319,7 @@ button.selected {
     transform: translateX(0);
   }
   .canvas-wrapper {
-    /* Previously padding-top: 60px; now add header offset */
+    /* Header + extra space for hidden sidebar height compensation */
     padding-top: calc(var(--header-offset) + 60px);
   }
 }
