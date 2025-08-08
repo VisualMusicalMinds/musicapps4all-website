@@ -1,4 +1,4 @@
-body { margin: 0; padding: 0; }
+body { margin: 0; padding: 56px 0 0 0; }
 #poem { font-size: 1.2em; line-height: 2em; padding: 20px; }
 .line { display: block; margin-bottom: 16px; text-align: center; }
 .measure { display: inline-block; vertical-align: top; }
