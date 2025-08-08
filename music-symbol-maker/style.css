@@ -7,6 +7,10 @@ body, html {
   background-color: #f5fcff;
   touch-action: none;
 }
+/* Added variable for header height */
+:root {
+  --header-offset: 56px; /* Adjust if you change header font-size or padding */
+}
 .container {
   display: flex;
   flex-direction: row;
@@ -254,7 +258,7 @@ button.selected {
 .toggle-sidebar {
   display: none;
   position: absolute;
-  top: 10px;
+  top: calc(var(--header-offset) + 10px); /* Was 10px; now below header */
   left: 10px;
   z-index: 10;
   padding: 8px;
@@ -271,19 +275,20 @@ button.selected {
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .sidebar {
-    width: 30%; /* Increase sidebar width percentage on medium screens */
+    width: 30%;
   }
 }
 
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
-    height: 100%;
+    /* Recompute height for column layout */
+    height: calc(100% - var(--header-offset));
   }
   .sidebar {
     width: 100%;
     min-width: 0;
-    max-height: 40%; /* Reduced from 50% to allow more space for canvas */
+    max-height: 40%;
     border-right: none;
     border-bottom: 3px solid #ff7e8a;
   }
@@ -299,8 +304,8 @@ button.selected {
   .sidebar {
     position: fixed;
     left: 0;
-    top: 0;
-    height: 100%;
+    top: var(--header-offset); /* Sit just below header when open */
+    height: calc(100% - var(--header-offset));
     z-index: 100;
     transform: translateX(-100%);
     width: 80%;
@@ -310,16 +315,18 @@ button.selected {
     transform: translateX(0);
   }
   .canvas-wrapper {
-    padding-top: 60px;
+    /* Previously padding-top: 60px; now add header offset */
+    padding-top: calc(var(--header-offset) + 60px);
   }
 }
 
 @media (max-height: 500px) {
   .container {
     flex-direction: row;
+    height: calc(100% - var(--header-offset));
   }
   .sidebar {
-    width: 30%; /* Increase width in landscape mode */
+    width: 30%;
     min-width: 220px;
     max-height: 100%;
     border-right: 3px solid #ff7e8a;
