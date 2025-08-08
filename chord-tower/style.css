@@ -6,7 +6,7 @@ html, body, #app-wrapper, .main-content {
   display: flex; 
   flex-direction: column; 
   height: 100vh;
-  padding-top: 30px; /* Pushes content down to clear fixed header */
+  padding-top: 35px; /* Pushes content down to clear fixed header */
 }
 .controls-bar {
   width: 100vw;
@@ -209,7 +209,7 @@ html, body, #app-wrapper, .main-content {
 
 @media (max-width: 550px) {
   #app-wrapper {
-    padding-top: 0; /* Remove padding for small screens */
+    padding-top: 30; /* Remove padding for small screens */
   }
   .controls-bar {
     flex-direction: row; /* Keep as row for small screens */
