@@ -52,6 +52,7 @@
             position: relative;
         }
         
+        /* Subtle wood grain background texture */
         body::before {
             content: "";
             position: fixed;
@@ -71,6 +72,7 @@
             opacity: 0.3;
         }
         
+        /* Audio visualizer at the very top */
         .visualizer {
             position: fixed;
             top: 0;
@@ -80,7 +82,7 @@
             display: flex;
             align-items: flex-end;
             justify-content: space-around;
-            z-index: 1;
+            z-index: 1; /* Behind the title */
             pointer-events: none;
             background: linear-gradient(to bottom, 
                 rgba(139, 69, 19, 0.1) 0%,
@@ -104,7 +106,7 @@
         
         .drum-kit-title {
             position: fixed;
-            top: 30px;
+            top: 30px; /* Positioned over the visualizer */
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Roboto Slab', serif;
@@ -118,14 +120,14 @@
                 0 0 15px rgba(212, 175, 55, 0.4);
             letter-spacing: 3px;
             text-align: center;
-            z-index: 2;
+            z-index: 2; /* Above the visualizer */
         }
         
         .container {
             max-width: 900px;
             width: 100%;
             padding: 40px;
-            margin-top: 140px;
+            margin-top: 140px; /* Space for visualizer and title */
             background: linear-gradient(145deg, 
                 rgba(62, 39, 35, 0.95) 0%, 
                 rgba(46, 26, 20, 0.95) 50%, 
@@ -138,9 +140,10 @@
                 0 0 50px rgba(139, 69, 19, 0.1);
             position: relative;
             overflow: hidden;
-            z-index: 3;
+            z-index: 3; /* Above everything else */
         }
         
+        /* Wood grain effect on container */
         .container::before {
             content: "";
             position: absolute;
@@ -187,6 +190,7 @@
             min-height: 140px;
             max-height: 180px;
             
+            /* Base drum appearance */
             background: radial-gradient(circle at 30% 30%, 
                 rgba(255, 255, 255, 0.2), 
                 transparent 60%),
@@ -198,6 +202,7 @@
                 inset 0 -2px 0 rgba(0, 0, 0, 0.2);
         }
         
+        /* Individual drum colors and textures */
         .drum-pad[data-key="1"] {
             --drum-color: var(--kick-color);
             --drum-color-dark: #654321;
@@ -289,6 +294,7 @@
             100% { opacity: 0; transform: scale(1.3); }
         }
         
+        /* Full-size drum image that fills the entire pad */
         .drum-image {
             position: absolute;
             top: 0;
@@ -298,25 +304,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1;
-            border-radius: 15px;
+            z-index: 1; /* Behind the text but above the background */
+            border-radius: 15px; /* Match the pad border radius */
             overflow: hidden;
         }
         
         .drum-image img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: contain; /* Maintain aspect ratio while filling the space */
             filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
         }
         
+        /* Text overlay positioned at the bottom with enhanced visibility - FULL WIDTH */
         .sound-info {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             width: 100%;
-            z-index: 3;
+            z-index: 3; /* Above everything else */
             font-family: 'Inter', sans-serif;
             font-size: 16.1px;
             font-weight: 600;
@@ -324,7 +331,7 @@
             text-shadow: 
                 2px 2px 4px rgba(0, 0, 0, 0.8),
                 1px 1px 2px rgba(0, 0, 0, 0.9),
-                0 0 8px rgba(0, 0, 0, 0.7);
+                0 0 8px rgba(0, 0, 0, 0.7); /* Enhanced text shadow for better visibility */
             text-transform: uppercase;
             letter-spacing: 1px;
             display: flex;
@@ -334,10 +341,10 @@
             background: linear-gradient(to bottom, 
                 transparent 0%, 
                 rgba(0, 0, 0, 0.3) 50%, 
-                rgba(0, 0, 0, 0.5) 100%);
+                rgba(0, 0, 0, 0.5) 100%); /* Subtle background gradient for text readability */
             padding: 15px 0;
-            border-radius: 0 0 15px 15px;
-            box-sizing: border-box;
+            border-radius: 0 0 15px 15px; /* Only bottom corners rounded */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
         }
         
         .sound-label {
@@ -360,7 +367,7 @@
             background-color: rgba(255, 255, 255, 0.6);
             transform: scale(0);
             animation: ripple 0.6s linear;
-            z-index: 4;
+            z-index: 4; /* Above everything */
         }
         
         @keyframes ripple {
@@ -375,7 +382,7 @@
             height: 100%;
             overflow: hidden;
             pointer-events: none;
-            z-index: 5;
+            z-index: 5; /* Highest z-index */
         }
         
         .particle {
@@ -394,6 +401,7 @@
             100% { transform: translateY(-80px) scale(0); opacity: 0; }
         }
         
+        /* Responsive design */
         @media (max-width: 480px) {
             .drum-pads { 
                 grid-template-columns: repeat(2, 1fr); 
@@ -481,7 +489,7 @@
         <div class="drum-pads">
             <button class="drum-pad" data-key="1">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-bass.png" alt="Bass Drum">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-bass.png" alt="Bass Drum">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Bass</span>
@@ -490,7 +498,7 @@
             </button>
             <button class="drum-pad" data-key="2">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-snare.png" alt="Snare Drum">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-snare.png" alt="Snare Drum">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Snare</span>
@@ -499,7 +507,7 @@
             </button>
             <button class="drum-pad" data-key="3">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-tom.png" alt="Tom Drum">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-tom.png" alt="Tom Drum">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Tom</span>
@@ -508,7 +516,7 @@
             </button>
             <button class="drum-pad" data-key="4">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-clap.png" alt="Hand Clap">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-clap.png" alt="Hand Clap">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Clap</span>
@@ -517,7 +525,7 @@
             </button>
             <button class="drum-pad" data-key="5">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-claves.png" alt="Claves">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-claves.png" alt="Claves">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Claves</span>
@@ -526,7 +534,7 @@
             </button>
             <button class="drum-pad" data-key="6">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-highhat.png" alt="Hi-Hat">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-highhat.png" alt="Hi-Hat">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Hi-Hat</span>
@@ -535,7 +543,7 @@
             </button>
             <button class="drum-pad" data-key="7">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-crash.png" alt="Crash Cymbal">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-crash.png" alt="Crash Cymbal">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Crash</span>
@@ -544,7 +552,7 @@
             </button>
             <button class="drum-pad" data-key="8">
                 <div class="drum-image">
-                    <img src="assets/virtualdrums-shaker.png" alt="Shaker">
+                    <img src="https://visualmusicalminds.github.io/images/virtualdrums-shaker.png" alt="Shaker">
                 </div>
                 <div class="sound-info">
                     <span class="sound-label">Shaker</span>
@@ -657,7 +665,7 @@
                 gain.gain.setValueAtTime(0, audioContext.currentTime); gain.gain.linearRampToValueAtTime(0.7, audioContext.currentTime + 0.001);
                 gain.gain.exponentialRampToValueAtTime(0.2, audioContext.currentTime + 0.03); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
                 const distortion = audioContext.createWaveShaper();
-                function makeDistortionCurve(amount) { const k = typeof amount === 'number' ? amount : 50; const n_samples = 44100; const curve = new Float32Array(n_samples); for (let i = 0; i < n_samples; ++i) { const x = i * 2 / n_samples - 1; curve[i] = (Math.PI + k) * x / (Math.PI + k * Math.abs(x)); } return curve; }
+                function makeDistortionCurve(amount) { const k = typeof amount === 'number' ? amount : 50; const n_samples = 44100; const curve = new Float32Array(n_samples); for (let i = 0; i < n_samples; i++) { const x = (i * 2) / n_samples - 1; curve[i] = ((3 + k) * x * 20 * Math.PI / 180) / (Math.PI + k * Math.abs(x)); } return curve; }
                 distortion.curve = makeDistortionCurve(200); distortion.oversample = '4x';
                 const filter = audioContext.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 2500; filter.Q.value = 8;
                 const filter2 = audioContext.createBiquadFilter(); filter2.type = 'peaking'; filter2.frequency.value = 800; filter2.gain.value = 3; filter2.Q.value = 2;
