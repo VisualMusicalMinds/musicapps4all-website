@@ -7,7 +7,7 @@ html, body, #app-wrapper, .main-content {
   display: flex; 
   flex-direction: column; 
   height: 100vh; 
-  padding-top: 40px;
+  padding-top: 45px;
 }
 
 .controls-bar {
