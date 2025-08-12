@@ -117,6 +117,47 @@ header h1 {
     margin-bottom: 0; /* Remove margin from the last paragraph */
 }
 
+/* Sub-navigation for "How it Works" */
+.sub-nav {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.sub-nav-button {
+    text-decoration: none;
+    color: var(--secondary-color);
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: -2px; /* Align with the container's border */
+}
+
+.sub-nav-button:hover {
+    color: var(--primary-color);
+}
+
+.sub-nav-button.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.sub-tab-content h2 {
+    display: none; /* Hide sub-content H2s as the main H2 is sufficient */
+}
+
+.video-thumbnail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+
 .app-category {
     margin-bottom: 50px;
 }
