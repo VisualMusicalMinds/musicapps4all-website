@@ -19,10 +19,13 @@ let isAudioInitialized = false;
 
 // Key routing arrays
 const chordKeys = ['q', 'w', 'e', 'r', 't', 'f', 's', 'd', 'g'];
+// MODIFIED: Added shifted symbols to the noteKeys array
 const noteKeys = [
     'b', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'u', 'y',
     '5', '6', '7', '8', '9', '0', 
-    '[', ']', ';', "'", ',', '.', '/'
+    '[', ']', ';', "'", ',', '.', '/',
+    // Shifted versions of the above
+    '^', '&', '*', '(', ')', ':', '<', '>', '?'
 ];
 const accidentalKeys = ['-', '='];
 
@@ -173,11 +176,27 @@ document.getElementById('note-sound-right').addEventListener('click', () => {
 // ------------ Keyboard Event Handling ------------
 
 function routeKeyEvent(event) {
-    // No longer need to check for keyboard mode, it's always on.
     if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.isContentEditable) return;
     
     const key = event.key.toLowerCase();
-    const message = { type: event.type, key: event.key, shiftKey: event.shiftKey, ctrlKey: event.ctrlKey, altKey: event.altKey };
+    const capsLockState = typeof event.getModifierState === 'function' ? event.getModifierState("CapsLock") : false;
+    
+    const message = { 
+        type: event.type, 
+        key: event.key, 
+        shiftKey: event.shiftKey, 
+        ctrlKey: event.ctrlKey, 
+        altKey: event.altKey,
+        capsLockActive: capsLockState 
+    };
+
+    // --- MODIFICATION START ---
+    // When a modifier key (like Shift) is pressed or released, we need to send an immediate update
+    // to the note app so it can visually update the 8va button.
+    if (event.key === 'Shift' || event.key === 'CapsLock') {
+        noteApp.contentWindow.postMessage(message, new URL(noteApp.src).origin);
+    }
+    // --- MODIFICATION END ---
     
     const keyElement = document.querySelector(`#simulated-keyboard .key[data-key="${key}"]`);
     if (keyElement) {
@@ -185,7 +204,7 @@ function routeKeyEvent(event) {
     }
 
     if (chordKeys.includes(key)) chordApp.contentWindow.postMessage(message, new URL(chordApp.src).origin);
-    if (noteKeys.includes(key)) noteApp.contentWindow.postMessage(message, new URL(noteApp.src).origin);
+    if (noteKeys.includes(key) || noteKeys.includes(event.key)) noteApp.contentWindow.postMessage(message, new URL(noteApp.src).origin);
     if (accidentalKeys.includes(key)) noteApp.contentWindow.postMessage(message, new URL(noteApp.src).origin);
 }
 
