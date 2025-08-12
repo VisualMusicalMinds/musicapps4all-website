@@ -22,6 +22,7 @@ let currentScale = 'major';
 
 // State for one-time accidental application
 let accidentalArmed = { sharp: false, flat: false };
+let octaveShiftActive = false;
 
 // Base color mapping for keys, tied to the 7 note letters
 const KEY_COLORS = {
@@ -481,14 +482,23 @@ const noteAccidentalMap = {
   'C♯♯': 'double-sharp', 'D♯♯': 'double-sharp', 'E♯♯': 'double-sharp', 'F♯♯': 'double-sharp', 'G♯♯': 'double-sharp', 'A♯♯': 'double-sharp', 'B♯♯': 'double-sharp',
 };
 
-// Keyboard mappings (expanded to include new solfege syllables)
 const buttonSolfegeNames = {
-  'f': 'Fa', 'q': 'So', 'd': 'Mi', 's': 'Re', 'a': 'Do', 'x': 'La', 'c': 'Ti',
-  'z': 'So', 'w': 'La', 'e': 'Ti', '1': 'Do', '2': 'Re', '3': 'Mi',
-  ';': 'Fa', 'm': 'So', 'l': 'Mi', 'k': 'Re', 'j': 'Do', ',': 'La', '.': 'Ti',
-  'u': 'So', 'i': 'La', 'o': 'Ti', '7': 'Do', '8': 'Re', '9': 'Mi',
-  'y': 'Fa', 'h': 'Ti', '/': 'Do', 'p': 'Do', '6': 'Ti', '0': 'Fa', 'r': 'Do', 'v': 'Do', '4': 'Fa',
-  'n': 'Fa'
+    'n': 'Fa', 'm': 'So', ',': 'La', '.': 'Ti', 'h': 'Ti', 'j': 'Do',
+    '/': 'Do', 'k': 'Re', 'l': 'Mi', ';': 'Fa', 'y': 'Fa', 'u': 'So',
+    'i': 'La', 'o': 'Ti', '6': 'Ti', 'p': 'Do', '7': 'Do', '8': 'Re',
+    '9': 'Mi', '0': 'Fa'
+};
+
+const shiftedKeyMapping = {
+    '^': '6',
+    '&': '7',
+    '*': '8',
+    '(': '9',
+    ')': '0',
+    ':': ';',
+    '<': ',',
+    '>': '.',
+    '?': '/'
 };
 
 const solfegeToCssClass = {
@@ -646,25 +656,29 @@ function handlePlayKey(key) {
   if (!btn) return;
   heldNoteKeys.add(key);
   
-  // Check for armed accidentals and calculate shift
   const accidentalShift = accidentalArmed.sharp ? 1 : (accidentalArmed.flat ? -1 : 0);
-  const oscKey = `${key}_${accidentalShift}`;
+  const octaveMultiplier = octaveShiftActive ? 2 : 1;
+  const oscKey = `${key}_${accidentalShift}_${octaveShiftActive ? 1 : 0}`;
   
   if (!noteFrequencies[btn.note]) {
       console.warn(`Frequency for note ${btn.note} not found.`);
       return;
   }
   
-  const freq = noteFrequencies[btn.note] * Math.pow(2, accidentalShift / 12);
-  startNote(oscKey, freq);
+  const baseFreq = noteFrequencies[btn.note];
+  const accidentalFreq = baseFreq * Math.pow(2, accidentalShift / 12);
+  const finalFreq = accidentalFreq * octaveMultiplier;
+  
+  startNote(oscKey, finalFreq);
 }
 
 function handleStopKey(key) {
   heldNoteKeys.delete(key);
-  // Stop all possible accidental versions of the note
-  stopNote(`${key}_0`);
-  stopNote(`${key}_1`);
-  stopNote(`${key}_-1`);
+  for (const acc of [-1, 0, 1]) {
+    for (const oct of [0, 1]) {
+      stopNote(`${key}_${acc}_${oct}`);
+    }
+  }
 }
 
 function reTriggerHeldKeysAccidentals() {
@@ -684,24 +698,24 @@ const positions = {
   '1c': [0, 2], '1d': [0, 3]
 };
 
-// Button definitions
 const buttons = [
-  { name: 'Fa', keys: ['f', ';', 'y'], note: 'F4', cells: ['3a','4a'] },
-  { name: 'So', keys: ['z', 'm'], note: 'G3', cells: ['9b','9c'] },
-  { name: 'Mi', keys: ['d', 'l'], note: 'E4', cells: ['5a'] },
-  { name: 'Re', keys: ['s', 'k'], note: 'D4', cells: ['6a'] },
-  { name: 'Do', keys: ['a', 'j', '/', 'v'], note: 'C4', cells: ['5b','6b','7b','5c','6c','7c'] },
-  { name: 'La', keys: ['x', ','], note: 'A3', cells: ['8b'] },
-  { name: 'Ti', keys: ['c', '.', 'h'], note: 'B3', cells: ['8c'] },
-  { name: 'So', keys: ['q', 'u'], note: 'G4', cells: ['3b','4b','3c','4c'] },
-  { name: 'La', keys: ['w', 'i'], note: 'A4', cells: ['4d'] },
-  { name: 'Ti', keys: ['e', 'o', '6'], note: 'B4', cells: ['3d'] },
-  { name: 'Do', keys: ['1', '7', 'p', 'r'], note: 'C5', cells: ['2c','2d'] },
-  { name: 'Re', keys: ['2', '8'], note: 'D5', cells: ['1c'] },
-  { name: 'Mi', keys: ['3', '9'], note: 'E5', cells: ['1d'] },
-  { name: 'Fa', keys: ['0', '4'], note: 'F5', cells: [] },
-  { name: 'Fa', keys: ['n'], note: 'F3', cells: [] }
+    { name: 'Fa', keys: [';', 'y'], note: 'F4', cells: ['3a', '4a'] },
+    { name: 'So', keys: ['m'], note: 'G3', cells: ['9b', '9c'] },
+    { name: 'Mi', keys: ['l'], note: 'E4', cells: ['5a'] },
+    { name: 'Re', keys: ['k'], note: 'D4', cells: ['6a'] },
+    { name: 'Do', keys: ['j', '/'], note: 'C4', cells: ['5b', '6b', '7b', '5c', '6c', '7c'] },
+    { name: 'La', keys: [','], note: 'A3', cells: ['8b'] },
+    { name: 'Ti', keys: ['.', 'h'], note: 'B3', cells: ['8c'] },
+    { name: 'So', keys: ['u'], note: 'G4', cells: ['3b', '4b', '3c', '4c'] },
+    { name: 'La', keys: ['i'], note: 'A4', cells: ['4d'] },
+    { name: 'Ti', keys: ['o', '6'], note: 'B4', cells: ['3d'] },
+    { name: 'Do', keys: ['p', '7'], note: 'C5', cells: ['2c', '2d'] },
+    { name: 'Re', keys: ['8'], note: 'D5', cells: ['1c'] },
+    { name: 'Mi', keys: ['9'], note: 'E5', cells: ['1d'] },
+    { name: 'Fa', keys: ['0'], note: 'F5', cells: [] },
+    { name: 'Fa', keys: ['n'], note: 'F3', cells: [] }
 ];
+
 
 // DOM references
 const grid = document.getElementById('grid');
@@ -748,8 +762,9 @@ function renderToggleButton() {
       updateBoxNames();
     }
   });
-  cellRefs['5d'].innerHTML = '';
-  cellRefs['5d'].appendChild(el);
+  // MOVED: The toggle button is now in cell 6d.
+  cellRefs['6d'].innerHTML = '';
+  cellRefs['6d'].appendChild(el);
 }
 
 function setupAccidentalButtons() {
@@ -802,6 +817,24 @@ function setupAccidentalButtons() {
     flatBtn.addEventListener('touchstart', pressFlat, { passive: false });
     flatBtn.addEventListener('touchend', releaseAccidental);
     flatBtn.addEventListener('touchcancel', releaseAccidental);
+}
+
+// --- MODIFIED FUNCTION for 8va button ---
+function setupOctaveButton() {
+    const octaveBtn = document.createElement('div');
+    octaveBtn.id = 'octave-btn';
+    octaveBtn.className = 'control-btn octave-btn';
+    octaveBtn.innerHTML = '8<sup class="octave-sup">va</sup>';
+    cellRefs['5d'].appendChild(octaveBtn);
+
+    // Add toggle functionality
+    octaveBtn.addEventListener('click', () => {
+        // Toggle the button's active class for visual feedback
+        const isNowActive = octaveBtn.classList.toggle('active');
+        
+        // Update the global octave shift state based on the button's new state
+        octaveShiftActive = isNowActive;
+    });
 }
 
 function updateBoxNames() {
@@ -1208,14 +1241,17 @@ function resizeGrid() {
     div.style.fontSize = fontSize + 'px';
   });
   
-  const toggleBtn = cellRefs['5d']?.querySelector('.chord-toggle-btn');
+  const toggleBtn = cellRefs['6d']?.querySelector('.chord-toggle-btn');
   if (toggleBtn) toggleBtn.style.fontSize = Math.max(fontSize * 1.1, 20) + 'px';
 }
 
 // --- INITIALIZATION ---
 function initialize() {
   initializeGrid();
+  // Temporarily hidden as per user request. Will be re-enabled later.
+  // renderToggleButton(); 
   setupAccidentalButtons();
+  setupOctaveButton(); // Add the new 8va button
   createControlsBar();
   setupControlEvents();
   renderButtons();
@@ -1266,6 +1302,20 @@ window.addEventListener('message', function(event) {
     const data = event.data;
     if (!data || !data.type) return;
 
+    // MODIFIED: Sync octave button with Shift/CapsLock and manage state
+    if (typeof data.shiftKey === 'boolean' || typeof data.capsLockActive === 'boolean') {
+        const keyboardOctaveShift = data.shiftKey || data.capsLockActive;
+        const octaveBtn = document.getElementById('octave-btn');
+
+        if (octaveBtn) {
+            // Update the button's visual state based on the keyboard
+            octaveBtn.classList.toggle('active', keyboardOctaveShift);
+        }
+        
+        // The final octave state is true if the keyboard is active
+        octaveShiftActive = keyboardOctaveShift;
+    }
+
     switch (data.type) {
         case 'resumeAudio':
             if (context.state === 'suspended') {
@@ -1275,8 +1325,12 @@ window.addEventListener('message', function(event) {
             }
             break;
         case 'keydown': {
-            const key = data.key.toLowerCase(); // Make the key lowercase
-            if (heldKeys.has(key)) return; // Prevent repeats
+            const originalKey = data.key;
+            // Map shifted symbols back to their base key, otherwise use the original key
+            const mappedKey = shiftedKeyMapping[originalKey] || originalKey;
+            const key = mappedKey.toLowerCase();
+
+            if (heldKeys.has(key)) return; 
             heldKeys.add(key);
 
             if (key === '=') {
@@ -1287,20 +1341,23 @@ window.addEventListener('message', function(event) {
                 accidentalArmed = { sharp: false, flat: true };
                 document.getElementById('flat-btn')?.classList.add('active');
                 document.getElementById('sharp-btn')?.classList.remove('active');
-            } else if (buttons.some(b => b.keys.includes(key))) {
+            } else if (buttonSolfegeNames[key]) {
                 handlePlayKey(key);
                 if (keyToDiv[key]) keyToDiv[key].classList.add('active');
             }
             break;
         }
         case 'keyup': {
-            const key = data.key.toLowerCase(); // Make the key lowercase
+            const originalKey = data.key;
+            const mappedKey = shiftedKeyMapping[originalKey] || originalKey;
+            const key = mappedKey.toLowerCase();
+            
             heldKeys.delete(key);
             if (key === '=' || key === '-') {
                 accidentalArmed = { sharp: false, flat: false };
                 document.getElementById('sharp-btn')?.classList.remove('active');
                 document.getElementById('flat-btn')?.classList.remove('active');
-            } else if (buttons.some(b => b.keys.includes(key))) {
+            } else if (buttonSolfegeNames[key]) {
                 handleStopKey(key);
                 if (keyToDiv[key]) keyToDiv[key].classList.remove('active');
             }
@@ -1361,10 +1418,14 @@ window.addEventListener('message', function(event) {
         if (!currentElement) return;
 
         // Check if the element is a clickable button and dispatch a native event
-        if (currentElement.classList.contains('note-button') || currentElement.classList.contains('accidental-btn')) {
+        if (currentElement.classList.contains('note-button') || currentElement.classList.contains('accidental-btn') || currentElement.classList.contains('octave-btn')) {
              activePointers.set(data.id, currentElement);
              // Dispatch a real mousedown event which our other listeners can pick up
              currentElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+             // For the octave button, we can just trigger a click
+             if (currentElement.classList.contains('octave-btn')) {
+                currentElement.click();
+             }
         }
 
     } else if (data.eventType === 'move') {
