@@ -34,6 +34,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // --- Sub-Tab Navigation Logic (for "How it Works") ---
+    const subNavButtons = document.querySelectorAll('.sub-nav-button');
+    const subTabContents = document.querySelectorAll('.sub-tab-content');
+
+    subNavButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.dataset.target;
+            
+            // Deactivate all sub-nav buttons and hide all sub-tab content
+            subNavButtons.forEach(btn => btn.classList.remove('active'));
+            subTabContents.forEach(content => content.style.display = 'none');
+
+            // Activate the clicked button and show the corresponding content
+            this.classList.add('active');
+            document.getElementById(targetId).style.display = 'block';
+        });
+    });
+
 
     // --- Original App Tile Logic ---
     const inactiveTiles = document.querySelectorAll('.app-tile:not(a.app-tile)');
