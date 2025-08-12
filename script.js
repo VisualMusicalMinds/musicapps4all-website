@@ -53,6 +53,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // --- Video Modal Logic ---
+    const videoThumbnails = document.querySelectorAll('.video-thumbnail');
+    const modal = document.getElementById('video-modal');
+    const videoPlayer = document.getElementById('video-player');
+    const closeModal = document.querySelector('.close-modal');
+
+    videoThumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            const videoId = this.dataset.videoId;
+            videoPlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            modal.style.display = 'flex';
+        });
+    });
+
+    function closeVideoModal() {
+        modal.style.display = 'none';
+        videoPlayer.src = ''; // Stop the video from playing in the background
+    }
+
+    closeModal.addEventListener('click', closeVideoModal);
+
+    // Also close the modal if the user clicks on the background overlay
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeVideoModal();
+        }
+    });
 
     // --- Original App Tile Logic ---
     const inactiveTiles = document.querySelectorAll('.app-tile:not(a.app-tile)');
