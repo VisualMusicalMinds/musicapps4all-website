@@ -15,9 +15,6 @@ let currentWaveformIndex = 1;
 let currentWaveform = waveforms[currentWaveformIndex];
 let globalVolume = 0.4;
 
-// Add touch tolerance variable
-let touchLeaveTimeout = null;
-
 const keyNames = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
 const minorKeyNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']; // For display only
 const mixolydianKeyNames = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
@@ -25,7 +22,7 @@ const locrianKeyNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', '
 let currentKeyIndex = 0;
 let currentScale = 'Major'; // New state for the scale
 
-// --- NEW FUNCTION from Chord-Tower ---
+// --- NEW FUNCTION ---
 // Get the enharmonically correct key name for UI display based on the scale
 function getDisplayNameForKey(keyIndex, scaleName) {
     const sharpMinorScales = ['Natural Minor', 'Harmonic Minor', 'Melodic Minor'];
@@ -100,17 +97,7 @@ function transposeFrequency(freq, semitoneShift) {
   return freq * Math.pow(2, semitoneShift / 12);
 }
 
-// --- COLOR DATA from Chord-Tower ---
-const KEY_COLORS = {
-  'C': '#FF3B30', // Red
-  'D': '#FF9500', // Orange
-  'E': '#FFCC00', // Yellow
-  'F': '#34C759', // Green
-  'G': '#30c0c6', // Turquoise
-  'A': '#007AFF', // Blue
-  'B': '#AF52DE'  // Purple
-};
-
+// --- COLOR DATA ---
 const noteColorsByKey = {
   'C':   { 'I': '#FF3B30',    'ii': '#FF9500', 'iii': '#FFCC00', 'IV': '#34C759', 'V': '#30c0c6', 'vi': '#007AFF', 'IV/IV': '#AF52DE' },
   'Db':  { 'I': '#FF9500',    'ii': '#FFCC00', 'iii': '#34C759', 'IV': '#30c0c6', 'V': '#007AFF', 'vi': '#AF52DE', 'IV/IV': '#FF3B30' },
@@ -139,7 +126,7 @@ const DARK_RED = '#990000';
 const DARK_BLUE = '#000099';
 const BRIGHT_RED = '#FF0000';
 
-// --- Chord/Alt names for all keys from Chord-Tower ---
+// --- Chord/Alt names for all keys ---
 const chordNamesDefault = {
   "8": "V/V", "9": "V/vi", "u": "IV", "i": "V", "o": "vi", "l": "iii", "k": "ii", "j": "I", "n": "IV/IV"
 };
@@ -204,18 +191,18 @@ const chordNamesAltByMinorKey = {
 };
 
 const chordNamesAltByNaturalMinorKey = {
-    "C":  ["Db", "F",    "Fm", "Gm", "Ab", "Eb", "Bb", "Cm", "G"],
-    "Db": ["D",  "F#",   "F#m","G#m","A",  "E",  "B",  "C#m","G#"],
-    "D":  ["Eb", "G",    "Gm", "Am", "Bb", "F",  "C",  "Dm", "A"],
-    "Eb": ["Fb", "Ab",   "Abm","Bbm","Cb", "Gb", "Db", "Ebm","Bb"],
-    "E":  ["F",  "A",    "Am", "Bm", "C",  "G",  "D",  "Em", "B"],
-    "F":  ["Gb", "Bb",   "Bbm","Cm", "Db", "Ab", "Eb", "Fm", "C"],
-    "Gb": ["G",  "B",    "Bm", "C#m","D",  "A",  "E",  "F#m","C#"],
-    "G":  ["Ab", "C",    "Cm", "Dm", "Eb", "Bb", "F",  "Gm", "D"],
-    "Ab": ["A",  "C#",   "C#m","D#m","E",  "B",  "F#", "G#m","D#"],
-    "A":  ["Bb", "D",    "Dm", "Em", "F",  "C",  "G",  "Am", "E"],
-    "Bb": ["Cb", "Eb",   "Ebm","Fm", "Gb", "Db", "Ab", "Bbm","F"],
-    "B":  ["C",  "E",    "Em", "F#m","G",  "D",  "A",  "Bm", "F#"]
+    "C":  ["Db", "F",  "Fm", "Gm", "Ab", "Eb", "Bb", "Cm", "G"],
+    "Db": ["D",  "F#", "F#m","G#m","A",  "E",  "B",  "C#m","G#"],
+    "D":  ["Eb", "G",  "Gm", "Am", "Bb", "F",  "C",  "Dm", "A"],
+    "Eb": ["Fb", "Ab", "Abm", "Bbm", "Cb", "Gb", "Db", "Ebm", "Bb"],
+    "E":  ["F",  "A",  "Am", "Bm", "C",  "G",  "D",  "Em", "B"],
+    "F":  ["Gb", "Bb", "Bbm","Cm", "Db", "Ab", "Eb", "Fm", "C"],
+    "Gb": ["G",  "B",  "Bm", "C#m","D",  "A",  "E",  "F#m","C#"],
+    "G":  ["Ab", "C",  "Cm", "Dm", "Eb", "Bb", "F",  "Gm", "D"],
+    "Ab": ["A",  "Db", "C#m","D#m","E",  "B",  "F#", "G#m","D#"],
+    "A":  ["Bb", "D",  "Dm", "Em", "F",  "C",  "G",  "Am", "E"],
+    "Bb": ["Cb", "Eb", "Ebm","Fm", "Gb", "Db", "Ab", "Bbm","F"],
+    "B":  ["C",  "E",  "Em", "F#m","G",  "D",  "A",  "Bm", "F#"]
 };
 
 const chordNamesAltByHarmonicMinorKey = {
@@ -325,31 +312,31 @@ const chordNamesAltByLocrianKey = {
 
 const functionChordColorMap = {
     'Major': {
-        'C': { 'IV/IV': 'flat' }, 'Db': { 'I': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi': 'flat', 'V/V': 'flat', 'IV/IV': 'flat' }, 'D': { 'iii': 'sharp', 'V/vi': 'sharp' }, 'Eb': { 'I': 'flat', 'ii': 'flat', 'V': 'flat', 'vi': 'flat', 'V/V': 'flat' }, 'E': { 'V/vi': 'sharp' }, 'F': {}, 'Gb': { 'I': 'flat', 'ii': 'flat', 'iii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi': 'flat', 'V/V': 'flat', 'IV/IV': 'flat' }, 'G': {}, 'Ab': { 'I': 'flat', 'ii': 'flat', 'iii': 'flat', 'V': 'flat', 'vi': 'flat', 'V/V': 'flat' }, 'A': { 'V/vi': 'sharp' }, 'Bb': { 'I': 'flat', 'ii': 'flat', 'iii': 'flat', 'IV': 'flat', 'V': 'flat', 'V/V': 'flat' }, 'B': { 'V/vi': 'sharp' }
+        'C': { 'IV/IV': 'flat' }, 'Db': { 'I': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi': 'flat', 'V/V': 'flat', 'IV/IV': 'flat' }, 'D': { 'iii': 'sharp', 'V/vi': 'sharp' }, 'Eb': { 'I': 'flat', 'IV': 'flat', 'V': 'flat', 'IV/IV': 'flat' }, 'E': { 'ii': 'sharp', 'iii': 'sharp', 'vi': 'sharp', 'V/V': 'sharp', 'V/vi': 'sharp' }, 'F': { 'IV': 'flat', 'IV/IV': 'flat' }, 'Gb': { 'I': 'flat', 'ii': 'flat', 'iii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi': 'flat', 'V/V': 'flat', 'V/vi': 'flat', 'IV/IV': 'flat' }, 'G': {  }, 'Ab': { 'I': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'V/V': 'flat', 'IV/IV': 'flat' }, 'A': { 'iii': 'sharp', 'vi': 'sharp', 'V/vi': 'sharp' }, 'Bb': { 'I': 'flat', 'IV': 'flat', 'IV/IV': 'flat' }, 'B': { 'ii': 'sharp', 'iii': 'sharp', 'V': 'sharp', 'vi': 'sharp', 'V/V': 'sharp', 'V/vi': 'sharp' }
     },
     'Natural Minor': {
-        'C': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'bII': 'flat' }, 'Db': { 'i': 'sharp', 'iv': 'sharp', 'v': 'sharp', 'ii°7': 'sharp', 'V': 'sharp' }, 'D': { 'bVI': 'flat', 'bII': 'flat' }, 'Eb': { 'i': 'flat', 'v': 'flat', 'iv': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bII': 'flat', 'ii°7': 'flat', 'V': 'flat' }, 'E': {  }, 'F': { 'bVII': 'flat', 'bIII': 'flat', 'iv': 'flat', 'bVI': 'flat', 'IV': 'flat', 'bII': 'flat' }, 'Gb': { 'i': 'sharp', 'v': 'sharp', 'V': 'sharp' }, 'G': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'bII': 'flat' }, 'Ab': { 'i': 'sharp', 'v': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'bVII': 'sharp', 'bIII': 'sharp', 'bII': 'sharp', 'ii°7': 'sharp', 'V': 'sharp' }, 'A': {}, 'Bb': { 'bIII': 'flat', 'bVI': 'flat', 'bII': 'flat' }, 'B': {}
+        'C': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'bII': 'flat' }, 'Db': { 'i': 'sharp', 'iv': 'sharp', 'v': 'sharp', 'IV': 'sharp', 'V': 'sharp' }, 'D': { 'bVI': 'flat', 'bII': 'flat' }, 'Eb': { 'i': 'flat', 'iv': 'flat', 'v': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bII': 'flat', 'IV': 'flat', 'V': 'flat' }, 'E': { 'bVI': 'flat', 'bII': 'flat' }, 'F': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'bII': 'flat' }, 'Gb': { 'i': 'sharp', 'iv': 'sharp', 'v': 'sharp', 'bVI': 'sharp', 'bVII': 'sharp', 'bIII': 'sharp', 'bII': 'sharp', 'IV': 'sharp', 'V': 'sharp' }, 'G': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'bII': 'flat' }, 'Ab': { 'i': 'flat', 'iv': 'flat', 'v': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bII': 'flat', 'IV': 'flat', 'V': 'flat' }, 'A': { 'bVI': 'flat', 'bII': 'flat' }, 'Bb': { 'i': 'flat', 'iv': 'flat', 'v': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bII': 'flat', 'IV': 'flat', 'V': 'flat' }, 'B': { 'bVI': 'flat', 'bII': 'flat' }
     },
     'Harmonic Minor': {
-        'C': { 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Db': { 'i': 'sharp', 'vii°': 'sharp', 'iv': 'sharp', 'V': 'sharp', 'IV': 'sharp' }, 'D': { 'vii°': 'sharp', 'bVI': 'flat', 'bII': 'flat' }, 'Eb': { 'i': 'flat', 'V': 'flat', 'iv': 'flat', 'bVI': 'flat', 'vii°': 'flat', 'bIII+': 'flat', 'bII': 'flat', 'bIII': 'flat', 'IV': 'flat' }, 'E': { 'vii°': 'sharp' }, 'F': { 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Gb': { 'i': 'sharp', 'V': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'vii°': 'sharp', 'bIII+': 'sharp', 'bII': 'sharp', 'bIII': 'sharp', 'IV': 'sharp' }, 'G': { 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Ab': { 'i': 'sharp', 'V': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'vii°': 'sharp', 'bIII+': 'sharp', 'bII': 'sharp', 'bIII': 'sharp', 'IV': 'sharp' }, 'A': { 'vii°': 'sharp' }, 'Bb': { 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'B': { 'vii°': 'sharp' }
+        'C': { 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Db': { 'i': 'sharp', 'vii°': 'sharp', 'iv': 'sharp', 'V': 'sharp', 'IV': 'sharp' }, 'D': { 'vii°': 'sharp', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Eb': { 'i': 'flat', 'vii°': 'flat', 'iv': 'flat', 'V': 'flat', 'bVI': 'flat', 'bIII+': 'flat', 'bII': 'flat', 'bIII': 'flat', 'IV': 'flat' }, 'E': { 'vii°': 'sharp', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'F': { 'vii°': 'sharp', 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Gb': { 'i': 'sharp', 'vii°': 'sharp', 'iv': 'sharp', 'V': 'sharp', 'bVI': 'sharp', 'bIII+': 'sharp', 'bII': 'sharp', 'bIII': 'sharp', 'IV': 'sharp' }, 'G': { 'vii°': 'sharp', 'bIII+': 'flat', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Ab': { 'i': 'flat', 'vii°': 'flat', 'iv': 'flat', 'V': 'flat', 'bVI': 'flat', 'bIII+': 'flat', 'bII': 'flat', 'bIII': 'flat', 'IV': 'flat' }, 'A': { 'vii°': 'sharp', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }, 'Bb': { 'i': 'flat', 'vii°': 'flat', 'iv': 'flat', 'V': 'flat', 'bVI': 'flat', 'bIII+': 'flat', 'bII': 'flat', 'bIII': 'flat', 'IV': 'flat' }, 'B': { 'vii°': 'sharp', 'bVI': 'flat', 'bII': 'flat', 'bIII': 'flat' }
     },
     'Melodic Minor': {
-        'C': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat' }, 'Db': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'V': 'sharp', 'vi°': 'sharp', 'vii°': 'sharp' }, 'D': { 'bVI': 'flat', 'vii°': 'sharp' }, 'Eb': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi°': 'flat', 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'vii°': 'flat' }, 'E': { 'vii°': 'sharp' }, 'F': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat' }, 'Gb': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'V': 'sharp', 'vi°': 'sharp', 'bIII+': 'sharp', 'bVI': 'sharp', 'bVII': 'sharp', 'vii°': 'sharp' }, 'G': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat' }, 'Ab': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'V': 'sharp', 'vi°': 'sharp', 'bIII+': 'sharp', 'bVI': 'sharp', 'bVII': 'sharp', 'vii°': 'sharp' }, 'A': { 'vii°': 'sharp' }, 'Bb': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat' }, 'B': { 'vii°': 'sharp' }
+        'C': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat' }, 'Db': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'V': 'sharp', 'vi°': 'sharp', 'vii°': 'sharp' }, 'D': { 'bVI': 'flat', 'vii°': 'sharp' }, 'Eb': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi°': 'flat', 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'vii°': 'flat' }, 'E': { 'bVI': 'flat', 'vii°': 'sharp' }, 'F': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'vii°': 'sharp' }, 'Gb': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'V': 'sharp', 'vi°': 'sharp', 'bIII+': 'sharp', 'bVI': 'sharp', 'bVII': 'sharp', 'vii°': 'sharp' }, 'G': { 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'vii°': 'sharp' }, 'Ab': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi°': 'flat', 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'vii°': 'flat' }, 'A': { 'bVI': 'flat', 'vii°': 'sharp' }, 'Bb': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'V': 'flat', 'vi°': 'flat', 'bIII+': 'flat', 'bVI': 'flat', 'bVII': 'flat', 'vii°': 'flat' }, 'B': { 'bVI': 'flat', 'vii°': 'sharp' }
     },
     'Dorian': {
-        'C': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat' }, 'Db': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'vi°7': 'sharp', 'V': 'sharp' }, 'D': { 'bVI': 'flat' }, 'Eb': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'v': 'flat', 'bIII': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'vi°7': 'flat', 'V': 'flat' }, 'E': {}, 'F': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat' }, 'Gb': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'bIII': 'sharp', 'bVII': 'sharp', 'bVI': 'sharp', 'vi°7': 'sharp', 'V': 'sharp' }, 'G': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat' }, 'Ab': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'v': 'flat', 'bIII': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'vi°7': 'flat', 'V': 'flat' }, 'A': {}, 'Bb': { 'bIII': 'flat', 'bVI': 'flat' }, 'B': {}
+        'C': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat' }, 'Db': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'vi°7': 'sharp', 'V': 'sharp' }, 'D': { 'bVI': 'flat' }, 'Eb': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'v': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'vi°7': 'flat', 'V': 'flat' }, 'E': { 'bVI': 'flat' }, 'F': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat' }, 'Gb': { 'i': 'sharp', 'ii': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'bVII': 'sharp', 'bIII': 'sharp', 'bVI': 'sharp', 'vi°7': 'sharp', 'V': 'sharp' }, 'G': { 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat' }, 'Ab': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'v': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'vi°7': 'flat', 'V': 'flat' }, 'A': { 'bVI': 'flat' }, 'Bb': { 'i': 'flat', 'ii': 'flat', 'IV': 'flat', 'v': 'flat', 'bVII': 'flat', 'bIII': 'flat', 'bVI': 'flat', 'vi°7': 'flat', 'V': 'flat' }, 'B': { 'bVI': 'flat' }
     },
     'Phrygian': {
-        'C': { 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Db': { 'i': 'sharp', 'iv': 'sharp', 'v°': 'sharp' }, 'D': { 'bVI': 'flat', 'bII': 'flat', 'bV': 'flat' }, 'Eb': { 'i': 'sharp', 'bII': 'sharp', 'bIII': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'bvii': 'sharp', 'bV': 'sharp', 'v°': 'sharp', 'bVII': 'sharp' }, 'E': { 'bV': 'flat' }, 'F': { 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Gb': { 'i': 'sharp', 'bII': 'sharp', 'bIII': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'bvii': 'sharp', 'bV': 'sharp', 'v°': 'sharp', 'bVII': 'sharp' }, 'G': { 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Ab': { 'i': 'sharp', 'bII': 'sharp', 'bIII': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'bvii': 'sharp', 'bV': 'sharp', 'v°': 'sharp', 'bVII': 'sharp' }, 'A': { 'bV': 'flat' }, 'Bb': { 'bVI': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat' }, 'B': { 'bV': 'flat' }
+        'C': { 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Db': { 'i': 'sharp', 'iv': 'sharp', 'v°': 'sharp' }, 'D': { 'bVI': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Eb': { 'i': 'flat', 'iv': 'flat', 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'v°': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'E': { 'bVI': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'F': { 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Gb': { 'i': 'sharp', 'iv': 'sharp', 'bVI': 'sharp', 'bvii': 'sharp', 'bIII': 'sharp', 'bII': 'sharp', 'v°': 'sharp', 'bV': 'sharp', 'bVII': 'sharp' }, 'G': { 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Ab': { 'i': 'flat', 'iv': 'flat', 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'v°': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'A': { 'bVI': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'Bb': { 'i': 'flat', 'iv': 'flat', 'bVI': 'flat', 'bvii': 'flat', 'bIII': 'flat', 'bII': 'flat', 'v°': 'flat', 'bV': 'flat', 'bVII': 'flat' }, 'B': { 'bVI': 'flat', 'bII': 'flat', 'bV': 'flat', 'bVII': 'flat' }
     },
     'Lydian': {
-        'C': { '#iv°': 'sharp' }, 'Db': { 'I': 'flat', 'vi': 'flat', 'II': 'flat', 'V': 'flat', 'IV': 'flat', 'ii°': 'flat' }, 'D': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'Eb': { 'I': 'flat', 'II': 'flat', 'V': 'flat', 'vi': 'flat', 'vii': 'flat', 'iii': 'flat', 'IV': 'flat', '#iv°': 'flat', 'ii°': 'flat' }, 'E': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'F': {}, 'Gb': { 'I': 'flat', 'II': 'flat', 'iii': 'flat', 'V': 'flat', 'vi': 'flat', 'vii': 'flat', 'IV': 'flat', '#iv°': 'flat', 'ii°': 'flat' }, 'G': { '#iv°': 'sharp' }, 'Ab': { 'I': 'flat', 'II': 'flat', 'iii': 'flat', 'V': 'flat', 'vi': 'flat', 'vii': 'flat', 'IV': 'flat', '#iv°': 'flat', 'ii°': 'flat' }, 'A': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'Bb': { 'II': 'flat' }, 'B': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }
+        'C': { '#iv°': 'sharp' }, 'Db': { 'I': 'flat', 'vi': 'flat', 'II': 'flat', 'V': 'flat', 'IV': 'flat', 'ii°': 'flat' }, 'D': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'Eb': { 'I': 'flat', 'vi': 'flat', 'II': 'flat', 'V': 'flat', '#iv°': 'flat', 'IV': 'flat', 'ii°': 'flat' }, 'E': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'F': { 'IV': 'flat', 'ii°': 'flat' }, 'Gb': { 'I': 'flat', 'vii': 'flat', 'iii': 'flat', 'vi': 'flat', 'II': 'flat', 'V': 'flat', '#iv°': 'flat', 'IV': 'flat', 'ii°': 'flat' }, 'G': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'Ab': { 'I': 'flat', 'vi': 'flat', 'II': 'flat', 'V': 'flat', '#iv°': 'flat', 'IV': 'flat', 'ii°': 'flat' }, 'A': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }, 'Bb': { 'I': 'flat', 'vi': 'flat', 'II': 'flat', 'V': 'flat', '#iv°': 'flat', 'IV': 'flat', 'ii°': 'flat' }, 'B': { 'vii': 'sharp', 'iii': 'sharp', '#iv°': 'sharp' }
     },
     'Mixolydian': {
-        'C': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'Db': { 'I': 'sharp', 'ii': 'sharp', 'vi': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'iii°': 'sharp' }, 'D': { 'bVI': 'flat', 'iii°': 'sharp' }, 'Eb': { 'I': 'flat', 'v': 'flat', 'ii': 'flat', 'vi': 'flat', 'IV': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat', 'iii°': 'flat' }, 'E': { 'iii°': 'sharp' }, 'F': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'Gb': { 'I': 'sharp', 'v': 'sharp', 'ii': 'sharp', 'vi': 'sharp', 'IV': 'sharp', 'bVII': 'sharp', 'bVI': 'sharp', 'bIII': 'sharp', 'iii°': 'sharp' }, 'G': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'Ab': { 'I': 'flat', 'v': 'flat', 'ii': 'flat', 'vi': 'flat', 'IV': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat', 'iii°': 'flat' }, 'A': { 'iii°': 'sharp' }, 'Bb': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'B': { 'iii°': 'sharp' }
+        'C': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'Db': { 'I': 'sharp', 'ii': 'sharp', 'vi': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'iii°': 'sharp' }, 'D': { 'bVI': 'flat', 'iii°': 'sharp' }, 'Eb': { 'I': 'flat', 'ii': 'flat', 'vi': 'flat', 'IV': 'flat', 'v': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat', 'iii°': 'flat' }, 'E': { 'bVI': 'flat', 'iii°': 'sharp' }, 'F': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'Gb': { 'I': 'sharp', 'ii': 'sharp', 'vi': 'sharp', 'IV': 'sharp', 'v': 'sharp', 'bVII': 'sharp', 'bVI': 'sharp', 'bIII': 'sharp', 'iii°': 'sharp' }, 'G': { 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat' }, 'Ab': { 'I': 'flat', 'ii': 'flat', 'vi': 'flat', 'IV': 'flat', 'v': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat', 'iii°': 'flat' }, 'A': { 'bVI': 'flat', 'iii°': 'sharp' }, 'Bb': { 'I': 'flat', 'ii': 'flat', 'vi': 'flat', 'IV': 'flat', 'v': 'flat', 'bVII': 'flat', 'bVI': 'flat', 'bIII': 'flat', 'iii°': 'flat' }, 'B': { 'bVI': 'flat', 'iii°': 'sharp' }
     },
     'Locrian': {
-        'C': { 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Db': { 'i°': 'sharp', 'iv': 'sharp', 'IV': 'sharp' }, 'D': { 'bII': 'flat', 'bVI': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Eb': { 'i°': 'sharp', 'iv': 'sharp', 'biii': 'sharp', 'bvii': 'sharp', 'bII': 'sharp', 'bVI': 'sharp', 'IV': 'sharp', 'bVI+': 'sharp', 'bV': 'sharp' }, 'E': { 'bVI+': 'flat', 'bV': 'flat' }, 'F': { 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Gb': { 'i°': 'sharp', 'iv': 'sharp', 'biii': 'sharp', 'bvii': 'sharp', 'bII': 'sharp', 'bVI': 'sharp', 'IV': 'sharp', 'bVI+': 'sharp', 'bV': 'sharp' }, 'G': { 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Ab': { 'i°': 'sharp', 'iv': 'sharp', 'biii': 'sharp', 'bvii': 'sharp', 'bII': 'sharp', 'bVI': 'sharp', 'IV': 'sharp', 'bVI+': 'sharp', 'bV': 'sharp' }, 'A': { 'bVI+': 'flat', 'bV': 'flat' }, 'Bb': { 'i°': 'sharp', 'iv': 'sharp', 'biii': 'sharp', 'bvii': 'sharp', 'bII': 'sharp', 'bVI': 'sharp', 'IV': 'sharp', 'bVI+': 'sharp', 'bV': 'sharp' }, 'B': { 'bV': 'flat' }
+        'C': { 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Db': { 'i°': 'sharp', 'iv': 'sharp', 'IV': 'sharp' }, 'D': { 'bII': 'flat', 'bVI': 'flat', 'bV': 'flat' }, 'Eb': { 'i°': 'flat', 'iv': 'flat', 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'IV': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'E': { 'bII': 'flat', 'bVI': 'flat', 'bV': 'flat' }, 'F': { 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Gb': { 'i°': 'sharp', 'iv': 'sharp', 'bII': 'sharp', 'bVI': 'sharp', 'biii': 'sharp', 'bvii': 'sharp', 'IV': 'sharp', 'bVI+': 'sharp', 'bV': 'sharp' }, 'G': { 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'Ab': { 'i°': 'flat', 'iv': 'flat', 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'IV': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'A': { 'bII': 'flat', 'bVI': 'flat', 'bV': 'flat' }, 'Bb': { 'i°': 'flat', 'iv': 'flat', 'bII': 'flat', 'bVI': 'flat', 'biii': 'flat', 'bvii': 'flat', 'IV': 'flat', 'bVI+': 'flat', 'bV': 'flat' }, 'B': { 'bII': 'flat', 'bVI': 'flat', 'bV': 'flat' }
     }
 };
 
@@ -426,7 +413,13 @@ function startNote(key, freqOrFreqs) {
       filter.Q.value = 1;
       osc.connect(filter);
       filter.connect(gain);
-      const attackTime = 0.015, targetVolume = globalVolume / freqs.length;
+     
+      let targetVolume = globalVolume / freqs.length;
+      if (currentWaveform === 'sawtooth' || currentWaveform === 'square') {
+          targetVolume *= 0.9; // Reduce volume by 10%
+      }
+      const attackTime = 0.015;
+
       gain.gain.linearRampToValueAtTime(targetVolume, now + attackTime);
       gain.connect(compressor);
       osc.start();
@@ -521,9 +514,8 @@ function reTriggerHeldKeysAccidentals() {
   }
 }
 
-// Using the intact `positions` from old-chord-tower
 const positions = {
-  '10a':[9,0],'10b':[9,1],'10c':[9,2],'10d':[9,3],'3a':[2,0],'4a':[3,0],'3b':[2,1],'4b':[3,1],'3c':[2,2],'4c':[3,2],'5a':[4,0],'6a':[5,0],'5b':[4,1],'6b':[5,1],'7b':[6,1],'5c':[4,2],'6c':[5,2],'7c':[6,2],'8b':[7,1],'8c':[7,2],'9b':[8,1],'9c':[8,2],'2a':[1,0],'2b':[1,1],'2c':[1,2],'2d':[1,3],'3d':[2,3],'4d':[3,3],'5d':[4,3],'6d':[5,3],'7d':[6,3]
+  '10a':[9,0],'10b':[9,1],'10c':[9,2],'10d':[9,3],'3a':[2,0],'4a':[3,0],'3b':[2,1],'4b':[3,1],'3c':[2,2],'4c':[3,2],'5a':[4,0],'6a':[5,0],'5b':[4,1],'6b':[5,1],'7b':[6,1],'5c':[4,2],'6c':[5,2],'7c':[6,2],'8b':[7,1],'8c':[7,2],'9b':[8,1],'9c':[8,2],'4d':[3,3],'3d':[2,3],'2c':[1,2],'2d':[1,3],'1c':[0,2],'1d':[0,3],'1a':[0,0],'1b':[0,1],'2a':[1,0],'2b':[1,1],'5d':[4,3],'6d':[5,3],'7d':[6,3],'8d':[7,3],'9d':[8,3],'2e':[1,4]
 };
 
 const majorChords = [
@@ -558,7 +550,7 @@ const naturalMinorChords = [
     { name: 'bVII', key: 'k', notes: {'C':['Bb3', 'D4', 'F4', 'Bb4']},   cells: ['6a'] },
     { name: 'bIII', key: 'l', notes: {'C':['Eb3', 'Bb3', 'Eb4', 'G4']},  cells: ['5a'] },
     { name: 'bII',  key: '8', notes: {'C':['Db3', 'Db4', 'F4', 'Ab4']},   cells: ['2a', '2b'] },
-    { name: 'IV',   key: '9', notes: {'C':['F3', 'C4', 'A4', 'F4']},    cells: ['2c','2d'] },
+    { name: 'IV',   key: '9', notes: {'C':['F3','C4','A4','F4']},       cells: ['2c','2d'] },
     { name: 'V',    key: 'n', notes: {'C':['G3', 'G4', 'B4', 'D5']},    cells: ['8b','8c'] }
 ];
 
@@ -603,7 +595,7 @@ const phrygianChords = [
     { name: 'bII',  key: 'i', notes: {'C':['Db3', 'Ab3', 'F4', 'Db4']},  cells: ['3b','4b','3c','4c'] },
     { name: 'bIII', key: 'u', notes: {'C':['Eb3', 'Bb3', 'G4', 'Eb4']},  cells: ['3a','4a'] },
     { name: 'iv',   key: 'o', notes: {'C':['F3', 'C4', 'Ab4', 'F4']},   cells: ['4d','3d'] },
-    { name: 'VI',   key: 'k', notes: {'C':['Ab3', 'Eb4', 'C5', 'Ab4']},  cells: ['6a'] },
+    { name: 'bVI',  key: 'k', notes: {'C':['Ab3', 'Eb4', 'C5', 'Ab4']},  cells: ['6a'] },
     { name: 'bvii', key: 'l', notes: {'C':['Bb3', 'F4', 'Db5', 'Bb4']},  cells: ['5a'] },
     { name: 'bV',   key: '8', notes: {'C':['Gb3', 'Db4', 'Bb4', 'Gb4']},  cells: ['2a', '2b'] },
     { name: 'v°',   key: '9', notes: {'C':['G3', 'Db4', 'Bb4', 'G4']},   cells: ['2c','2d'] },
@@ -649,7 +641,6 @@ const locrianChords = [
 const grid = document.getElementById('grid');
 const keyToDiv = {};
 
-// Using the coloring function from Chord-Tower
 function updateSolfegeColors() {
     let chords;
     if (currentScale === 'Major') chords = majorChords;
@@ -769,34 +760,6 @@ function updateSolfegeColors() {
             }
         });
     }
-    // Defer the keyboard color update to ensure grid colors are painted
-    requestAnimationFrame(updateSimulatedKeyboardColors);
-}
-
-function updateSimulatedKeyboardColors() {
-    // Iterate over the defined key mappings
-    for (const computerKey in keyMap) {
-        const chordKey = keyMap[computerKey]; // e.g., 'j' for computer key 'f'
-        const chordBlockDiv = keyToDiv[chordKey]; // The main grid button div
-
-        if (chordBlockDiv) {
-            // Use getComputedStyle to read the final rendered color
-            const chordColor = window.getComputedStyle(chordBlockDiv).backgroundColor;
-            const keyElement = document.querySelector(`#simulated-keyboard .key[data-key="${computerKey}"]`);
-            
-            if (keyElement) {
-                // Check for a valid, non-transparent color
-                if (chordColor && chordColor !== 'rgba(0, 0, 0, 0)') {
-                    keyElement.style.background = chordColor; // Set background, not backgroundColor
-                    keyElement.style.color = 'white';
-                } else {
-                    // Reset to default if color is invalid
-                    keyElement.style.background = ''; 
-                    keyElement.style.color = '';
-                }
-            }
-        }
-    }
 }
 
 const cellRefs = {};
@@ -815,13 +778,11 @@ for (let r = 1; r < 11; r++) {
   }
 }
 
-cellRefs['5d'].classList.add('toggle-cell-border');
 cellRefs['6d'].classList.remove('toggle-cell-border');
 
 let cButtonState = 'C';
 const noteButtonRefs = {};
 
-// Using the text coloring function from Chord-Tower
 function updateBoxNames() {
     const useAlt = (cButtonState === 'I');
     const keyName = keyNames[currentKeyIndex];
@@ -850,6 +811,7 @@ function updateBoxNames() {
     }
 
     if (!nameList || !nameMap) {
+        // Fallback for safety, though it shouldn't be needed with the new structure
         console.error("Name or function map not found for scale:", currentScale);
         return;
     }
@@ -883,30 +845,6 @@ function updateKeyDisplay() {
     keyNameEl.textContent = displayName;
 }
 
-function renderToggleButton() {
-  const el = document.createElement('button');
-  el.className = 'chord-toggle-btn';
-  el.setAttribute('type', 'button');
-  el.setAttribute('aria-pressed', cButtonState === 'I');
-  el.innerText = cButtonState === 'C' ? 'I' : 'C';
-  el.addEventListener('click', () => {
-    cButtonState = (cButtonState === 'C') ? 'I' : 'C';
-    renderToggleButton();
-    updateBoxNames();
-  });
-  el.addEventListener('keydown', (e) => {
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      cButtonState = (cButtonState === 'C') ? 'I' : 'C';
-      renderToggleButton();
-      updateBoxNames();
-    }
-  });
-  cellRefs['5d'].innerHTML = '';
-  cellRefs['5d'].appendChild(el);
-}
-renderToggleButton();
-
 cellRefs['6d'].innerHTML = '';
 cellRefs['7d'].innerHTML = '';
 
@@ -926,111 +864,41 @@ majorChords.forEach(btn => {
   div.style.left = `${left}%`;
   div.style.height = `${height}%`;
   div.style.width = `${width}%`;
-  let isTouching = false;
-  div.addEventListener('mousedown', (e) => { e.preventDefault(); isTouching = true; handlePlayKey(btn.key); div.classList.add('active'); window.focus(); });
-  div.addEventListener('mouseup', () => { isTouching = false; handleStopKey(btn.key); div.classList.remove('active'); });
-  div.addEventListener('mouseleave', () => { if(isTouching) { isTouching = false; handleStopKey(btn.key); div.classList.remove('active'); } });
-  div.addEventListener('touchstart', (e) => { e.preventDefault(); isTouching = true; handlePlayKey(btn.key); div.classList.add('active'); window.focus(); });
-  div.addEventListener('touchend', () => { if (touchLeaveTimeout) clearTimeout(touchLeaveTimeout); touchLeaveTimeout = setTimeout(() => { isTouching = false; handleStopKey(btn.key); div.classList.remove('active'); }, 50); });
-  div.addEventListener('touchcancel', () => { if (touchLeaveTimeout) clearTimeout(touchLeaveTimeout); touchLeaveTimeout = setTimeout(() => { isTouching = false; handleStopKey(btn.key); div.classList.remove('active'); }, 50); });
+
+  // Simplified Event Handlers
+  let isPressed = false;
+  const startAction = (e) => {
+      e.preventDefault();
+      isPressed = true;
+      handlePlayKey(btn.key);
+      div.classList.add('active');
+  };
+  const endAction = () => {
+      if (!isPressed) return;
+      isPressed = false;
+      handleStopKey(btn.key);
+      div.classList.remove('active');
+  };
+
+  div.addEventListener('mousedown', startAction);
+  div.addEventListener('mouseup', endAction);
+  div.addEventListener('mouseleave', endAction);
+  div.addEventListener('touchstart', startAction, { passive: false });
+  div.addEventListener('touchend', endAction);
+  div.addEventListener('touchcancel', endAction);
+
   grid.appendChild(div);
   keyToDiv[btn.key] = div;
   noteButtonRefs[btn.key] = div;
 });
 
 const keyMap = {
-  // I Chord (i in minor/dorian) -> j
-  "j": "j", "f": "j", "1": "j",
-  // ii Chord -> k
-  "k": "k", "d": "k", "2": "k",
-  // iii Chord (l)
-  "l": "l", "s": "l", "3": "l",
-  // IV Chord (u)
-  "u": "u", "w": "u", "4": "u",
-  // V Chord (i)
-  "i": "i", "e": "i", "5": "i",
-  // vi Chord (o)
-  "o": "o", "r": "o", "6": "o",
-  // V/V, IV(min), bVI(dor) -> 8
-  "y": "8", "q": "8", "7": "8",
-  // V/vi, v(min), V(dor) -> 9
-  "p": "9", "t": "9", "8": "8", // Corrected this line, '8' key for 'V/vi' was a typo, should be for 'V/V'
-  // IV/IV, ii°7(min), #iv°7(dor) -> n
-  "h": "n", "g": "n", "9": "n", "0": null // Reassigned 0 to null
+  "q": "8", "w": "u", "e": "i", "r": "o", "t": "9",
+  "f": "j", "s": "l", "d": "k", "g": "n"
 };
 const keyHeldDown = {};
 
-window.addEventListener('keydown', function(e) {
-  if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "SELECT" || document.activeElement.isContentEditable)) return;
-  let key = e.key;
-  // Also handle simulated keyboard keydown
-  const keyElement = document.querySelector(`#simulated-keyboard .key[data-key="${key.toLowerCase()}"]`);
-  if (keyElement) keyElement.classList.add('pressed');
-
-  if (keyMap[key] && !keyHeldDown[key]) {
-    const chordKey = keyMap[key];
-    if (!chordKey) return; // Do nothing if key is mapped to null
-    sharpTouchHeld = e.shiftKey;
-    flatTouchHeld = e.altKey || e.ctrlKey;
-    keyHeldDown[key] = true;
-    handlePlayKey(chordKey);
-    if (keyToDiv[chordKey]) keyToDiv[chordKey].classList.add('active');
-  }
-  if (key === "#" || key === "ArrowUp") { accidentalHeld.sharp = true; sharpTouchHeld = true; reTriggerHeldKeysAccidentals(); }
-  if (key === "b" || key === "ArrowDown") { accidentalHeld.flat = true; flatTouchHeld = true; reTriggerHeldKeysAccidentals(); }
-  if (key === "c" || key === "C") { cButtonState = (cButtonState === 'C') ? 'I' : 'C'; renderToggleButton(); updateBoxNames(); }
-});
-
-window.addEventListener('keyup', function(e) {
-  let key = e.key;
-  // Also handle simulated keyboard keyup
-  const keyElement = document.querySelector(`#simulated-keyboard .key[data-key="${key.toLowerCase()}"]`);
-  if (keyElement) keyElement.classList.remove('pressed');
-
-  if (keyMap[key]) {
-    const chordKey = keyMap[key];
-    if (!chordKey) return;
-    handleStopKey(chordKey);
-    keyHeldDown[key] = false;
-    sharpTouchHeld = false;
-    flatTouchHeld = false;
-    if (keyToDiv[chordKey]) keyToDiv[chordKey].classList.remove('active');
-  }
-  if (key === "#" || key === "ArrowUp") { accidentalHeld.sharp = false; sharpTouchHeld = false; reTriggerHeldKeysAccidentals(); }
-  if (key === "b" || key === "ArrowDown") { accidentalHeld.flat = false; flatTouchHeld = false; reTriggerHeldKeysAccidentals(); }
-});
-
-function darkenColor(hex, percent) {
-    hex = hex.replace('#', '');
-    let r = parseInt(hex.substring(0, 2), 16);
-    let g = parseInt(hex.substring(2, 4), 16);
-    let b = parseInt(hex.substring(4, 6), 16);
-    r = parseInt(r * (100 - percent) / 100);
-    g = parseInt(g * (100 - percent) / 100);
-    b = parseInt(b * (100 - percent) / 100);
-    r = (r < 0) ? 0 : r;
-    g = (g < 0) ? 0 : g;
-    b = (b < 0) ? 0 : b;
-    const rHex = (r.toString(16).length === 1) ? '0' + r.toString(16) : r.toString(16);
-    const gHex = (g.toString(16).length === 1) ? '0' + g.toString(16) : g.toString(16);
-    const bHex = (b.toString(16).length === 1) ? '0' + b.toString(16) : b.toString(16);
-    return `#${rHex}${gHex}${bHex}`;
-}
-
-function updateControlsBarColor() {
-    const keyName = getDisplayNameForKey(currentKeyIndex, currentScale);
-    const baseNote = keyName.charAt(0);
-    const color = KEY_COLORS[baseNote] || '#faf8f0'; // Default to original color
-    const borderColor = darkenColor(color, 30);
-    
-    const controlsBar = document.getElementById('controls-bar');
-    controlsBar.style.backgroundColor = color;
-    controlsBar.style.borderColor = borderColor;
-}
-
 const controlsBar = document.getElementById('controls-bar');
-controlsBar.innerHTML = ''; // Clear existing controls to rebuild
-
 const keyButton = document.createElement('div');
 keyButton.className = 'control-area';
 keyButton.tabIndex = 0;
@@ -1038,9 +906,8 @@ keyButton.setAttribute('aria-label', 'Key control');
 keyButton.innerHTML = `<div class="arrow" id="key-left">&#9664;</div><div id="key-name">C</div><div class="arrow" id="key-right">&#9654;</div>`;
 
 const scaleControl = document.createElement('div');
-scaleControl.className = 'control-area scale-control-wrapper';
-const allScaleOptions = `<option value="Major">Major</option><option value="Natural Minor">Natural Minor</option><option value="Harmonic Minor">Harmonic Minor</option><option value="Melodic Minor">Melodic Minor</option><option value="Dorian">Dorian</option><option value="Phrygian">Phrygian</option><option value="Lydian">Lydian</option><option value="Mixolydian">Mixolydian</option><option value="Locrian">Locrian</option>`;
-scaleControl.innerHTML = `<select id="scale-select" class="scale-select" aria-label="Scale select">${allScaleOptions}</select>`;
+scaleControl.className = 'control-area';
+scaleControl.innerHTML = `<select id="scale-select" class="scale-select" aria-label="Scale select"><option value="Major">Major</option><option value="Minor">Minor</option><option value="Natural Minor">Natural Minor</option><option value="Harmonic Minor">Harmonic Minor</option><option value="Melodic Minor">Melodic Minor</option><option value="Dorian">Dorian</option><option value="Phrygian">Phrygian</option><option value="Lydian">Lydian</option><option value="Mixolydian">Mixolydian</option><option value="Locrian">Locrian</option></select>`;
 
 const waveButton = document.createElement('div');
 waveButton.className = 'control-area';
@@ -1048,39 +915,21 @@ waveButton.tabIndex = 0;
 waveButton.setAttribute('aria-label', 'Waveform control');
 waveButton.innerHTML = '<div class="arrow" id="left-arrow">&#9664;</div><div id="waveform-name">triangle</div><div class="arrow" id="right-arrow">&#9654;</div>';
 
-const keyboardButton = document.createElement('div');
-keyboardButton.className = 'control-area keyboard-button';
-keyboardButton.id = 'keyboard-button';
-keyboardButton.textContent = 'Keyboard';
-
-// Group key and scale controls vertically
-const keyScaleGroup = document.createElement('div');
-keyScaleGroup.className = 'control-group';
-keyScaleGroup.appendChild(keyButton);
-keyScaleGroup.appendChild(scaleControl);
-
-// Group waveform and keyboard controls vertically
-const waveKeyboardGroup = document.createElement('div');
-waveKeyboardGroup.className = 'control-group';
-waveKeyboardGroup.appendChild(waveButton);
-waveKeyboardGroup.appendChild(keyboardButton);
-
-controlsBar.appendChild(keyScaleGroup);
-controlsBar.appendChild(waveKeyboardGroup);
+controlsBar.appendChild(keyButton);
+controlsBar.appendChild(scaleControl);
+controlsBar.appendChild(waveButton);
 
 document.getElementById("key-left").onclick = () => {
   currentKeyIndex = (currentKeyIndex - 1 + keyNames.length) % keyNames.length;
   updateKeyDisplay();
   updateSolfegeColors();
   updateBoxNames();
-  updateControlsBarColor();
 };
 document.getElementById("key-right").onclick = () => {
   currentKeyIndex = (currentKeyIndex + 1) % keyNames.length;
   updateKeyDisplay();
   updateSolfegeColors();
   updateBoxNames();
-  updateControlsBarColor();
 };
 
 document.getElementById("scale-select").addEventListener('change', (e) => {
@@ -1088,8 +937,7 @@ document.getElementById("scale-select").addEventListener('change', (e) => {
   updateKeyDisplay();
   updateSolfegeColors();
   updateBoxNames();
-  updateControlsBarColor();
-  e.target.blur(); // Remove focus from the dropdown
+  document.body.focus();
 });
 
 document.getElementById("left-arrow").onclick = () => {
@@ -1102,59 +950,6 @@ document.getElementById("right-arrow").onclick = () => {
   currentWaveform = waveforms[currentWaveformIndex];
   document.getElementById("waveform-name").textContent = currentWaveform;
 };
-
-// Modal handling
-const modal = document.getElementById('keyboard-modal');
-const closeButton = document.querySelector('.close-button');
-
-keyboardButton.addEventListener('click', () => {
-  modal.style.display = 'block';
-});
-
-closeButton.addEventListener('click', () => {
-  modal.style.display = 'none';
-});
-
-window.addEventListener('click', (event) => {
-  if (event.target == modal) {
-    modal.style.display = 'none';
-  }
-});
-
-function setupSimulatedKeyboardEvents() {
-    const simulatedKeys = document.querySelectorAll('#simulated-keyboard .key[data-key]');
-    simulatedKeys.forEach(keyElement => {
-        const key = keyElement.getAttribute('data-key');
-
-        const handlePress = (e) => {
-            e.preventDefault();
-            const chordKey = keyMap[key];
-            if (!chordKey) return; // Only handle keys that are mapped to chords
-
-            keyElement.classList.add('pressed');
-            handlePlayKey(chordKey);
-            if (keyToDiv[chordKey]) keyToDiv[chordKey].classList.add('active');
-        };
-
-        const handleRelease = (e) => {
-            e.preventDefault();
-            const chordKey = keyMap[key];
-            if (!chordKey) return;
-
-            keyElement.classList.remove('pressed');
-            handleStopKey(chordKey);
-            if (keyToDiv[chordKey]) keyToDiv[chordKey].classList.remove('active');
-        };
-
-        keyElement.addEventListener('mousedown', handlePress);
-        keyElement.addEventListener('mouseup', handleRelease);
-        keyElement.addEventListener('mouseleave', handleRelease);
-
-        keyElement.addEventListener('touchstart', handlePress);
-        keyElement.addEventListener('touchend', handleRelease);
-        keyElement.addEventListener('touchcancel', handleRelease);
-    });
-}
 
 function resizeGrid() {
   const gridEl = document.getElementById('grid');
@@ -1173,7 +968,7 @@ function resizeGrid() {
   gridEl.style.width = gridWidth + 'px';
   gridEl.style.height = gridHeight + 'px';
   gridEl.style.marginLeft = "auto";
-  gridEl.style.marginRight = "auto";
+  gridEl.style.marginRight = "2%";
   gridEl.style.marginTop = "0";
   gridEl.style.marginBottom = "0";
   const fontSize = Math.min(gridHeight / 11, gridWidth / 4) * 0.5;
@@ -1183,22 +978,123 @@ function resizeGrid() {
   gridEl.querySelectorAll('.cell').forEach(div => {
     div.style.fontSize = fontSize + 'px';
   });
-  const toggleBtn = cellRefs['5d'].querySelector('.chord-toggle-btn');
+  const toggleBtn = cellRefs['5d']?.querySelector('.chord-toggle-btn');
   if (toggleBtn) toggleBtn.style.fontSize = Math.max(fontSize * 1.1, 20) + 'px';
 }
 window.addEventListener('resize', resizeGrid);
-window.addEventListener('DOMContentLoaded', () => {
-    resizeGrid();
-    updateKeyDisplay();
-    updateSolfegeColors();
-    updateBoxNames();
-    updateControlsBarColor();
-    setupSimulatedKeyboardEvents();
-});
+window.addEventListener('DOMContentLoaded', () => setTimeout(() => { resizeGrid(); updateSolfegeColors(); updateBoxNames(); }, 1));
+setTimeout(() => { resizeGrid(); updateSolfegeColors(); updateBoxNames(); }, 200);
+const mq = window.matchMedia("(max-width: 550px)");
+mq.addEventListener("change", () => { resizeGrid(); updateSolfegeColors(); updateBoxNames(); });
 
 // Initial Setup
 updateKeyDisplay();
 updateSolfegeColors();
 updateBoxNames();
-updateControlsBarColor();
-resizeGrid();
+
+// --- MASTER CONTROL LISTENER ---
+window.addEventListener('message', function(event) {
+    if (event.origin.startsWith('null') || event.origin.startsWith('file')) {
+      // Allow local development
+    } else if (event.origin !== window.location.origin) {
+        return;
+    }
+    
+    const data = event.data;
+    if (!data || !data.type) return;
+
+    switch (data.type) {
+        // --- ADDED ---
+        case 'resumeAudio':
+            if (context.state === 'suspended') {
+                context.resume().then(() => {
+                    console.log('Chord App AudioContext resumed successfully.');
+                });
+            }
+            break;
+        case 'keydown':
+            if (keyHeldDown[data.key]) return; // Prevent repeats
+         
+            keyHeldDown[data.key] = true;
+            const chordKey = keyMap[data.key.toLowerCase()];
+            if (chordKey) {
+                handlePlayKey(chordKey);
+                if (keyToDiv[chordKey]) keyToDiv[chordKey].classList.add('active');
+            }
+            break;
+        case 'keyup':
+            const upChordKey = keyMap[data.key.toLowerCase()];
+            if (upChordKey) {
+                handleStopKey(upChordKey);
+                keyHeldDown[data.key] = false;
+                sharpTouchHeld = false;
+                flatTouchHeld = false;
+                if (keyToDiv[upChordKey]) keyToDiv[upChordKey].classList.remove('active');
+            }
+            break;
+        case 'setKey':
+            currentKeyIndex = data.keyIndex;
+            updateKeyDisplay();
+            updateSolfegeColors();
+            updateBoxNames();
+            break;
+        case 'setScale':
+            const newScale = data.scale;
+            if (newScale && newScale !== currentScale) {
+                currentScale = newScale;
+                const scaleSelect = document.getElementById("scale-select");
+                if (scaleSelect) {
+                    scaleSelect.value = currentScale;
+                }
+                updateKeyDisplay();
+                updateSolfegeColors();
+                updateBoxNames();
+            }
+            break;
+        case 'toggleNames':
+            cButtonState = (cButtonState === 'C') ? 'I' : 'C';
+            updateBoxNames();
+            break;
+        case 'setWaveform':
+            const newWaveformName = data.waveform;
+            const newIndex = waveforms.indexOf(newWaveformName);
+            if (newIndex !== -1) {
+                currentWaveformIndex = newIndex;
+                currentWaveform = newWaveformName;
+                // Also update the local waveform display in the chord app
+                const waveformNameEl = document.getElementById("waveform-name");
+                if (waveformNameEl) {
+                    waveformNameEl.textContent = currentWaveform;
+                }
+            }
+            break;
+    }
+});
+
+// --- POINTER OVERLAY LISTENER (SIMPLIFIED) ---
+const activePointers = new Map();
+window.addEventListener('message', function(event) {
+    const data = event.data;
+    if (!data || data.type !== 'simulatedPointer') return;
+
+    const currentElement = document.elementFromPoint(data.x, data.y);
+    const pointerInfo = activePointers.get(data.id);
+
+    if (data.eventType === 'start') {
+        if (!currentElement || !currentElement.classList.contains('note-button')) return;
+        activePointers.set(data.id, currentElement);
+        currentElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+
+    } else if (data.eventType === 'move') {
+        if (!pointerInfo) return;
+        if (pointerInfo !== currentElement) {
+            // Moved off the original element
+            pointerInfo.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+            activePointers.delete(data.id);
+        }
+    } else if (data.eventType === 'end') {
+        if (!pointerInfo) return;
+        pointerInfo.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+        activePointers.delete(data.id);
+    }
+});
