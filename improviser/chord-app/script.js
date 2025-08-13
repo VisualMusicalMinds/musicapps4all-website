@@ -641,8 +641,126 @@ const locrianChords = [
 const grid = document.getElementById('grid');
 const keyToDiv = {};
 
-// REPLACE the entire existing updateSolfegeColors() with this:
+function updateSolfegeColors() {
+    let chords;
+    if (currentScale === 'Major') chords = majorChords;
+    else if (currentScale === 'Minor') chords = minorChords;
+    else if (currentScale === 'Natural Minor') chords = naturalMinorChords;
+    else if (currentScale === 'Harmonic Minor') chords = harmonicMinorChords;
+    else if (currentScale === 'Melodic Minor') chords = melodicMinorChords;
+    else if (currentScale === 'Dorian') chords = dorianChords;
+    else if (currentScale === 'Phrygian') chords = phrygianChords;
+    else if (currentScale === 'Lydian') chords = lydianChords;
+    else if (currentScale === 'Mixolydian') chords = mixolydianChords;
+    else if (currentScale === 'Locrian') chords = locrianChords;
 
+    if (currentScale === 'Major') {
+        const currentKey = keyNames[currentKeyIndex];
+        const bgColors = noteColorsByKey[currentKey];
+        chords.forEach(btn => {
+            const div = keyToDiv[btn.key];
+            if (div) {
+                if (btn.name === "V/V") div.style.backgroundColor = bgColors['ii'] || "#FF9500";
+                else if (btn.name === "V/vi") div.style.backgroundColor = bgColors['iii'] || "#FFCC00";
+                else if (btn.name === "IV/IV") div.style.backgroundColor = bgColors['IV/IV'] || "#AF52DE";
+                else div.style.backgroundColor = bgColors[btn.name] || '#ccc';
+            }
+        });
+    } else { // Minor, Dorian, Phrygian, Lydian, Mixolydian and Locrian use root note coloring
+        const currentKeyName = keyNames[currentKeyIndex];
+        let nameList;
+        if (currentScale === 'Minor') nameList = chordNamesAltByMinorKey[currentKeyName];
+        else if (currentScale === 'Natural Minor') nameList = chordNamesAltByNaturalMinorKey[currentKeyName];
+        else if (currentScale === 'Harmonic Minor') nameList = chordNamesAltByHarmonicMinorKey[currentKeyName];
+        else if (currentScale === 'Melodic Minor') nameList = chordNamesAltByMelodicMinorKey[currentKeyName];
+        else if (currentScale === 'Dorian') nameList = chordNamesAltByDorianKey[currentKeyName];
+        else if (currentScale === 'Phrygian') nameList = chordNamesAltByPhrygianKey[currentKeyName];
+        else if (currentScale === 'Lydian') nameList = chordNamesAltByLydianKey[currentKeyName];
+        else if (currentScale === 'Mixolydian') nameList = chordNamesAltByMixolydianKey[currentKeyName];
+        else if (currentScale === 'Locrian') nameList = chordNamesAltByLocrianKey[currentKeyName];
+        
+        if (!nameList) { console.error("Chord list not found for key:", currentKeyName); return; }
+
+        buttonOrder.forEach((buttonKey, index) => {
+            const chordName = nameList[index];
+            let color = '#ccc';
+            if (chordName) {
+                // Special override for Bb Natural Minor's Cb chord
+                if (currentScale === 'Natural Minor' && currentKeyName === 'Bb' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for Eb Natural/Harmonic Minor's Cb chord
+                else if ((currentScale === 'Natural Minor' || currentScale === 'Harmonic Minor') && currentKeyName === 'Eb' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for C# Harmonic Minor's B#° chord
+                else if (currentScale === 'Harmonic Minor' && currentKeyName === 'Db' && chordName === 'B#°') {
+                    color = rootNoteColors['B']; // Force purple color for B#°
+                }
+                // Special override for C# and D# Melodic Minor's B#° chord
+                else if (currentScale === 'Melodic Minor' && (currentKeyName === 'Db' || currentKeyName === 'Eb') && chordName === 'B#°') {
+                    color = rootNoteColors['B']; // Force purple color for B#°
+                }
+                // Special override for Eb Dorian's Cb chord
+                else if (currentScale === 'Dorian' && currentKeyName === 'Eb' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for Ab Dorian's Fb chord
+                else if (currentScale === 'Dorian' && currentKeyName === 'Ab' && chordName === 'Fb') {
+                    color = rootNoteColors['F']; // Force green color for Fb
+                }
+                // Special override for F Phrygian's Cb chord
+                else if (currentScale === 'Phrygian' && currentKeyName === 'F' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for Bb Phrygian's Fb chord
+                else if (currentScale === 'Phrygian' && currentKeyName === 'Bb' && chordName === 'Fb') {
+                    color = rootNoteColors['F']; // Force green color for Fb
+                }
+                // Special override for Gb Lydian's Cb chord
+                else if (currentScale === 'Lydian' && currentKeyName === 'Gb' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for Eb Mixolydian's Cb chord
+                else if (currentScale === 'Mixolydian' && currentKeyName === 'Eb' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for Ab Mixolydian's Fb chord
+                else if (currentScale === 'Mixolydian' && currentKeyName === 'Ab' && chordName === 'Fb') {
+                    color = rootNoteColors['F']; // Force green color for Fb
+                }
+                // Special override for Ab Mixolydian's Cb chord
+                else if (currentScale === 'Mixolydian' && currentKeyName === 'Ab' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for F Locrian's Cb chord
+                else if (currentScale === 'Locrian' && currentKeyName === 'F' && chordName === 'Cb') {
+                    color = rootNoteColors['C']; // Force red color for Cb
+                }
+                // Special override for specific E# chords to be yellow
+                else if (
+                    (currentScale === 'Melodic Minor' && currentKeyName === 'Gb' && chordName === 'E#°') ||
+                    (currentScale === 'Melodic Minor' && currentKeyName === 'Ab' && chordName === 'E#°') ||
+                    (currentScale === 'Lydian' && currentKeyName === 'B' && chordName === 'E#°') ||
+                    (currentScale === 'Mixolydian' && currentKeyName === 'Db' && chordName === 'E#°')
+                ) {
+                    color = rootNoteColors['E']; // Force yellow color for E#
+                }
+                else {
+                    const match = chordName.match(/^[A-G](b|#)?/);
+                    const rootNote = match ? match[0] : null;
+                    if (rootNote) {
+                        color = rootNoteColors[rootNote] || '#ccc';
+                    }
+                }
+            }
+            const div = keyToDiv[buttonKey];
+            if (div) {
+                div.style.backgroundColor = color;
+            }
+        });
+    }
+}
 
 const cellRefs = {};
 for (let r = 1; r < 11; r++) {
