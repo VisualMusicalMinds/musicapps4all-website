@@ -642,48 +642,7 @@ const grid = document.getElementById('grid');
 const keyToDiv = {};
 
 // REPLACE the entire existing updateSolfegeColors() with this:
-function updateSolfegeColors() {
-    let chords;
-    if (currentScale === 'Major') chords = majorChords;
-    else if (currentScale === 'Minor') chords = minorChords;
-    else if (currentScale === 'Natural Minor') chords = naturalMinorChords;
-    else if (currentScale === 'Harmonic Minor') chords = harmonicMinorChords;
-    else if (currentScale === 'Melodic Minor') chords = melodicMinorChords;
-    else if (currentScale === 'Dorian') chords = dorianChords;
-    else if (currentScale === 'Phrygian') chords = phrygianChords;
-    else if (currentScale === 'Lydian') chords = lydianChords;
-    else if (currentScale === 'Mixolydian') chords = mixolydianChords;
-    else if (currentScale === 'Locrian') chords = locrianChords;
 
-    if (!chords) return;
-
-    const currentKey = keyNames[currentKeyIndex];
-    const bgColors = noteColorsByKey[currentKey] || {};
-
-    if (currentScale === 'Major') {
-        // Keep original special mapping for secondary/borrowed chords
-        chords.forEach(btn => {
-            const div = keyToDiv[btn.key];
-            if (!div) return;
-            if (btn.name === "V/V") {
-                div.style.backgroundColor = bgColors['ii'] || "#FF9500";
-            } else if (btn.name === "V/vi") {
-                div.style.backgroundColor = bgColors['iii'] || "#FFCC00";
-            } else if (btn.name === "IV/IV") {
-                div.style.backgroundColor = bgColors['IV/IV'] || "#AF52DE";
-            } else {
-                div.style.backgroundColor = bgColors[btn.name] || '#ccc';
-            }
-        });
-    } else {
-        // Unified approach: use the chord's functional name directly
-        chords.forEach(btn => {
-            const div = keyToDiv[btn.key];
-            if (!div) return;
-            div.style.backgroundColor = bgColors[btn.name] || '#ccc';
-        });
-    }
-}
 
 const cellRefs = {};
 for (let r = 1; r < 11; r++) {
