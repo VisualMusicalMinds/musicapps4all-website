@@ -5,23 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BPM Tap Tempo</title>
 <style>
+  /* ===== The Fix for Horizontal Alignment ===== */
+  html {
+    overflow-y: scroll;
+  }
+
   body { 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  min-height: 100vh; /* Use min-height to allow scrolling if needed */
-  background: #0f172a; 
-  color: white; 
-  font-family: sans-serif; 
-  margin: 0; 
-  padding: 10px; 
-  box-sizing: border-box; 
-}
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh;
+    background: #0f172a; 
+    color: white; 
+    font-family: sans-serif; 
+    margin: 0; 
+    padding: 10px; 
+    padding-top: 50px; /* This correctly keeps your app from hiding under the header */
+    box-sizing: border-box; 
+  }
+
   /* --- Tap Button & Ripple Effect --- */
   .tap { 
-    position: relative; /* Required for the ripple element */
-    overflow: hidden; /* Keeps the ripple within the button's bounds */
+    position: relative;
+    overflow: hidden;
     width: 200px; 
     height: 200px; 
     border-radius: 50%; 
@@ -34,7 +41,7 @@
     align-items: center; 
     justify-content: center; 
     user-select: none; 
-    -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile taps */
+    -webkit-tap-highlight-color: transparent;
   }
 
   .tap:active { 
@@ -44,11 +51,10 @@
   .ripple {
     position: absolute;
     border-radius: 50%;
-    /* Reduced opacity from 0.5 to 0.3 for a more subtle effect */
     background-color: rgba(255, 255, 255, 0.3);
     transform: scale(0);
     animation: ripple-effect 600ms linear;
-    pointer-events: none; /* It shouldn't be clickable */
+    pointer-events: none;
   }
 
   @keyframes ripple-effect {
@@ -111,7 +117,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
 
 <!-- Header -->
-<div style="position: fixed; top: 0; left: 0; width: 100vw; z-index: 9999; background-color: #3b82f6; padding: 5px 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+<div style="position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; background-color: #3b82f6; padding: 5px 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
     <a href="https://www.musicapps4all.com" rel="noopener noreferrer" style="text-decoration: none; color: white;">
         <h1 style="font-family: 'Poppins', sans-serif; margin: 0; font-size: 22px; font-weight: 400;">
             <!-- !!! IMPORTANT: Change this to the name of your app !!! -->
