@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BPM Tap Tempo</title>
+<style>
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 10px; box-sizing: border-box; }
+  
+  /* --- Tap Button & Ripple Effect --- */
+  .tap { 
+    position: relative; /* Required for the ripple element */
+    overflow: hidden; /* Keeps the ripple within the button's bounds */
+    width: 200px; 
+    height: 200px; 
+    border-radius: 50%; 
+    background: #ef4444; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 1.5rem; 
+    color: white; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    user-select: none; 
+    -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile taps */
+  }
+
+  .tap:active { 
+    filter: brightness(0.95);
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    /* Reduced opacity from 0.5 to 0.3 for a more subtle effect */
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-effect 600ms linear;
+    pointer-events: none; /* It shouldn't be clickable */
+  }
+
+  @keyframes ripple-effect {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  /* --- End Tap Button Styles --- */
+
+  .bpm-box { margin-top: 20px; font-size: 2rem; }
+  
+  /* --- Tempo Box Styles --- */
+  .tempo-box { margin-top: 10px; padding: 8px 16px; border-radius: 8px; background: #1f2937; color: #6b7280; transition: all 0.2s ease-in-out; font-size: 1.1rem; text-align: center; min-width: 140px; }
+  .tempo-box.active { color: white; }
+  
+  .tempo-largo { background-color: #8b5cf6; box-shadow: 0 0 12px rgba(139,92,246,0.5); }
+  .tempo-adagio { background-color: #166534; box-shadow: 0 0 12px rgba(22,101,52,0.5); }
+  .tempo-andante { background-color: #14b8a6; box-shadow: 0 0 12px rgba(20,184,166,0.5); }
+  .tempo-moderato { background-color: #C2B280; box-shadow: 0 0 12px rgba(194,178,128,0.5); }
+  .tempo-allegro { background-color: #3b82f6; box-shadow: 0 0 12px rgba(59,130,246,0.5); }
+  .tempo-presto { background-color: #eab308; box-shadow: 0 0 12px rgba(234,179,8,0.5); }
+  .tempo-prestissimo { background-color: #ef4444; box-shadow: 0 0 12px rgba(239,68,68,0.5); }
+  /* --- End Tempo Box Styles --- */
+
+  .trend-box { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+  .trend-item { padding: 6px 12px; border-radius: 8px; background: #1f2937; color: #6b7280; transition: all 0.2s ease-in-out; }
+  .trend-item.slowing { background: #ef4444; color: white; box-shadow: 0 0 12px rgba(239,68,68,0.5); }
+  .trend-item.steady { background: #22c55e; color: white; box-shadow: 0 0 12px rgba(34,197,94,0.5); }
+  .trend-item.accelerating { background: #eab308; color: white; box-shadow: 0 0 12px rgba(234,179,8,0.5); }
+  .info-text { margin-top: 14px; color: #94a3b8; text-align: center; }
+  .debug-info { margin-top: 10px; color: #64748b; font-size: 0.9rem; text-align: center; }
+
+  @media (max-width: 400px) {
+    .trend-box { flex-direction: column; gap: 8px; align-items: center; width: 100%; max-width: 200px; }
+    .trend-item { width: 100%; text-align: center; padding: 8px 12px; }
+    .tap { width: 180px; height: 180px; font-size: 1.3rem; }
+    .bpm-box { font-size: 1.8rem; }
+    .tempo-box { font-size: 1rem; min-width: 120px; }
+    .info-text { font-size: 0.9rem; padding: 0 10px; }
+    .debug-info { font-size: 0.8rem; }
+  }
+
+  @media (max-width: 320px) {
+    .tap { width: 160px; height: 160px; font-size: 1.2rem; }
+    .bpm-box { font-size: 1.6rem; margin-top: 15px; }
+    .tempo-box { font-size: 0.9rem; padding: 6px 12px; }
+    .trend-box { margin-top: 8px; max-width: 180px; }
+    .trend-item { padding: 6px 10px; font-size: 0.9rem; }
+    .info-text { margin-top: 12px; font-size: 0.8rem; }
+    .debug-info { margin-top: 8px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<button id="tap" class="tap">Tap</button>
+<div class="bpm-box">BPM: <span id="bpm">--</span></div>
+<div id="tempo-name" class="tempo-box">TEMPO</div>
+<div class="trend-box">
+  <span id="slowing" class="trend-item">Slowing</span>
+  <span id="steady" class="trend-item">Steady</span>
+  <span id="accelerating" class="trend-item">Accelerating</span>
+</div>
+<div class="info-text">
+  <span>(Press Space to tap | R to reset)</span>
+</div>
+<div class="debug-info" id="debug">
+  Taps: 0 | Confidence: -- | Stability: --
+</div>
+<script>
+const tapBtn = document.getElementById('tap');
+const bpmOut = document.getElementById('bpm');
+const tempoNameOut = document.getElementById('tempo-name');
+const slowingOut = document.getElementById('slowing');
+const steadyOut = document.getElementById('steady');
+const acceleratingOut = document.getElementById('accelerating');
+const debugOut = document.getElementById('debug');
+
+const stamps = [];
+const MAX_TAPS = 12;
+const AUTO_RESET_MS = 3000;
+const MIN_BPM = 30;
+const MAX_BPM = 300;
+let lastTapAt = 0;
+let stableBpm = null;
+let stabilityCounter = 0;
+const tempoColorClasses = ['tempo-largo', 'tempo-adagio', 'tempo-andante', 'tempo-moderato', 'tempo-allegro', 'tempo-presto', 'tempo-prestissimo'];
+
+function clearHighlights() {
+    slowingOut.classList.remove('slowing');
+    steadyOut.classList.remove('steady');
+    acceleratingOut.classList.remove('accelerating');
+}
+
+function softReset(){
+  stamps.length = 0;
+  lastTapAt = 0;
+  stableBpm = null;
+  stabilityCounter = 0;
+  bpmOut.textContent = '--';
+  tempoNameOut.textContent = 'TEMPO';
+  tempoNameOut.classList.remove('active', ...tempoColorClasses);
+  debugOut.textContent = 'Taps: 0 | Confidence: -- | Stability: --';
+  clearHighlights();
+}
+
+function onTap(){
+  const now = performance.now();
+  if (lastTapAt && (now - lastTapAt) > AUTO_RESET_MS) softReset();
+  if (lastTapAt && (now - lastTapAt) < 120) return;
+  stamps.push(now);
+  if (stamps.length > MAX_TAPS) stamps.shift();
+  lastTapAt = now;
+  updateBpm();
+}
+
+function calculateBasicBPM() {
+  if (stamps.length < 3) return null;
+  const intervals = [];
+  for (let i = 1; i < stamps.length; i++) intervals.push(stamps[i] - stamps[i - 1]);
+  const sorted = [...intervals].sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const threshold = median * 0.4;
+  const filtered = intervals.filter(interval => Math.abs(interval - median) <= threshold);
+  if (filtered.length === 0) return null;
+  let weightedSum = 0, totalWeight = 0;
+  for (let i = 0; i < filtered.length; i++) {
+    const weight = 1 + (i * 0.1);
+    const bpm = 60000 / filtered[i];
+    if (bpm >= MIN_BPM && bpm <= MAX_BPM) {
+      weightedSum += bpm * weight;
+      totalWeight += weight;
+    }
+  }
+  return totalWeight > 0 ? weightedSum / totalWeight : null;
+}
+
+function calculateStability(currentBpm) {
+  if (stamps.length < 6) return { isStable: false, confidence: 0 };
+  const recentIntervals = [];
+  for (let i = Math.max(1, stamps.length - 6); i < stamps.length; i++) recentIntervals.push(stamps[i] - stamps[i - 1]);
+  const mean = recentIntervals.reduce((a, b) => a + b, 0) / recentIntervals.length;
+  const variance = recentIntervals.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / recentIntervals.length;
+  const stdDev = Math.sqrt(variance);
+  const coefficientOfVariation = stdDev / mean;
+  const confidence = Math.max(0, Math.min(100, (1 - coefficientOfVariation * 4) * 100));
+  const isStable = confidence > 75 && stamps.length >= 8;
+  return { isStable, confidence };
+}
+
+function getTempoName(bpm) {
+    if (bpm >= 40 && bpm <= 60) return 'Largo';
+    if (bpm >= 61 && bpm <= 76) return 'Adagio';
+    if (bpm >= 77 && bpm <= 96) return 'Andante';
+    if (bpm >= 97 && bpm <= 116) return 'Moderato';
+    if (bpm >= 117 && bpm <= 168) return 'Allegro';
+    if (bpm >= 169 && bpm <= 200) return 'Presto';
+    if (bpm >= 201) return 'Prestissimo';
+    return null;
+}
+
+function updateBpm(){
+  if (stamps.length < 2) {
+    bpmOut.textContent = '--';
+    debugOut.textContent = `Taps: ${stamps.length} | Confidence: -- | Stability: --`;
+    clearHighlights();
+    return;
+  }
+  const rawBpm = calculateBasicBPM();
+  if (!rawBpm) return;
+  const { isStable, confidence } = calculateStability(rawBpm);
+  let displayBpm = Math.round(rawBpm);
+  if (isStable) {
+    stabilityCounter++;
+    if (stableBpm === null || Math.abs(displayBpm - stableBpm) > 3) stableBpm = displayBpm;
+    if (stabilityCounter > 3) displayBpm = stableBpm;
+  } else {
+    if (stabilityCounter > 0) stabilityCounter = Math.max(0, stabilityCounter - 1);
+    if (stabilityCounter === 0) stableBpm = null;
+  }
+  bpmOut.textContent = String(displayBpm);
+  const tempoName = getTempoName(displayBpm);
+  tempoNameOut.classList.remove(...tempoColorClasses);
+  if (tempoName) {
+    tempoNameOut.textContent = tempoName;
+    tempoNameOut.classList.add('active', `tempo-${tempoName.toLowerCase()}`);
+  } else {
+    tempoNameOut.textContent = 'TEMPO';
+    tempoNameOut.classList.remove('active');
+  }
+  const stabilityStatus = stabilityCounter > 3 ? 'Locked' : isStable ? 'Stabilizing' : 'Tracking';
+  debugOut.textContent = `Taps: ${stamps.length} | Confidence: ${Math.round(confidence)}% | ${stabilityStatus}`;
+  const trend = calculateBalancedTrend();
+  updateTrendDisplay(trend);
+}
+
+function calculateBalancedTrend() {
+  if (stamps.length < 6) return 'unknown';
+  const intervals = [];
+  for (let i = 1; i < stamps.length; i++) intervals.push(stamps[i] - stamps[i - 1]);
+  const recentCount = Math.min(4, Math.ceil(intervals.length / 2));
+  const compareCount = Math.min(4, intervals.length - recentCount);
+  if (recentCount < 3 || compareCount < 3) return 'unknown';
+  const recentIntervals = intervals.slice(-recentCount);
+  const comparisonIntervals = intervals.slice(-recentCount - compareCount, -recentCount);
+  const recentAvg = recentIntervals.reduce((a, b) => a + b, 0) / recentIntervals.length;
+  const comparisonAvg = comparisonIntervals.reduce((a, b) => a + b, 0) / comparisonIntervals.length;
+  const percentChange = (recentAvg - comparisonAvg) / comparisonAvg;
+  let effectiveThreshold = 0.05;
+  if (recentIntervals.length >= 3) {
+    let consistentDirection = true;
+    const firstChange = recentIntervals[1] - recentIntervals[0];
+    for (let i = 2; i < recentIntervals.length; i++) {
+      const change = recentIntervals[i] - recentIntervals[i - 1];
+      if (Math.sign(change) !== Math.sign(firstChange) && Math.abs(change) > Math.abs(firstChange) * 0.3) {
+        consistentDirection = false;
+        break;
+      }
+    }
+    if (consistentDirection && Math.sign(firstChange) === Math.sign(percentChange)) effectiveThreshold = 0.035;
+  }
+  if (Math.abs(percentChange) < effectiveThreshold) return 'steady';
+  return percentChange > 0 ? 'slowing' : 'accelerating';
+}
+
+function updateTrendDisplay(trend) {
+    clearHighlights();
+    if (trend === 'steady') steadyOut.classList.add('steady');
+    else if (trend === 'slowing') slowingOut.classList.add('slowing');
+    else if (trend === 'accelerating') acceleratingOut.classList.add('accelerating');
+}
+
+// --- Ripple Effect Function ---
+function createRipple(event, button) {
+    const circle = document.createElement("span");
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
+
+    circle.style.width = circle.style.height = `${diameter}px`;
+
+    // If it's a click event, position the ripple at the click coordinates
+    if (event.clientX && event.clientY) {
+        const rect = button.getBoundingClientRect();
+        circle.style.left = `${event.clientX - rect.left - radius}px`;
+        circle.style.top = `${event.clientY - rect.top - radius}px`;
+    } else {
+        // For spacebar, center the ripple
+        circle.style.left = `${button.clientWidth / 2 - radius}px`;
+        circle.style.top = `${button.clientHeight / 2 - radius}px`;
+    }
+
+    circle.classList.add("ripple");
+    button.appendChild(circle);
+
+    // Clean up the ripple element after the animation ends
+    setTimeout(() => {
+        circle.remove();
+    }, 600);
+}
+
+// Event listeners
+tapBtn.addEventListener('pointerdown', (e) => { 
+    e.preventDefault();
+    createRipple(e, e.currentTarget);
+    onTap(); 
+}, { passive: false });
+
+const handleKeyDown = (e) => {
+  const isSpace = (e.code === 'Space') || (e.key === ' ') || (e.key === 'Spacebar');
+  if (isSpace && !e.repeat) { 
+    e.preventDefault(); 
+    createRipple(e, tapBtn);
+    onTap(); 
+  } else if (e.key === 'r' || e.key === 'R') {
+    softReset();
+  }
+};
+document.addEventListener('keydown', handleKeyDown, true);
+
+function enableGlobalKeyCapture(){
+  if (!document.body.hasAttribute('tabindex')) document.body.tabIndex = -1;
+  try { document.body.focus(); } catch {}
+}
+
+window.addEventListener('load', enableGlobalKeyCapture);
+tapBtn.addEventListener('pointerdown', enableGlobalKeyCapture);
+</script>
+</body>
+</html>
