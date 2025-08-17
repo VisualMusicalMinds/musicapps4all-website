@@ -116,7 +116,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
 
 <!-- Header -->
-<div style="position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; background-color: #3b82f6; padding: 5px 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+<div style="position: fixed; top: 0; left: 10px; right: 10px; width: auto; z-index: 9999; background-color: #3b82f6; padding: 5px 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
     <a href="https://www.musicapps4all.com" rel="noopener noreferrer" style="text-decoration: none; color: white;">
         <h1 style="font-family: 'Poppins', sans-serif; margin: 0; font-size: 22px; font-weight: 400;">
             <!-- !!! IMPORTANT: Change this to the name of your app !!! -->
@@ -350,6 +350,7 @@ const handleKeyDown = (e) => {
 document.addEventListener('keydown', handleKeyDown, true);
 
 function enableGlobalKeyCapture(){
+  if (!document.body.hasAttribute('tabindex')) document.body.tabIndex = -1;
   if (!document.body.hasAttribute('tabindex')) document.body.tabIndex = -1;
   try { document.body.focus(); } catch {}
 }
