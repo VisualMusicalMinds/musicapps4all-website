@@ -127,7 +127,9 @@
   let timeSignatureNumerator = 4;
   let timeSignatureDenominator = 4;
   let sixteenthNoteModeActive = false;
+  let originalEighthNotePattern = []; // Store the original 8th note pattern
   let hasPickupMeasure = false;
+  let isFirstPlay = true;
   let isPlaying = false;
   let playTimeouts = [];
   let currentPlayPosition = 0;
@@ -340,6 +342,37 @@
     return null;
   }
 
+  // Convert 8th note pattern to 16th note pattern by inserting inactive notes
+  function convertTo16thNotePattern(eighthNoteWords) {
+    const sixteenthNoteWords = [];
+    for (let i = 0; i < eighthNoteWords.length; i += 2) {
+      // For each beat (2 eighth notes), expand to 4 sixteenth notes
+      const firstEighth = eighthNoteWords[i] || '-';
+      const secondEighth = eighthNoteWords[i+1] || '-';
+      
+      // Add the first eighth note
+      sixteenthNoteWords.push(firstEighth);
+      // Add an inactive note after the first eighth note
+      sixteenthNoteWords.push('-');
+      // Add the second eighth note
+      sixteenthNoteWords.push(secondEighth);
+      // Add an inactive note after the second eighth note
+      sixteenthNoteWords.push('-');
+    }
+    return sixteenthNoteWords;
+  }
+
+  // Convert 16th note pattern back to 8th note pattern by removing inactive notes
+  function convertTo8thNotePattern(sixteenthNoteWords) {
+    const eighthNoteWords = [];
+    for (let i = 0; i < sixteenthNoteWords.length; i += 4) {
+      // For each beat (4 sixteenth notes), compress to 2 eighth notes
+      eighthNoteWords.push(sixteenthNoteWords[i] || '-');
+      eighthNoteWords.push(sixteenthNoteWords[i+2] || '-');
+    }
+    return eighthNoteWords;
+  }
+
   // Check if a position should be considered active (for rhythm and display)
   function isPositionActive(position, wordArray) {
     if (isAffectedBySyncopation(position)) {
@@ -488,8 +521,7 @@
       circlesPerLine: measuresPerLine * circlesPerMeasure
     };
   }
-
-  // --- UI ELEMENT SETUP ---
+    // --- UI ELEMENT SETUP ---
 
   // Panel Toggle Button
   const panelToggleButton = document.getElementById('panel-toggle-button');
@@ -557,6 +589,13 @@
             }
         }
         
+        // Reset to 8th note mode when changing songs
+        if (sixteenthNoteModeActive) {
+            sixteenthNoteModeActive = false;
+            sixteenthNoteBtn.classList.remove('active');
+            originalEighthNotePattern = [];
+        }
+        
         render();
     }
   });
@@ -596,10 +635,27 @@
       }
     }
     timeSignatureTopBtn.textContent = timeSignatureNumerator;
+    
+    // Reset to 8th note mode when changing time signature
+    if (sixteenthNoteModeActive) {
+        sixteenthNoteModeActive = false;
+        sixteenthNoteBtn.classList.remove('active');
+        words = originalEighthNotePattern.slice();
+        originalEighthNotePattern = [];
+    }
+    
     render();
   });
 
   timeSignatureBottomBtn.addEventListener('click', () => {
+    // Reset to 8th note mode when changing time signature
+    if (sixteenthNoteModeActive) {
+        sixteenthNoteModeActive = false;
+        sixteenthNoteBtn.classList.remove('active');
+        words = originalEighthNotePattern.slice();
+        originalEighthNotePattern = [];
+    }
+    
     if (timeSignatureDenominator === 4) {
       timeSignatureDenominator = 8;
       timeSignatureNumerator = 6; // Default for compound time
@@ -798,9 +854,11 @@
                   if (timeSignatureDenominator === 8) {
                       sixteenthNoteModeActive = false;
                   } else {
-                      sixteenthNoteModeActive = (sixteenthMatch[1] === 'yes');
+                      const newSixteenthModeActive = (sixteenthMatch[1] === 'yes');
+                      // Don't toggle the 16th note mode yet; it will be handled properly when processing the content
+                      sixteenthNoteModeActive = newSixteenthModeActive;
+                      sixteenthNoteBtn.classList.toggle('active', newSixteenthModeActive);
                   }
-                  sixteenthNoteBtn.classList.toggle('active', sixteenthNoteModeActive);
               }
               updateSixteenthNoteButtonState();
               
@@ -893,7 +951,26 @@
   const sixteenthNoteBtn = document.getElementById('sixteenth-note-btn');
   sixteenthNoteBtn.addEventListener('click', () => {
       if (timeSignatureDenominator === 4) {
-          sixteenthNoteModeActive = !sixteenthNoteModeActive;
+          // Toggle 16th note mode
+          if (sixteenthNoteModeActive) {
+              // Switch back to 8th note mode
+              sixteenthNoteModeActive = false;
+              if (originalEighthNotePattern.length > 0) {
+                  words = originalEighthNotePattern.slice();
+                  originalEighthNotePattern = [];
+              } else {
+                  // Fallback: convert current pattern to 8th note pattern
+                  words = convertTo8thNotePattern(words);
+              }
+          } else {
+              // Switch to 16th note mode
+              sixteenthNoteModeActive = true;
+              // Store the original 8th note pattern
+              originalEighthNotePattern = words.slice();
+              // Convert to 16th note pattern
+              words = convertTo16thNotePattern(words);
+          }
+          
           sixteenthNoteBtn.classList.toggle('active', sixteenthNoteModeActive);
           render();
       }
@@ -913,69 +990,95 @@
   // --- PLAYBACK LOGIC ---
 
   function startPlayback() {
+    // Initialize audio context first
     initAudioContext();
+    
+    // Set playing state
     isPlaying = true;
     currentPlayPosition = 0;
     playButton.textContent = '⏸';
     playButton.classList.add('playing');
 
-    const rhythmPattern = getRhythmPattern();
     const beatInterval = 60000 / BPM;
 
     const startPoetry = (delay = 0) => {
-        let noteInterval, notesPerBeat;
-        
-        if (timeSignatureDenominator === 8) {
-            noteInterval = beatInterval / 3;
-            notesPerBeat = 3;
-        } else {
-            noteInterval = sixteenthNoteModeActive ? beatInterval / 4 : beatInterval / 2;
-            notesPerBeat = sixteenthNoteModeActive ? 4 : 2;
-        }
-        
-        const totalBeats = Math.ceil(rhythmPattern.length / notesPerBeat);
-        
-        // Schedule BEAT track
-        for (let beat = 0; beat < totalBeats; beat++) {
-          const timeDelay = delay + (beat * beatInterval);
-          const beatTimeout = setTimeout(() => {
-            if (isPlaying) {
-              highlightNotesBox(beat);
-              if (beatEnabled) playBrushDrum();
-              if (beat >= totalBeats - 1) {
-                setTimeout(() => { if (isPlaying) stopPlayback(); }, beatInterval);
-              }
-            }
-          }, timeDelay);
-          playTimeouts.push(beatTimeout);
-        }
+      const config = getLayoutConfig();
+      const rhythmPattern = getRhythmPattern();
+      
+      let noteInterval = beatInterval / config.circlesPerBeat;
+      
+      // Calculate the total number of circles needed to fill complete measures
+      let totalCircles;
+      if (hasPickupMeasure) {
+        const bodyCircles = rhythmPattern.length > config.circlesPerBeat ? rhythmPattern.length - config.circlesPerBeat : 0;
+        const circlesInLastMeasure = bodyCircles % config.circlesPerMeasure;
+        const paddedBodyCircles = circlesInLastMeasure === 0 ? bodyCircles : bodyCircles + (config.circlesPerMeasure - circlesInLastMeasure);
+        totalCircles = config.circlesPerBeat + paddedBodyCircles;
+      } else {
+        const circlesInLastMeasure = rhythmPattern.length % config.circlesPerMeasure;
+        totalCircles = circlesInLastMeasure === 0 ? rhythmPattern.length : rhythmPattern.length + (config.circlesPerMeasure - circlesInLastMeasure);
+      }
 
-        // Schedule RHYTHM track
-        rhythmPattern.forEach((hasSound, index) => {
-          const timeDelay = delay + (index * noteInterval);
-          const rhythmTimeout = setTimeout(() => {
-            if (isPlaying && hasSound) playTriangleTone(noteInterval * 0.8 / 1000);
-          }, timeDelay);
-          playTimeouts.push(rhythmTimeout);
-        });
+      const totalDuration = totalCircles * noteInterval;
+      const totalBeats = Math.ceil(totalCircles / config.circlesPerBeat);
+
+      // Schedule BEAT track
+      for (let beat = 0; beat < totalBeats; beat++) {
+        const timeDelay = delay + (beat * beatInterval);
+        const beatTimeout = setTimeout(() => {
+          if (isPlaying) {
+            highlightNotesBox(beat);
+            if (beatEnabled) playBrushDrum();
+          }
+        }, timeDelay);
+        playTimeouts.push(beatTimeout);
+      }
+
+      // Schedule RHYTHM track
+      rhythmPattern.forEach((hasSound, index) => {
+        const timeDelay = delay + (index * noteInterval);
+        const rhythmTimeout = setTimeout(() => {
+          if (isPlaying && hasSound) playTriangleTone(noteInterval * 0.8 / 1000);
+        }, timeDelay);
+        playTimeouts.push(rhythmTimeout);
+      });
+
+      // Schedule the next loop to start after the total duration
+      const loopTimeout = setTimeout(() => {
+        if (isPlaying) {
+          isFirstPlay = false; // Mark as no longer first play for subsequent loops
+          startPoetry(0); // Start the next loop with no delay
+        }
+      }, delay + totalDuration);
+      playTimeouts.push(loopTimeout);
     };
 
-    if (beatEnabled) {
-        let countInBeats = hasPickupMeasure ? 3 : 4;
-        for (let i = 0; i < countInBeats; i++) {
-          const timeDelay = i * beatInterval;
-          const countInTimeout = setTimeout(() => { if (isPlaying) playBrushDrum(); }, timeDelay);
-          playTimeouts.push(countInTimeout);
-        }
-        startPoetry(countInBeats * beatInterval);
+    // Play the count-in if it's the first play and beat is enabled
+    if (isFirstPlay && beatEnabled) {
+      let countInBeats = hasPickupMeasure ? 3 : 4;
+      console.log("Playing count-in with " + countInBeats + " beats");
+      
+      // Schedule count-in beats
+      for (let i = 0; i < countInBeats; i++) {
+        const timeDelay = i * beatInterval;
+        const countInTimeout = setTimeout(() => { 
+          if (isPlaying) playBrushDrum(); 
+        }, timeDelay);
+        playTimeouts.push(countInTimeout);
+      }
+      
+      // Start the actual poetry after the count-in
+      startPoetry(countInBeats * beatInterval);
     } else {
-        startPoetry(0);
+      // If it's not the first play or beat is disabled, start immediately
+      startPoetry(0);
     }
   }
 
   function stopPlayback() {
     isPlaying = false;
     currentPlayPosition = 0;
+    isFirstPlay = true; // Reset this flag when stopping
     playButton.textContent = '▶';
     playButton.classList.remove('playing');
     clearHighlights();
@@ -1126,7 +1229,7 @@
         const active3 = isPositionActive(i + 2, displayWords);
         const active4 = isPositionActive(i + 3, displayWords);
         const pattern = (active1 ? 'X' : 'O') + (active2 ? 'X' : 'O') + (active3 ? 'X' : 'O') + (active4 ? 'X' : 'O');
-        const imageUrl = `./assets/Wordrhythms-${pattern}.svg`;
+        const imageUrl = `https://visualmusicalminds.github.io/images/Wordrhythms-${pattern}.svg`;
         notesBox.appendChild(createImage(imageUrl));
     } else if (config.circlesPerBeat === 2) {
         const i = beatStartPosition;
@@ -1135,13 +1238,13 @@
         const isSyncopated = syncopation.includes(i + 1);
         const syncopationType = getSyncopationType(i);
 
-        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateB.svg'));
-        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateC.svg'));
-        else if (isSyncopated) notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateA.svg'));
-        else if (active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarternote.svg'));
-        else if (active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthnotepair.svg'));
-        else if (!active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarterrest.svg'));
-        else if (!active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthrestnote.svg'));
+        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateB.svg'));
+        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateC.svg'));
+        else if (isSyncopated) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateA.svg'));
+        else if (active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarternote.svg'));
+        else if (active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthnotepair.svg'));
+        else if (!active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarterrest.svg'));
+        else if (!active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthrestnote.svg'));
 
     } else if (config.circlesPerBeat === 3) {
         notesBox.classList.add('compound');
@@ -1154,14 +1257,14 @@
 
         let imageUrl = '';
         switch (pattern) {
-            case 'XXX': imageUrl = './assets/Wordrhythms-XXX.svg'; break;
-            case 'OOO': imageUrl = './assets/Wordrhythms-OOO.svg'; break;
-            case 'XOO': imageUrl = './assets/Wordrhythms-XOO.svg'; break;
-            case 'XXO': imageUrl = './assets/Wordrhythms-XXO.svg'; break;
-            case 'XOX': imageUrl = './assets/Wordrhythms-XOX.svg'; break;
-            case 'OXO': imageUrl = './assets/Wordrhythms-OXO.svg'; break;
-            case 'OOX': imageUrl = './assets/Wordrhythms-OOX.svg'; break;
-            case 'OXX': imageUrl = './assets/Wordrhythms-OXX.svg'; break;
+            case 'XXX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XXX.svg'; break;
+            case 'OOO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OOO.svg'; break;
+            case 'XOO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XOO.svg'; break;
+            case 'XXO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XXO.svg'; break;
+            case 'XOX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XOX.svg'; break;
+            case 'OXO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OXO.svg'; break;
+            case 'OOX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OOX.svg'; break;
+            case 'OXX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OXX.svg'; break;
         }
         if (imageUrl) {
             notesBox.appendChild(createImage(imageUrl));
