@@ -7,6 +7,7 @@ body { margin: 0; padding: 56px 0 0 0; }
 .group { display: inline-block; vertical-align: top; margin-right: 8px; text-align: center; }
 .notes-box { display: flex; justify-content: center; align-items: center; margin-bottom: 4px; border: none; padding: 4px; transition: background-color 0.1s ease; }
 .notes-box.playing { background-color: #ffff99; border-radius: 4px; }
+.notes-box.selected { background-color: #ffff00; border-radius: 4px; }
 .notes-box svg, .notes-box img { width: 48px; height: 40px; margin: 0 4px; }
 .notes-box.compound svg, .notes-box.compound img {
   width: 72px; 
