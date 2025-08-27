@@ -381,6 +381,10 @@
       return syncopationStates[position] || false;
     } else {
       const word = wordArray[position];
+      // Handle cases where the position is out of bounds (word is undefined)
+      if (word === undefined || word === null) {
+        return false;
+      }
       return word !== '-' && word !== '';
     }
   }
