@@ -141,6 +141,7 @@
   let textImportMode = 'replace'; // 'add' or 'replace'
   let savedTextInput = ''; // Store the text from the modal
   let chantModeActive = false;
+  let brushDrumBuffer = null; // Cache for the drum sound
 
   // Audio context for generating sounds
   let audioContext = null;
@@ -148,7 +149,20 @@
   function initAudioContext() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Play a silent buffer to "warm up" the AudioContext, which can fix timing issues on the first play.
+      const buffer = audioContext.createBuffer(1, 1, 22050);
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContext.destination);
+      source.start(0);
     }
+    
+    // Resume the context if it's suspended (required by modern browsers)
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
     return audioContext;
   }
 
@@ -405,9 +419,15 @@
   function playBrushDrum() {
     if (!beatEnabled) return;
     const ctx = initAudioContext();
+    
+    // Create and cache the buffer on first use
+    if (!brushDrumBuffer) {
+        brushDrumBuffer = createBrushDrumSound();
+    }
+
     const source = ctx.createBufferSource();
     const gainNode = ctx.createGain();
-    source.buffer = createBrushDrumSound();
+    source.buffer = brushDrumBuffer;
     source.connect(gainNode);
     gainNode.connect(ctx.destination);
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
