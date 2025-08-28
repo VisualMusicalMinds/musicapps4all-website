@@ -142,6 +142,10 @@
   let savedTextInput = ''; // Store the text from the modal
   let chantModeActive = false;
   let brushDrumBuffer = null; // Cache for the drum sound
+  // Zoom state
+  const zoomLevels = [-0.25, 0, 0.1, 0.25, 0.5, 0.75];
+  const zoomClasses = ['zoom-m25', '', 'zoom-10', 'zoom-25', 'zoom-50', 'zoom-75'];
+  let currentZoomIndex = 1; // Start at index 1, which is 0 (normal) zoom.
 
   // Audio context for generating sounds
   let audioContext = null;
@@ -1578,6 +1582,42 @@
         container.appendChild(line);
     }
   }
+
+  // Zoom controls
+  const zoomFabContainer = document.querySelector('.zoom-fab-container');
+  const zoomFabMain = document.getElementById('zoom-fab-main');
+  const zoomInBtn = document.getElementById('zoom-in-btn');
+  const zoomOutBtn = document.getElementById('zoom-out-btn');
+
+  function applyZoom() {
+    // Remove any existing zoom classes
+    poem.className = '';
+    const newClass = zoomClasses[currentZoomIndex];
+    if (newClass) {
+      poem.classList.add(newClass);
+    }
+    // Re-render to adjust layout based on new scale
+    render();
+  }
+
+  zoomFabMain.addEventListener('click', () => {
+    zoomFabContainer.classList.toggle('active');
+  });
+
+  zoomInBtn.addEventListener('click', () => {
+    if (currentZoomIndex < zoomLevels.length - 1) {
+      currentZoomIndex++;
+      applyZoom();
+    }
+  });
+
+  zoomOutBtn.addEventListener('click', () => {
+    if (currentZoomIndex > 0) {
+      currentZoomIndex--;
+      applyZoom();
+    }
+  });
+
 
   // --- INITIALIZATION ---
   populateLyricsDropdown();
