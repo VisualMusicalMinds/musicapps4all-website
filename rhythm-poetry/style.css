@@ -571,3 +571,80 @@ body { margin: 0; padding: 56px 0 0 0; }
     min-width: 0;
   }
 }
+
+/* Zoom FAB styles */
+.zoom-fab-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1002;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zoom-fab-main {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: background-color 0.2s;
+}
+
+.zoom-fab-main:hover {
+  background-color: #0052a3;
+}
+
+.zoom-fab-options {
+  display: flex;
+  gap: 10px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease-in-out;
+}
+
+.zoom-fab-container.active .zoom-fab-options {
+  transform: scaleX(1);
+}
+
+.zoom-fab-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f0f8ff;
+  color: #0066cc;
+  border: 1px solid #0066cc;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.zoom-fab-btn:hover {
+  background-color: #e6f3ff;
+}
+
+/* Zoom level styles */
+#poem.zoom-m25 .group { transform: scale(0.75); }
+#poem.zoom-10 .group { transform: scale(1.1); }
+#poem.zoom-25 .group { transform: scale(1.25); }
+#poem.zoom-50 .group { transform: scale(1.5); }
+#poem.zoom-75 .group { transform: scale(1.75); }
+
+/* Adjust layout for scaling */
+#poem .group {
+  transform-origin: center bottom;
+  transition: transform 0.2s ease-in-out;
+}
