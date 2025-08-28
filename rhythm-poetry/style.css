@@ -579,6 +579,7 @@ body { margin: 0; padding: 56px 0 0 0; }
   left: 20px;
   z-index: 1002;
   display: flex;
+  flex-direction: column-reverse; /* Stack items vertically, with main button at the bottom */
   align-items: center;
   gap: 10px;
 }
@@ -605,14 +606,15 @@ body { margin: 0; padding: 56px 0 0 0; }
 
 .zoom-fab-options {
   display: flex;
+  flex-direction: column; /* Stack buttons vertically */
   gap: 10px;
-  transform: scaleX(0);
-  transform-origin: left;
+  transform: scaleY(0);
+  transform-origin: bottom; /* Animate from the bottom */
   transition: transform 0.2s ease-in-out;
 }
 
 .zoom-fab-container.active .zoom-fab-options {
-  transform: scaleX(1);
+  transform: scaleY(1);
 }
 
 .zoom-fab-btn {
@@ -636,15 +638,67 @@ body { margin: 0; padding: 56px 0 0 0; }
   background-color: #e6f3ff;
 }
 
-/* Zoom level styles */
-#poem.zoom-m25 .group { transform: scale(0.75); }
-#poem.zoom-10 .group { transform: scale(1.1); }
-#poem.zoom-25 .group { transform: scale(1.25); }
-#poem.zoom-50 .group { transform: scale(1.5); }
-#poem.zoom-75 .group { transform: scale(1.75); }
-
-/* Adjust layout for scaling */
-#poem .group {
-  transform-origin: center bottom;
-  transition: transform 0.2s ease-in-out;
+/* --- New Zoom Styles --- */
+/* Base values for calculation */
+:root {
+  --note-width: 48px;
+  --note-height: 40px;
+  --circle-size: 16px;
+  --divider-height: 80px;
+  --base-font-size: 1em; /* Relative to #poem */
+  --base-margin: 8px;
 }
+
+/* Helper transition */
+#poem .notes-box svg, #poem .notes-box img,
+#poem .circle,
+#poem .measure-divider, #poem .final-measure-divider,
+#poem .group, #poem .word, #poem .word-input {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Zoom Level: -25% (0.75x) */
+#poem.zoom-m25 .notes-box svg, #poem.zoom-m25 .notes-box img { width: calc(var(--note-width) * 0.75); height: calc(var(--note-height) * 0.75); }
+#poem.zoom-m25 .notes-box.compound svg, #poem.zoom-m25 .notes-box.compound img { width: calc(var(--note-width) * 1.5 * 0.75); }
+#poem.zoom-m25 .notes-box.sixteenth svg, #poem.zoom-m25 .notes-box.sixteenth img { width: calc(var(--note-width) * 2 * 0.75); }
+#poem.zoom-m25 .circle { width: calc(var(--circle-size) * 0.75); height: calc(var(--circle-size) * 0.75); }
+#poem.zoom-m25 .word, #poem.zoom-m25 .word-input { font-size: calc(var(--base-font-size) * 0.75); }
+#poem.zoom-m25 .measure-divider, #poem.zoom-m25 .final-measure-divider { height: calc(var(--divider-height) * 0.75); margin: 0 calc(var(--base-margin) * 0.75); }
+#poem.zoom-m25 .group { margin-right: calc(var(--base-margin) * 0.75); }
+
+/* Zoom Level: +10% (1.1x) */
+#poem.zoom-10 .notes-box svg, #poem.zoom-10 .notes-box img { width: calc(var(--note-width) * 1.1); height: calc(var(--note-height) * 1.1); }
+#poem.zoom-10 .notes-box.compound svg, #poem.zoom-10 .notes-box.compound img { width: calc(var(--note-width) * 1.5 * 1.1); }
+#poem.zoom-10 .notes-box.sixteenth svg, #poem.zoom-10 .notes-box.sixteenth img { width: calc(var(--note-width) * 2 * 1.1); }
+#poem.zoom-10 .circle { width: calc(var(--circle-size) * 1.1); height: calc(var(--circle-size) * 1.1); }
+#poem.zoom-10 .word, #poem.zoom-10 .word-input { font-size: calc(var(--base-font-size) * 1.1); }
+#poem.zoom-10 .measure-divider, #poem.zoom-10 .final-measure-divider { height: calc(var(--divider-height) * 1.1); margin: 0 calc(var(--base-margin) * 1.1); }
+#poem.zoom-10 .group { margin-right: calc(var(--base-margin) * 1.1); }
+
+/* Zoom Level: +25% (1.25x) */
+#poem.zoom-25 .notes-box svg, #poem.zoom-25 .notes-box img { width: calc(var(--note-width) * 1.25); height: calc(var(--note-height) * 1.25); }
+#poem.zoom-25 .notes-box.compound svg, #poem.zoom-25 .notes-box.compound img { width: calc(var(--note-width) * 1.5 * 1.25); }
+#poem.zoom-25 .notes-box.sixteenth svg, #poem.zoom-25 .notes-box.sixteenth img { width: calc(var(--note-width) * 2 * 1.25); }
+#poem.zoom-25 .circle { width: calc(var(--circle-size) * 1.25); height: calc(var(--circle-size) * 1.25); }
+#poem.zoom-25 .word, #poem.zoom-25 .word-input { font-size: calc(var(--base-font-size) * 1.25); }
+#poem.zoom-25 .measure-divider, #poem.zoom-25 .final-measure-divider { height: calc(var(--divider-height) * 1.25); margin: 0 calc(var(--base-margin) * 1.25); }
+#poem.zoom-25 .group { margin-right: calc(var(--base-margin) * 1.25); }
+
+/* Zoom Level: +50% (1.5x) */
+#poem.zoom-50 .notes-box svg, #poem.zoom-50 .notes-box img { width: calc(var(--note-width) * 1.5); height: calc(var(--note-height) * 1.5); }
+#poem.zoom-50 .notes-box.compound svg, #poem.zoom-50 .notes-box.compound img { width: calc(var(--note-width) * 1.5 * 1.5); }
+#poem.zoom-50 .notes-box.sixteenth svg, #poem.zoom-50 .notes-box.sixteenth img { width: calc(var(--note-width) * 2 * 1.5); }
+#poem.zoom-50 .circle { width: calc(var(--circle-size) * 1.5); height: calc(var(--circle-size) * 1.5); }
+#poem.zoom-50 .word, #poem.zoom-50 .word-input { font-size: calc(var(--base-font-size) * 1.5); }
+#poem.zoom-50 .measure-divider, #poem.zoom-50 .final-measure-divider { height: calc(var(--divider-height) * 1.5); margin: 0 calc(var(--base-margin) * 1.5); }
+#poem.zoom-50 .group { margin-right: calc(var(--base-margin) * 1.5); }
+
+/* Zoom Level: +75% (1.75x) */
+#poem.zoom-75 .notes-box svg, #poem.zoom-75 .notes-box img { width: calc(var(--note-width) * 1.75); height: calc(var(--note-height) * 1.75); }
+#poem.zoom-75 .notes-box.compound svg, #poem.zoom-75 .notes-box.compound img { width: calc(var(--note-width) * 1.5 * 1.75); }
+#poem.zoom-75 .notes-box.sixteenth svg, #poem.zoom-75 .notes-box.sixteenth img { width: calc(var(--note-width) * 2 * 1.75); }
+#poem.zoom-75 .circle { width: calc(var(--circle-size) * 1.75); height: calc(var(--circle-size) * 1.75); }
+#poem.zoom-75 .word, #poem.zoom-75 .word-input { font-size: calc(var(--base-font-size) * 1.75); }
+#poem.zoom-75 .measure-divider, #poem.zoom-75 .final-measure-divider { height: calc(var(--divider-height) * 1.75); margin: 0 calc(var(--base-margin) * 1.75); }
+#poem.zoom-75 .group { margin-right: calc(var(--base-margin) * 1.75); }
+
