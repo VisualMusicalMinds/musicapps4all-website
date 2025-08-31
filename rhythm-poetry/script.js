@@ -133,7 +133,7 @@
   let isPlaying = false;
   let playTimeouts = [];
   let currentPlayPosition = 0;
-  let selectedBeatIndex = null;
+  let selectedPlayStartPosition = null; // To store the selected starting beat
   let notesBoxElements = []; // Store references to notes boxes for highlighting
   let beatEnabled = true; // Beat checkbox state
   let rhythmEnabled = true; // Rhythm checkbox state
@@ -141,11 +141,6 @@
   let textImportMode = 'replace'; // 'add' or 'replace'
   let savedTextInput = ''; // Store the text from the modal
   let chantModeActive = false;
-  let brushDrumBuffer = null; // Cache for the drum sound
-  // Zoom state
-  const zoomLevels = [-0.25, 0, 0.1, 0.25, 0.5, 0.75];
-  const zoomClasses = ['zoom-m25', '', 'zoom-10', 'zoom-25', 'zoom-50', 'zoom-75'];
-  let currentZoomIndex = 1; // Start at index 1, which is 0 (normal) zoom.
 
   // Audio context for generating sounds
   let audioContext = null;
@@ -153,20 +148,7 @@
   function initAudioContext() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
-      // Play a silent buffer to "warm up" the AudioContext, which can fix timing issues on the first play.
-      const buffer = audioContext.createBuffer(1, 1, 22050);
-      const source = audioContext.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioContext.destination);
-      source.start(0);
     }
-    
-    // Resume the context if it's suspended (required by modern browsers)
-    if (audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    
     return audioContext;
   }
 
@@ -399,10 +381,6 @@
       return syncopationStates[position] || false;
     } else {
       const word = wordArray[position];
-      // Handle cases where the position is out of bounds (word is undefined)
-      if (word === undefined || word === null) {
-        return false;
-      }
       return word !== '-' && word !== '';
     }
   }
@@ -423,15 +401,9 @@
   function playBrushDrum() {
     if (!beatEnabled) return;
     const ctx = initAudioContext();
-    
-    // Create and cache the buffer on first use
-    if (!brushDrumBuffer) {
-        brushDrumBuffer = createBrushDrumSound();
-    }
-
     const source = ctx.createBufferSource();
     const gainNode = ctx.createGain();
-    source.buffer = brushDrumBuffer;
+    source.buffer = createBrushDrumSound();
     source.connect(gainNode);
     gainNode.connect(ctx.destination);
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
@@ -598,6 +570,7 @@
         syncopation = [];
         syncopationStates = {};
         hasPickupMeasure = false;
+        selectedPlayStartPosition = null; // Reset selection
 
         // Check if the song data is in the new object format or the old array format
         if (Array.isArray(songData)) {
@@ -1042,87 +1015,94 @@
   // --- PLAYBACK LOGIC ---
 
   function startPlayback() {
+    // Initialize audio context first
     initAudioContext();
+    
+    // Set playing state
     isPlaying = true;
+    currentPlayPosition = selectedPlayStartPosition || 0;
     playButton.textContent = '⏸';
     playButton.classList.add('playing');
 
-    const config = getLayoutConfig();
-    const startBeat = selectedBeatIndex !== null ? selectedBeatIndex : 0;
-    currentPlayPosition = startBeat * config.circlesPerBeat;
-
     const beatInterval = 60000 / BPM;
-    const noteInterval = beatInterval / config.circlesPerBeat;
 
-    const startPoetry = (delay = 0) => {
-        const rhythmPattern = getRhythmPattern();
-        
-        let totalCircles;
-        if (hasPickupMeasure) {
-            const bodyCircles = rhythmPattern.length > config.circlesPerBeat ? rhythmPattern.length - config.circlesPerBeat : 0;
-            const circlesInLastMeasure = bodyCircles % config.circlesPerMeasure;
-            const paddedBodyCircles = circlesInLastMeasure === 0 ? bodyCircles : bodyCircles + (config.circlesPerMeasure - circlesInLastMeasure);
-            totalCircles = config.circlesPerBeat + paddedBodyCircles;
-        } else {
-            const circlesInLastMeasure = rhythmPattern.length % config.circlesPerMeasure;
-            totalCircles = circlesInLastMeasure === 0 ? rhythmPattern.length : rhythmPattern.length + (config.circlesPerMeasure - circlesInLastMeasure);
+    const startPoetry = (delay = 0, startBeat = 0) => {
+      const config = getLayoutConfig();
+      const rhythmPattern = getRhythmPattern();
+      
+      let noteInterval = beatInterval / config.circlesPerBeat;
+      
+      // Calculate the total number of circles needed to fill complete measures
+      let totalCircles;
+      if (hasPickupMeasure) {
+        const bodyCircles = rhythmPattern.length > config.circlesPerBeat ? rhythmPattern.length - config.circlesPerBeat : 0;
+        const circlesInLastMeasure = bodyCircles % config.circlesPerMeasure;
+        const paddedBodyCircles = circlesInLastMeasure === 0 ? bodyCircles : bodyCircles + (config.circlesPerMeasure - circlesInLastMeasure);
+        totalCircles = config.circlesPerBeat + paddedBodyCircles;
+      } else {
+        const circlesInLastMeasure = rhythmPattern.length % config.circlesPerMeasure;
+        totalCircles = circlesInLastMeasure === 0 ? rhythmPattern.length : rhythmPattern.length + (config.circlesPerMeasure - circlesInLastMeasure);
+      }
+
+      const totalDuration = (totalCircles * noteInterval) - (startBeat * beatInterval);
+      const totalBeats = Math.ceil(totalCircles / config.circlesPerBeat);
+
+      // Schedule BEAT track
+      for (let beat = startBeat; beat < totalBeats; beat++) {
+        const timeDelay = delay + ((beat - startBeat) * beatInterval);
+        const beatTimeout = setTimeout(() => {
+          if (isPlaying) {
+            highlightNotesBox(beat);
+            if (beatEnabled) playBrushDrum();
+          }
+        }, timeDelay);
+        playTimeouts.push(beatTimeout);
+      }
+
+      // Schedule RHYTHM track
+      const startCircle = startBeat * config.circlesPerBeat;
+      rhythmPattern.slice(startCircle).forEach((hasSound, index) => {
+        const timeDelay = delay + (index * noteInterval);
+        const rhythmTimeout = setTimeout(() => {
+          if (isPlaying && hasSound) playTriangleTone(noteInterval * 0.8 / 1000);
+        }, timeDelay);
+        playTimeouts.push(rhythmTimeout);
+      });
+
+      // Schedule the next loop to start after the total duration
+      const loopTimeout = setTimeout(() => {
+        if (isPlaying) {
+          isFirstPlay = false; // Mark as no longer first play for subsequent loops
+          startPoetry(0, 0); // Start the next loop from the beginning
         }
-        const totalBeats = Math.ceil(totalCircles / config.circlesPerBeat);
-
-        // Schedule BEAT track
-        for (let beat = startBeat; beat < totalBeats; beat++) {
-            const timeDelay = delay + ((beat - startBeat) * beatInterval);
-            const beatTimeout = setTimeout(() => {
-                if (isPlaying) {
-                    highlightNotesBox(beat);
-                    if (beatEnabled) playBrushDrum();
-                }
-            }, timeDelay);
-            playTimeouts.push(beatTimeout);
-        }
-
-        // Schedule RHYTHM track
-        for (let i = currentPlayPosition; i < totalCircles; i++) {
-            const hasSound = isPositionActive(i, words);
-            const timeDelay = delay + ((i - currentPlayPosition) * noteInterval);
-            const rhythmTimeout = setTimeout(() => {
-                if (isPlaying && hasSound) playTriangleTone(noteInterval * 0.8 / 1000);
-            }, timeDelay);
-            playTimeouts.push(rhythmTimeout);
-        }
-
-        // If a start position is selected, play to the end and stop. Otherwise, loop.
-        const remainingCircles = totalCircles - currentPlayPosition;
-        const totalDuration = remainingCircles * noteInterval;
-
-        const endPlaybackTimeout = setTimeout(() => {
-            if (isPlaying) {
-                if (selectedBeatIndex !== null) {
-                    stopPlayback();
-                } else {
-                    isFirstPlay = false;
-                    currentPlayPosition = 0;
-                    startPoetry(0); // Loop from the beginning
-                }
-            }
-        }, delay + totalDuration);
-        playTimeouts.push(endPlaybackTimeout);
+      }, delay + totalDuration);
+      playTimeouts.push(loopTimeout);
     };
 
-    // Handle count-in
-    const shouldCountIn = (isFirstPlay || selectedBeatIndex !== null) && beatEnabled;
-    if (shouldCountIn) {
-        let countInBeats = hasPickupMeasure && startBeat === 0 ? 3 : 4;
-        for (let i = 0; i < countInBeats; i++) {
-            const timeDelay = i * beatInterval;
-            const countInTimeout = setTimeout(() => {
-                if (isPlaying) playBrushDrum();
-            }, timeDelay);
-            playTimeouts.push(countInTimeout);
-        }
-        startPoetry(countInBeats * beatInterval);
+    // Play the count-in if it's the first play and beat is enabled
+    const shouldPlayCountIn = (isFirstPlay || selectedPlayStartPosition !== null) && beatEnabled;
+
+    if (shouldPlayCountIn) {
+      let countInBeats = 4;
+      if (isFirstPlay && hasPickupMeasure && selectedPlayStartPosition === null) {
+        countInBeats = 3;
+      }
+      console.log("Playing count-in with " + countInBeats + " beats");
+      
+      // Schedule count-in beats
+      for (let i = 0; i < countInBeats; i++) {
+        const timeDelay = i * beatInterval;
+        const countInTimeout = setTimeout(() => { 
+          if (isPlaying) playBrushDrum(); 
+        }, timeDelay);
+        playTimeouts.push(countInTimeout);
+      }
+      
+      // Start the actual poetry after the count-in
+      startPoetry(countInBeats * beatInterval, currentPlayPosition);
     } else {
-        startPoetry(0);
+      // If it's not the first play or beat is disabled, start immediately
+      startPoetry(0, currentPlayPosition);
     }
   }
 
@@ -1135,11 +1115,8 @@
     clearHighlights();
     playTimeouts.forEach(timeout => clearTimeout(timeout));
     playTimeouts = [];
-    
-    if (selectedBeatIndex !== null) {
-        selectedBeatIndex = null;
-        render();
-    }
+    selectedPlayStartPosition = null; // Clear selection on stop
+    render(); // Re-render to remove selection highlight
   }
 
   function updateCircleVisibility() {
@@ -1318,19 +1295,19 @@
     } else {
         notesBoxElements.push(notesBox);
     }
-
-    notesBox.addEventListener('click', () => {
-        if (selectedBeatIndex === beatIndex) {
-            selectedBeatIndex = null; // Deselect if clicked again
-        } else {
-            selectedBeatIndex = beatIndex;
-        }
-        render();
-    });
-
-    if (beatIndex === selectedBeatIndex) {
+    
+    if (beatIndex === selectedPlayStartPosition) {
         notesBox.classList.add('selected');
     }
+
+    notesBox.addEventListener('click', () => {
+        if (selectedPlayStartPosition === beatIndex) {
+            selectedPlayStartPosition = null; // Toggle off if already selected
+        } else {
+            selectedPlayStartPosition = beatIndex;
+        }
+        render(); // Re-render to show selection change
+    });
 
     if (config.circlesPerBeat === 4) {
         notesBox.classList.add('sixteenth');
@@ -1350,12 +1327,12 @@
         const syncopationType = getSyncopationType(i);
 
         if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateB.svg'));
-        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateC.svg'));
-        else if (isSyncopated) notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateA.svg'));
-        else if (active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarternote.svg'));
-        else if (active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthnotepair.svg'));
-        else if (!active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarterrest.svg'));
-        else if (!active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthrestnote.svg'));
+else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateC.svg'));
+ else if (isSyncopated) notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateA.svg'));
+else if (active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarternote.svg'));
+else if (active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthnotepair.svg'));
+else if (!active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarterrest.svg'));
+else if (!active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthrestnote.svg'));
 
     } else if (config.circlesPerBeat === 3) {
         notesBox.classList.add('compound');
@@ -1369,13 +1346,13 @@
         let imageUrl = '';
         switch (pattern) {
             case 'XXX': imageUrl = './assets/Wordrhythms-XXX.svg'; break;
-            case 'OOO': imageUrl = './assets/Wordrhythms-OOO.svg'; break;
-            case 'XOO': imageUrl = './assets/Wordrhythms-XOO.svg'; break;
-            case 'XXO': imageUrl = './assets/Wordrhythms-XXO.svg'; break;
-            case 'XOX': imageUrl = './assets/Wordrhythms-XOX.svg'; break;
-            case 'OXO': imageUrl = './assets/Wordrhythms-OXO.svg'; break;
-            case 'OOX': imageUrl = './assets/Wordrhythms-OOX.svg'; break;
-            case 'OXX': imageUrl = './assets/Wordrhythms-OXX.svg'; break;
+case 'OOO': imageUrl = './assets/Wordrhythms-OOO.svg'; break;
+case 'XOO': imageUrl = './assets/Wordrhythms-XOO.svg'; break;
+case 'XXO': imageUrl = './assets/Wordrhythms-XXO.svg'; break;
+case 'XOX': imageUrl = './assets/Wordrhythms-XOX.svg'; break;
+case 'OXO': imageUrl = './assets/Wordrhythms-OXO.svg'; break;
+case 'OOX': imageUrl = './assets/Wordrhythms-OOX.svg'; break;
+case 'OXX': imageUrl = './assets/Wordrhythms-OXX.svg'; break;
         }
         if (imageUrl) {
             notesBox.appendChild(createImage(imageUrl));
@@ -1583,25 +1560,32 @@
     }
   }
 
-  // Zoom controls
-  const zoomFabContainer = document.querySelector('.zoom-fab-container');
-  const zoomFabMain = document.getElementById('zoom-fab-main');
+  // --- INITIALIZATION ---
+  populateLyricsDropdown();
+  updatePoemMargin();
+  window.addEventListener('resize', updatePoemMargin);
+  // Set initial state of toggle buttons
+  toggleReplaceBtn.classList.add('active');
+  toggleAddBtn.classList.remove('active');
+
+  // Zoom Controls
+  const zoomFab = document.getElementById('zoom-fab');
   const zoomInBtn = document.getElementById('zoom-in-btn');
   const zoomOutBtn = document.getElementById('zoom-out-btn');
+  const poemContainer = document.getElementById('poem');
+
+  const zoomLevels = [0.75, 1.0, 1.1, 1.25, 1.5, 1.75];
+  let currentZoomIndex = 1; // Default is 1.0
 
   function applyZoom() {
-    // Remove any existing zoom classes
-    poem.className = '';
-    const newClass = zoomClasses[currentZoomIndex];
-    if (newClass) {
-      poem.classList.add(newClass);
-    }
-    // Re-render to adjust layout based on new scale
-    render();
+    poemContainer.className = 'zoom-level-' + currentZoomIndex;
+    zoomInBtn.disabled = currentZoomIndex === zoomLevels.length - 1;
+    zoomOutBtn.disabled = currentZoomIndex === 0;
   }
 
-  zoomFabMain.addEventListener('click', () => {
-    zoomFabContainer.classList.toggle('active');
+  zoomFab.addEventListener('click', () => {
+    zoomInBtn.classList.toggle('visible');
+    zoomOutBtn.classList.toggle('visible');
   });
 
   zoomInBtn.addEventListener('click', () => {
@@ -1617,14 +1601,7 @@
       applyZoom();
     }
   });
-
-
-  // --- INITIALIZATION ---
-  populateLyricsDropdown();
-  updatePoemMargin();
-  window.addEventListener('resize', updatePoemMargin);
-  // Set initial state of toggle buttons
-  toggleReplaceBtn.classList.add('active');
-  toggleAddBtn.classList.remove('active');
+  
+  applyZoom();
   render();
 })();
