@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
- <!-- ===== App Header Start ===== -->
+  <!-- ===== App Header Start ===== -->
 <!-- Google Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,12 +67,12 @@
       </div>
     </div>
 
-    <select id="lyrics-dropdown" class="control-button lyrics-dropdown"></select>
-
-    <div class="control-button-group">
-        <button id="poetry-mode-btn" class="mode-button active">Poetry</button>
-        <button id="chant-mode-btn" class="mode-button">Chant</button>
+    <div class="control-button-group" id="mode-toggle">
+      <div class="control-button mode-button active" id="poetry-mode-btn">Poetry</div>
+      <div class="control-button mode-button" id="chant-mode-btn">Chant</div>
     </div>
+
+    <select id="lyrics-dropdown" class="control-button lyrics-dropdown"></select>
     
     <div class="ts-button-wrapper">
       <div class="time-signature-button">
@@ -98,13 +98,10 @@
   </div>
   <button class="panel-toggle-button" id="panel-toggle-button"></button>
 
-  <!-- Zoom Controls -->
-  <div class="zoom-fab-container">
-    <button class="zoom-fab-main" id="zoom-fab-main">🔍</button>
-    <div class="zoom-fab-options">
-      <button class="zoom-fab-btn" id="zoom-out-btn">-</button>
-      <button class="zoom-fab-btn" id="zoom-in-btn">+</button>
-    </div>
+  <div id="zoom-controls">
+    <button id="zoom-fab" class="fab zoom-button">🔍</button>
+    <button id="zoom-in-btn" class="fab zoom-button sub-button">+</button>
+    <button id="zoom-out-btn" class="fab zoom-button sub-button">-</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
