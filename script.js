@@ -81,6 +81,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // --- Contact Form Modal Logic ---
+    const contactLinks = document.querySelectorAll('.contact-link');
+    const contactModal = document.getElementById('contact-modal');
+    const closeContactModalBtn = document.querySelector('.close-contact-modal');
+
+    contactLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactModal.style.display = 'flex';
+        });
+    });
+
+    function closeContactModal() {
+        contactModal.style.display = 'none';
+    }
+
+    closeContactModalBtn.addEventListener('click', closeContactModal);
+
+    contactModal.addEventListener('click', function(e) {
+        if (e.target === contactModal) {
+            closeContactModal();
+        }
+    });
+
     // --- Original App Tile Logic ---
     const inactiveTiles = document.querySelectorAll('.app-tile:not(a.app-tile)');
     
