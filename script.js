@@ -154,4 +154,17 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
     }
+
+    // --- Footer "About Us" Link Logic ---
+    const footerAboutLink = document.getElementById('footer-about-link');
+    if (footerAboutLink) {
+        footerAboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Find the main "About Us" nav button and trigger a click on it
+            const aboutUsNavButton = document.querySelector('.nav-button[data-target="about-us"]');
+            if (aboutUsNavButton) {
+                aboutUsNavButton.click();
+            }
+        });
+    }
 });
