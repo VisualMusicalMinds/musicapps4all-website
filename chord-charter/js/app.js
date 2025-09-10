@@ -31,11 +31,12 @@ function main() {
   // Initial UI setup
   updateKeyDisplay();
   updateGridForTimeSignature(timeSignatureNumerators[appState.currentTimeSignatureIndex]);
-  loadProgression(appState.currentToggle); 
+  loadProgression(appState.currentToggle);
+  ['A', 'B', 'C', 'D'].forEach(updateLinkVisuals);
   updateRhythmPictures();
   updateSlotHighlights();
   updatePictureHighlights();
-  setPlayingUI(false); 
+  setPlayingUI(false);
 }
 
 // --- INITIALIZATION ---
@@ -1098,4 +1099,5 @@ function parseAndLoadSongSummary(summaryText) {
         alert("Could not load the song from the text. Please check the format.");
     }
 }
+
 
