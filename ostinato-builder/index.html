@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rhythmic Poetry Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="poem"></div>
+
+  <!-- Floating bottom panel -->
+  <div class="floating-panel" id="floating-panel">
+    <div class="play-button" id="play-button">▶</div>
+
+    <div class="control-button" id="bpm-button">
+      <span id="bpm-value">82</span>&nbsp;BPM
+    </div>
+
+    <div class="toggle-button-group">
+      <button id="beat-button" class="toggle-button beat-button active">Beat</button>
+      <button id="count-button" class="toggle-button">Count</button>
+      <button id="rhythm-button" class="toggle-button rhythm-button active">Rhythm</button>
+      <button id="one-button" class="toggle-button">4</button>
+    </div>
+
+    <div class="control-button copy-visual-button" id="copy-visual-btn">📷</div>
+
+    <div class="control-button sixteenth-note-button" id="sixteenth-note-btn">
+      <img src="https://visualmusicalminds.github.io/images/Wordrhythms-16thicon.svg" alt="16th note mode">
+    </div>
+    
+    <div class="icon-button active" id="circle-icon">
+      <div class="icon-beat-bar"></div>
+    </div>
+  </div>
+  <button class="panel-toggle-button" id="panel-toggle-button"></button>
+
+  <div id="zoom-controls">
+    <button id="zoom-fab" class="fab zoom-button">🔍</button>
+    <button id="zoom-in-btn" class="fab zoom-button sub-button">+</button>
+    <button id="zoom-out-btn" class="fab zoom-button sub-button">-</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
