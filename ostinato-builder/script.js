@@ -475,14 +475,14 @@
   }
 
   const soundBank = [
-    { name: 'Bass Drum', func: createBassDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-bass.png' },
-    { name: 'Snare', func: createSnareDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-snare.png' },
-    { name: 'Tom', func: createTomDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-tom.png' },
-    { name: 'Hand Clap', func: createHandClap, image: 'https://visualmusicalminds.github.io/images/virtualdrums-clap.png' },
-    { name: 'Claves', func: createClaves, image: 'https://visualmusicalminds.github.io/images/virtualdrums-claves.png' },
-    { name: 'Hi-Hat', func: createHiHat, image: 'https://visualmusicalminds.github.io/images/virtualdrums-highhat.png' },
-    { name: 'Crash', func: createCrashCymbal, image: 'https://visualmusicalminds.github.io/images/virtualdrums-crash.png' },
-    { name: 'Shaker', func: createShaker, image: 'https://visualmusicalminds.github.io/images/virtualdrums-shaker.png' }
+    { name: 'Bass Drum', func: createBassDrum, image: 'assets/virtualdrums-bass.png' },
+    { name: 'Snare', func: createSnareDrum, image: 'assets/virtualdrums-snare.png' },
+    { name: 'Tom', func: createTomDrum, image: 'assets/virtualdrums-tom.png' },
+    { name: 'Hand Clap', func: createHandClap, image: 'assets/virtualdrums-clap.png' },
+    { name: 'Claves', func: createClaves, image: 'assets/virtualdrums-claves.png' },
+    { name: 'Hi-Hat', func: createHiHat, image: 'assets/virtualdrums-highhat.png' },
+    { name: 'Crash', func: createCrashCymbal, image: 'assets/virtualdrums-crash.png' },
+    { name: 'Shaker', func: createShaker, image: 'assets/virtualdrums-shaker.png' }
   ];
 
   // Copy text to clipboard
@@ -1304,7 +1304,7 @@
         const active3 = isPositionActive(lineIndex, i + 2, displayWords);
         const active4 = isPositionActive(lineIndex, i + 3, displayWords);
         const pattern = (active1 ? 'X' : 'O') + (active2 ? 'X' : 'O') + (active3 ? 'X' : 'O') + (active4 ? 'X' : 'O');
-        const imageUrl = `https://visualmusicalminds.github.io/images/Wordrhythms-${pattern}.svg`;
+        const imageUrl = `assets/Wordrhythms-${pattern}.svg`;
         notesBox.appendChild(createImage(imageUrl));
     } else {
         const i = beatStartPosition;
@@ -1313,13 +1313,13 @@
         const isSyncopated = syncopation[lineIndex].includes(i + 1);
         const syncopationType = getSyncopationType(lineIndex, i);
 
-        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateB.svg'));
-        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateC.svg'));
-        else if (isSyncopated) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateA.svg'));
-        else if (active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarternote.svg'));
-        else if (active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthnotepair.svg'));
-        else if (!active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarterrest.svg'));
-        else if (!active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthrestnote.svg'));
+        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateB.svg'));
+        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateC.svg'));
+        else if (isSyncopated) notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateA.svg'));
+        else if (active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarternote.svg'));
+        else if (active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthnotepair.svg'));
+        else if (!active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarterrest.svg'));
+        else if (!active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthrestnote.svg'));
     }
 
     group.appendChild(notesBox);
