@@ -144,6 +144,7 @@
   let BPM = 82;
   let textImportMode = 'replace'; // 'add' or 'replace'
   let savedTextInput = ''; // Store the text from the modal
+  let rhythmSystem = 'kodaly';
 
   // Audio context for generating sounds
   let audioContext = null;
@@ -475,14 +476,14 @@
   }
 
   const soundBank = [
-    { name: 'Bass Drum', func: createBassDrum, image: 'assets/virtualdrums-bass.png' },
-    { name: 'Snare', func: createSnareDrum, image: 'assets/virtualdrums-snare.png' },
-    { name: 'Tom', func: createTomDrum, image: 'assets/virtualdrums-tom.png' },
-    { name: 'Hand Clap', func: createHandClap, image: 'assets/virtualdrums-clap.png' },
-    { name: 'Claves', func: createClaves, image: 'assets/virtualdrums-claves.png' },
-    { name: 'Hi-Hat', func: createHiHat, image: 'assets/virtualdrums-highhat.png' },
-    { name: 'Crash', func: createCrashCymbal, image: 'assets/virtualdrums-crash.png' },
-    { name: 'Shaker', func: createShaker, image: 'assets/virtualdrums-shaker.png' }
+    { name: 'Bass Drum', func: createBassDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-bass.png' },
+    { name: 'Snare', func: createSnareDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-snare.png' },
+    { name: 'Tom', func: createTomDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-tom.png' },
+    { name: 'Hand Clap', func: createHandClap, image: 'https://visualmusicalminds.github.io/images/virtualdrums-clap.png' },
+    { name: 'Claves', func: createClaves, image: 'https://visualmusicalminds.github.io/images/virtualdrums-claves.png' },
+    { name: 'Hi-Hat', func: createHiHat, image: 'https://visualmusicalminds.github.io/images/virtualdrums-highhat.png' },
+    { name: 'Crash', func: createCrashCymbal, image: 'https://visualmusicalminds.github.io/images/virtualdrums-crash.png' },
+    { name: 'Shaker', func: createShaker, image: 'https://visualmusicalminds.github.io/images/virtualdrums-shaker.png' }
   ];
 
   // Copy text to clipboard
@@ -974,6 +975,139 @@
   const copyVisualBtn = document.getElementById('copy-visual-btn');
   copyVisualBtn.addEventListener('click', captureVisual);
 
+  // Save button and modal
+  const saveButton = document.getElementById('save-button');
+  const saveModal = document.getElementById('save-modal');
+  const cancelSaveButton = document.getElementById('cancel-save-button');
+  const submitSaveButton = document.getElementById('submit-save-button');
+
+  saveButton.addEventListener('click', () => {
+    const multiLineInput = document.getElementById('multi-line-input');
+    let outputText = `[BPM:${BPM}]\n`;
+
+    for (let i = 0; i < 4; i++) {
+      const instrumentName = soundBank[lineSoundIndexes[i]].name;
+      let lineWords;
+
+      // Determine the correct source for the 16th note pattern
+      if (sixteenthNoteModeActive) {
+        // If in 16th note mode, the current 'words' array is the source of truth.
+        lineWords = words[i];
+      } else {
+        // If in 8th note mode, check the cache first.
+        if (sixteenthNotePatternCache.length > 0 && sixteenthNotePatternCache[i]) {
+          // The cache holds the true 16th note pattern.
+          lineWords = sixteenthNotePatternCache[i];
+        } else {
+          // If no cache, it means we started in 8th note mode. Convert the pattern.
+          lineWords = convertTo16thNotePattern(words[i]);
+        }
+      }
+
+      let rhythmText = '';
+      // Assuming 4 beats per measure, generate the rhythm string
+      for (let beat = 0; beat < 4; beat++) {
+        let beatPattern = '';
+        for (let sixteenth = 0; sixteenth < 4; sixteenth++) {
+          const index = (beat * 4) + sixteenth;
+          if (index < lineWords.length) {
+            const word = lineWords[index];
+            beatPattern += (word && word !== '-' && word !== '') ? 'Y' : 'n';
+          } else {
+            beatPattern += 'n'; // Pad with rests if the line is unexpectedly short
+          }
+        }
+        rhythmText += `[${beat + 1}:${beatPattern}]`;
+        if (beat < 3) {
+          rhythmText += ' ';
+        }
+      }
+      outputText += `Line ${i + 1} [${instrumentName}] ${rhythmText}\n`;
+    }
+
+    multiLineInput.value = outputText.trim();
+    saveModal.classList.add('visible');
+  });
+
+  cancelSaveButton.addEventListener('click', () => {
+    saveModal.classList.remove('visible');
+  });
+
+  submitSaveButton.addEventListener('click', () => {
+    const multiLineInput = document.getElementById('multi-line-input');
+    const inputText = multiLineInput.value;
+    const lines = inputText.split('\n');
+
+    try {
+      // Parse BPM
+      const bpmMatch = lines[0].match(/\[BPM:(\d+)\]/);
+      if (bpmMatch && bpmMatch[1]) {
+        let newBPM = parseInt(bpmMatch[1], 10);
+        if (!isNaN(newBPM)) {
+          if (newBPM < 20) newBPM = 20;
+          if (newBPM > 600) newBPM = 600;
+          BPM = newBPM;
+          document.getElementById('bpm-value').textContent = BPM;
+        }
+      }
+
+      const lineRegex = /Line (\d+) \[([^\]]+)\]\s*(.*)/;
+      const rhythmRegex = /\[\d:([Yn]{4})\]/g;
+
+      for (let i = 1; i < lines.length; i++) {
+        const lineMatch = lines[i].match(lineRegex);
+        if (lineMatch) {
+          const lineIndex = parseInt(lineMatch[1], 10) - 1;
+          const instrumentName = lineMatch[2];
+          const rhythmData = lineMatch[3];
+
+          if (lineIndex >= 0 && lineIndex < 4) {
+            // Update instrument
+            const soundIndex = soundBank.findIndex(s => s.name === instrumentName);
+            if (soundIndex !== -1) {
+              lineSoundIndexes[lineIndex] = soundIndex;
+            }
+
+            // Update rhythm
+            let fullRhythmPattern = '';
+            let match;
+            while ((match = rhythmRegex.exec(rhythmData)) !== null) {
+              fullRhythmPattern += match[1];
+            }
+
+            if (fullRhythmPattern.length === 16) {
+              const newSixteenthPattern = fullRhythmPattern.split('').map(char => (char === 'Y' ? 'word' : '-'));
+              
+              if (sixteenthNoteModeActive) {
+                words[lineIndex] = newSixteenthPattern;
+              } else {
+                // Ensure cache is initialized for all lines if it's being used
+                if (sixteenthNotePatternCache.length === 0) {
+                    sixteenthNotePatternCache = words.map(lineToCache => convertTo16thNotePattern(lineToCache));
+                }
+                sixteenthNotePatternCache[lineIndex] = newSixteenthPattern;
+                words[lineIndex] = convertTo8thNotePattern(newSixteenthPattern);
+              }
+            }
+          }
+        }
+      }
+      render();
+    } catch (error) {
+      console.error("Error parsing input:", error);
+      // Optionally, show an error message to the user
+    }
+
+    saveModal.classList.remove('visible');
+  });
+
+  // Lyrics dropdown
+  const lyricsDropdown = document.getElementById('lyrics-dropdown');
+  lyricsDropdown.addEventListener('change', (e) => {
+      rhythmSystem = e.target.value;
+      render();
+  });
+
   // 16th note button
   const sixteenthNoteBtn = document.getElementById('sixteenth-note-btn');
   sixteenthNoteBtn.addEventListener('click', () => {
@@ -1186,8 +1320,38 @@
       }
   }
 
+  function getFruitRhythmText(pattern) {
+    const fruitRhythms = {
+      // Two-circle patterns
+      'B/G': ['Pie'],
+      'B/B': ['Ap', 'ple'],
+      'G/B': ['-', 'Sweet'],
+      'G/G': ['-', '-'],
+      // Four-circle patterns
+      'B/G/G/G': ['Pie'],
+      'B/G/B/G': ['Ap', '-', 'ple', '-'],
+      'B/B/B/B': ['Wa', 'ter', 'me', 'lon'],
+      'G/B/B/B': ['-', 'To', 'ma', 'to'],
+      'B/B/B/G': ['Co', 'co', 'nut', '-'],
+      'B/B/G/B': ['Ba', 'na', '-', 'na'],
+      'B/G/B/B': ['Blue', '-', 'ber', 'ry'],
+      'B/B/G/G': ['Ki', 'wi', '-', '-'],
+      'G/B/B/G': ['-', 'fi', 'let', '-'],
+      'G/G/B/B': ['-', '-', 'Ber', 'ry'],
+      'G/B/G/B': ['-', 'Sal', '-', 'sa'],
+      'B/G/G/B': ['Cher', '-', '-', 'ry'],
+      'G/B/G/G': ['-', 'Peas', '-', '-'],
+      'G/G/B/G': ['-', '-', 'Sweet', '-'],
+      'G/G/G/B': ['-', '-', '-', '&'],
+    };
+    return fruitRhythms[pattern] || [];
+  }
+
   function getChantText(activeStates) {
     const pattern = activeStates.map(a => a ? 'B' : 'G').join('/');
+    if (rhythmSystem === 'fruit-rhythms') {
+      return getFruitRhythmText(pattern);
+    }
     switch (pattern) {
       // Two-circle patterns (8th note mode)
       case 'B/G': return ['Ta', '-'];        // Quarter note
@@ -1304,7 +1468,7 @@
         const active3 = isPositionActive(lineIndex, i + 2, displayWords);
         const active4 = isPositionActive(lineIndex, i + 3, displayWords);
         const pattern = (active1 ? 'X' : 'O') + (active2 ? 'X' : 'O') + (active3 ? 'X' : 'O') + (active4 ? 'X' : 'O');
-        const imageUrl = `assets/Wordrhythms-${pattern}.svg`;
+        const imageUrl = `https://visualmusicalminds.github.io/images/Wordrhythms-${pattern}.svg`;
         notesBox.appendChild(createImage(imageUrl));
     } else {
         const i = beatStartPosition;
@@ -1313,13 +1477,13 @@
         const isSyncopated = syncopation[lineIndex].includes(i + 1);
         const syncopationType = getSyncopationType(lineIndex, i);
 
-        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateB.svg'));
-        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateC.svg'));
-        else if (isSyncopated) notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateA.svg'));
-        else if (active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarternote.svg'));
-        else if (active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthnotepair.svg'));
-        else if (!active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarterrest.svg'));
-        else if (!active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthrestnote.svg'));
+        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateB.svg'));
+        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateC.svg'));
+        else if (isSyncopated) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateA.svg'));
+        else if (active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarternote.svg'));
+        else if (active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthnotepair.svg'));
+        else if (!active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarterrest.svg'));
+        else if (!active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthrestnote.svg'));
     }
 
     group.appendChild(notesBox);
@@ -1328,7 +1492,7 @@
     wordsDiv.className = 'words';
 
     const pattern = activeStates.map(a => a ? 'B' : 'G').join('/');
-    if (pattern === 'B/G/G/G') {
+    if (pattern === 'B/G/G/G' || pattern === 'B/G') {
         wordsDiv.classList.add('center-text');
     }
 
