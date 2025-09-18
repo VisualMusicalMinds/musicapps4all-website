@@ -743,7 +743,12 @@ function updateBoxNames() {
             }
         }
         
-        buttonDiv.textContent = useAlt ? chordName : functionName;
+        if (useAlt) {
+            const formattedChordName = chordName.replace(/(#|b|𝄪)/g, '<span class="accidental">$1</span>');
+            buttonDiv.innerHTML = formattedChordName;
+        } else {
+            buttonDiv.textContent = functionName;
+        }
         buttonDiv.style.color = textColor;
     });
 }
@@ -826,7 +831,7 @@ const keyMap = {
   // V/V, IV(min), bVI(dor) -> 8
   "y": "8", "q": "8", "7": "8",
   // V/vi, v(min), V(dor) -> 9
-  "p": "9", "t": "9", "8": "8", // Corrected this line, '8' key for 'V/vi' was a typo, should be for 'V/V'
+  "p": "9", "t": "9", "8": "9",
   // IV/IV, ii°7(min), #iv°7(dor) -> n
   "h": "n", "g": "n", "9": "n", "0": null // Reassigned 0 to null
 };
@@ -1042,13 +1047,24 @@ function resizeGrid() {
     gridWidth = availableWidth;
     gridHeight = availableWidth * (aspectH/aspectW);
   }
+
+  // Store original dimensions for font size calculation
+  const originalGridWidth = gridWidth;
+  const originalGridHeight = gridHeight;
+
+  // Increase grid size by 10%
+  gridWidth *= 1.1;
+  gridHeight *= 1.1;
+
   gridEl.style.width = gridWidth + 'px';
   gridEl.style.height = gridHeight + 'px';
   gridEl.style.marginLeft = "auto";
   gridEl.style.marginRight = "auto";
   gridEl.style.marginTop = "0";
   gridEl.style.marginBottom = "0";
-  const fontSize = Math.min(gridHeight / 11, gridWidth / 4) * 0.5;
+  
+  // Use original dimensions for font size calculation
+  const fontSize = Math.min(originalGridHeight / 11, originalGridWidth / 4) * 0.5;
   gridEl.querySelectorAll('.note-button').forEach(div => {
     div.style.fontSize = fontSize + 'px';
   });
