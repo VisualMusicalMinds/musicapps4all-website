@@ -1541,7 +1541,7 @@ preloadedSongsSelector.addEventListener('change', (event) => {
 cancelNewLine.addEventListener('click', hideNewLinePopup);
 submitNewLine.addEventListener('click', handleNewLineSubmit);
 
-newLinePopup.addEventListener('click', (event) => {
+newLinePopup.addEventListener('mousedown', (event) => {
   if (event.target === newLinePopup) {
     hideNewLinePopup();
   }
