@@ -1,9 +1,9 @@
-body { margin: 0; padding: 56px 0 0 0; }
+body { margin: 0; padding: 0; }
 #poem { font-size: 1.2em; line-height: 2em; padding: 20px; }
 .line { display: block; margin-bottom: 16px; text-align: center; }
 .measure { display: inline-block; vertical-align: top; }
-.measure-divider { display: inline-block; width: 2px; height: 80px; background-color: #666; margin: 0 8px; vertical-align: top; position: relative; top: 24px; }
-.final-measure-divider { display: inline-block; width: 6px; height: 80px; background: linear-gradient(to right, #666 0%, #666 25%, transparent 25%, transparent 75%, #666 75%, #666 100%); margin: 0 8px; vertical-align: top; position: relative; top: 24px; }
+.measure-divider { display: inline-block; width: 2px; background-color: #666; margin: 0 8px; vertical-align: top; position: relative; }
+.final-measure-divider { display: inline-block; width: 6px; background: linear-gradient(to right, #666 0%, #666 25%, transparent 25%, transparent 75%, #666 75%, #666 100%); margin: 0 8px; vertical-align: top; position: relative; }
 .group { display: inline-block; vertical-align: top; margin-right: 8px; text-align: center; }
 .notes-box { display: flex; justify-content: center; align-items: center; margin-bottom: 4px; border: none; padding: 4px; transition: background-color 0.1s ease; }
 .notes-box.playing, .notes-box.selected { background-color: #ffff99; border-radius: 4px; }
@@ -124,6 +124,46 @@ body { margin: 0; padding: 56px 0 0 0; }
     padding: 0 12px;
 }
 
+/* Save Button */
+.save-button {
+    padding: 0 12px;
+}
+
+.save-icon {
+    width: 20px;
+    height: 20px;
+    background-color: #007bff;
+    border-radius: 2px;
+    position: relative;
+    border: 1px solid #0056b3;
+    box-sizing: border-box;
+}
+
+.save-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 3px;
+    width: 10px;
+    height: 10px;
+    background-color: #e6f3ff;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border: 1px solid #0056b3;
+    border-top: none;
+}
+
+.save-icon::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 2px;
+    right: 2px;
+    height: 6px;
+    background-color: #a9cce3;
+    border-top: 1px solid #0056b3;
+}
+
 /* Circle icon button */
 .icon-button { 
   display: flex; 
@@ -237,12 +277,6 @@ body { margin: 0; padding: 56px 0 0 0; }
 .play-button.playing {
   background-color: #007bff;
   color: white;
-}
-
-/* Paragraph Button */
-.paragraph-button {
-    font-size: 20px;
-    padding: 0 15px;
 }
 
 /* 16th Note Button */
