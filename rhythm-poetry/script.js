@@ -753,8 +753,8 @@
   const copyVisualBtn = document.getElementById('copy-visual-btn');
   copyVisualBtn.addEventListener('click', captureVisual);
 
-  // Paragraph (text input modal) setup
-  const paragraphBtn = document.getElementById('paragraph-btn');
+  // Save (text input modal) setup
+  const saveBtn = document.getElementById('save-btn');
   const modal = document.getElementById('text-input-modal');
   const multiLineInput = document.getElementById('multi-line-input');
   const modalCancelBtn = document.getElementById('modal-cancel-btn');
@@ -797,12 +797,20 @@
       modal.style.display = 'none';
   }
 
-  paragraphBtn.addEventListener('click', openModal);
+  saveBtn.addEventListener('click', openModal);
   modalCancelBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => {
+  let modalMousedownOnBackdrop = false;
+  modal.addEventListener('mousedown', e => {
       if (e.target === modal) {
+          modalMousedownOnBackdrop = true;
+      }
+  });
+
+  modal.addEventListener('mouseup', e => {
+      if (e.target === modal && modalMousedownOnBackdrop) {
           closeModal();
       }
+      modalMousedownOnBackdrop = false;
   });
 
   toggleAddBtn.addEventListener('click', () => {
@@ -1317,7 +1325,7 @@
         const active3 = isPositionActive(i + 2, displayWords);
         const active4 = isPositionActive(i + 3, displayWords);
         const pattern = (active1 ? 'X' : 'O') + (active2 ? 'X' : 'O') + (active3 ? 'X' : 'O') + (active4 ? 'X' : 'O');
-        const imageUrl = `./assets/Wordrhythms-${pattern}.svg`;
+        const imageUrl = `https://visualmusicalminds.github.io/images/Wordrhythms-${pattern}.svg`;
         notesBox.appendChild(createImage(imageUrl));
     } else if (config.circlesPerBeat === 2) {
         const i = beatStartPosition;
@@ -1326,13 +1334,13 @@
         const isSyncopated = syncopation.includes(i + 1);
         const syncopationType = getSyncopationType(i);
 
-        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateB.svg'));
-else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateC.svg'));
- else if (isSyncopated) notesBox.appendChild(createImage('./assets/Wordrhythms-SyncopateA.svg'));
-else if (active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarternote.svg'));
-else if (active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthnotepair.svg'));
-else if (!active1 && !active2) notesBox.appendChild(createImage('./assets/Wordrhythms-quarterrest.svg'));
-else if (!active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhythms-eighthrestnote.svg'));
+        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateB.svg'));
+        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateC.svg'));
+        else if (isSyncopated) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateA.svg'));
+        else if (active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarternote.svg'));
+        else if (active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthnotepair.svg'));
+        else if (!active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarterrest.svg'));
+        else if (!active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthrestnote.svg'));
 
     } else if (config.circlesPerBeat === 3) {
         notesBox.classList.add('compound');
@@ -1345,14 +1353,14 @@ else if (!active1 && active2) notesBox.appendChild(createImage('./assets/Wordrhy
 
         let imageUrl = '';
         switch (pattern) {
-            case 'XXX': imageUrl = './assets/Wordrhythms-XXX.svg'; break;
-case 'OOO': imageUrl = './assets/Wordrhythms-OOO.svg'; break;
-case 'XOO': imageUrl = './assets/Wordrhythms-XOO.svg'; break;
-case 'XXO': imageUrl = './assets/Wordrhythms-XXO.svg'; break;
-case 'XOX': imageUrl = './assets/Wordrhythms-XOX.svg'; break;
-case 'OXO': imageUrl = './assets/Wordrhythms-OXO.svg'; break;
-case 'OOX': imageUrl = './assets/Wordrhythms-OOX.svg'; break;
-case 'OXX': imageUrl = './assets/Wordrhythms-OXX.svg'; break;
+            case 'XXX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XXX.svg'; break;
+            case 'OOO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OOO.svg'; break;
+            case 'XOO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XOO.svg'; break;
+            case 'XXO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XXO.svg'; break;
+            case 'XOX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XOX.svg'; break;
+            case 'OXO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OXO.svg'; break;
+            case 'OOX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OOX.svg'; break;
+            case 'OXX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OXX.svg'; break;
         }
         if (imageUrl) {
             notesBox.appendChild(createImage(imageUrl));
