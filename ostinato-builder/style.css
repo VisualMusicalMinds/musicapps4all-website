@@ -1,4 +1,4 @@
-body { margin: 0; padding: 46px 0 0 0;  }
+body { margin: 0; padding: 26px 0 0 0;  }
 #poem { font-size: 1.2em; line-height: 1.5em; padding: 10px; }
 .line {
   display: flex; /* Use flexbox for alignment */
@@ -58,7 +58,7 @@ body { margin: 0; padding: 46px 0 0 0;  }
 .beat-bar {
   display: flex;
   height: 10px;
-  width: 46px;
+  width: 2.4em;
   background-color: #e0e0e0;
   border: 1px solid #c0c0c0;
   border-radius: 4px;
@@ -72,10 +72,10 @@ body { margin: 0; padding: 46px 0 0 0;  }
   pointer-events: none;
 }
 .group.sixteenth .beat-bar {
-    width: 101px;
+    width: 5.25em;
 }
 .group.sixteenth .words {
-    width: 101px;
+    width: 5.4em;
 }
 .beat-bar-half {
   width: 50%;
@@ -87,9 +87,10 @@ body { margin: 0; padding: 46px 0 0 0;  }
 }
 .words { 
   display: flex; 
-  justify-content: space-around; 
-  width: 46px; 
+  justify-content: space-between; 
+  width: 2.65em; 
   margin: 0 auto; 
+  transform: translateX(-0.156em);
 }
 .words.center-text {
   justify-content: center;
@@ -739,4 +740,24 @@ body { margin: 0; padding: 46px 0 0 0;  }
 
 .control-button:has(> .lyrics-dropdown) {
   padding: 0;
+}
+
+/* Rhythm System Fonts */
+#poem[data-rhythm-system="simple-kodaly"] .word,
+#poem[data-rhythm-system="beat-centered-kodaly"] .word {
+  font-family: 'Lexend', sans-serif;
+}
+
+#poem[data-rhythm-system="fruit-rhythms"] .word {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+}
+
+#poem[data-rhythm-system="gordon-system"] .word {
+  font-family: 'Permanent Marker', cursive;
+  line-height: 1;
+}
+
+#poem[data-rhythm-system="takadimi-system"] .word {
+  font-family: "Comic Sans MS", cursive, sans-serif;
 }
