@@ -118,6 +118,34 @@
     ]
   };
 
+  const rhythmSystems = {
+    "Simplified Kodály": {
+      "2": { "B/G": ["Ta", "-"], "B/B": ["Ti", "ti"], "G/B": ["-", "ti"], "G/G": ["-", "-"] },
+      "3": { "B/G/G": ["Ta", "-", "-"], "B/B/B": ["Ti", "ti", "ti"], "B/B/G": ["Ti", "ta", "-"], "B/G/B": ["Ta", "-", "ti"], "G/B/G": ["-", "Ta", "-"], "G/B/B": ["-", "ti", "ti"], "G/G/B": ["-", "-", "ti"], "G/G/G": ["-", "-", "-"] },
+      "4": { "B/G/G/G": ["Ta", "-", "-", "-"], "B/G/B/G": ["Ti", "-", "ti", "-"], "B/B/B/B": ["Ti", "ki", "ti", "ki"], "G/B/B/B": ["-", "ki", "ti", "ki"], "B/B/B/G": ["Ti", "ki", "ti", "-"], "B/B/G/B": ["Ti", "ki", "-", "ki"], "B/G/B/B": ["Ti", "-", "ti", "ki"], "B/B/G/G": ["Ti", "ki", "-", "-"], "G/B/B/G": ["-", "ki", "ti", "-"], "G/G/B/B": ["-", "-", "ti", "ki"], "G/B/G/B": ["-", "ki", "-", "ki"], "B/G/G/B": ["Ti", "-", "-", "ki"], "G/B/G/G": ["-", "ki", "-", "-"], "G/G/B/G": ["-", "-", "ti", "-"], "G/G/G/B": ["-", "-", "-", "ki"], "G/G/G/G": ["-", "-", "-", "-"] }
+    },
+    "Beat Centered Kodály": {
+      "2": { "B/G": ["Ta", "-"], "B/B": ["Ta", "ti"], "G/B": ["-", "ti"], "G/G": ["-", "-"] },
+      "3": { "B/G/G": ["Ta", "-", "-"], "B/B/B": ["Ta", "ti", "ti"], "B/B/G": ["Ta", "ti", "-"], "B/G/B": ["Ta", "-", "ti"], "G/B/G": ["-", "Ta", "-"], "G/B/B": ["-", "ti", "ti"], "G/G/B": ["-", "-", "ti"], "G/G/G": ["-", "-", "-"] },
+      "4": { "B/G/G/G": ["Ta", "-", "-", "-"], "B/G/B/G": ["Ta", "-", "ti", "-"], "B/B/B/B": ["Ta", "ka", "ti", "ka"], "G/B/B/B": ["-", "ka", "ti", "ka"], "B/B/B/G": ["Ta", "ka", "ti", "-"], "B/B/G/B": ["Ta", "ka", "-", "ka"], "B/G/B/B": ["Ta", "-", "ti", "ka"], "B/B/G/G": ["Ta", "ka", "-", "-"], "G/B/B/G": ["-", "ka", "ti", "-"], "G/G/B/B": ["-", "-", "ti", "ka"], "G/B/G/B": ["-", "ka", "-", "ka"], "B/G/G/B": ["Ta", "-", "-", "ka"], "G/B/G/G": ["-", "ka", "-", "-"], "G/G/B/G": ["-", "-", "ti", "-"], "G/G/G/B": ["-", "-", "-", "ka"], "G/G/G/G": ["-", "-", "-", "-"] }
+    },
+    "Gordon System": {
+      "2": { "B/G": ["Du", "-"], "B/B": ["Du", "de"], "G/B": ["-", "de"], "G/G": ["-", "-"] },
+      "3": { "B/G/G": ["Du", "-", "-"], "B/B/B": ["Du", "da", "di"], "B/B/G": ["Du", "da", "-"], "B/G/B": ["Du", "-", "di"], "G/B/G": ["-", "da", "-"], "G/B/B": ["-", "da", "di"], "G/G/B": ["-", "-", "di"], "G/G/G": ["-", "-", "-"] },
+      "4": { "B/G/G/G": ["Du", "-", "-", "-"], "B/G/B/G": ["Du", "-", "de", "-"], "B/B/B/B": ["Du", "ta", "de", "ta"], "G/B/B/B": ["-", "ta", "de", "ta"], "B/B/B/G": ["Du", "ta", "de", "-"], "B/B/G/B": ["Du", "ta", "-", "ta"], "B/G/B/B": ["Du", "-", "de", "ta"], "B/B/G/G": ["Du", "ta", "-", "-"], "G/B/B/G": ["-", "ta", "de", "-"], "G/G/B/B": ["-", "-", "de", "ta"], "G/B/G/B": ["-", "ta", "-", "ta"], "B/G/G/B": ["Du", "-", "-", "ta"], "G/B/G/G": ["-", "ta", "-", "-"], "G/G/B/G": ["-", "-", "de", "-"], "G/G/G/B": ["-", "-", "-", "ta"], "G/G/G/G": ["-", "-", "-", "-"] }
+    },
+    "Takadimi System": {
+      "2": { "B/G": ["Ta", "-"], "B/B": ["Ta", "di"], "G/B": ["-", "di"], "G/G": ["-", "-"] },
+      "3": { "B/G/G": ["Ta", "-", "-"], "B/B/B": ["Ta", "ki", "da"], "B/B/G": ["Ta", "ki", "-"], "B/G/B": ["Ta", "-", "da"], "G/B/G": ["-", "ki", "-"], "G/B/B": ["-", "ki", "da"], "G/G/B": ["-", "-", "da"], "G/G/G": ["-", "-", "-"] },
+      "4": { "B/G/G/G": ["Ta", "-", "-", "-"], "B/G/B/G": ["Ta", "-", "di", "-"], "B/B/B/B": ["Ta", "ka", "di", "mi"], "G/B/B/B": ["-", "ka", "di", "mi"], "B/B/B/G": ["Ta", "ka", "di", "-"], "B/B/G/B": ["Ta", "ka", "-", "mi"], "B/G/B/B": ["Ta", "-", "di", "mi"], "B/B/G/G": ["Ta", "ka", "-", "-"], "G/B/B/G": ["-", "ka", "di", "-"], "G/G/B/B": ["-", "-", "di", "mi"], "G/B/G/B": ["-", "ka", "-", "mi"], "B/G/G/B": ["Ta", "-", "-", "mi"], "G/B/G/G": ["-", "ka", "-", "-"], "G/G/B/G": ["-", "-", "di", "-"], "G/G/G/B": ["-", "-", "-", "mi"], "G/G/G/G": ["-", "-", "-", "-"] }
+    },
+    "Fruit Rhythms": {
+      "2": { "B/G": ["Pie", "-"], "B/B": ["Ap", "ple"], "G/B": ["-", "Sweet"], "G/G": ["-", "-"] },
+      "3": { "B/G/G": ["Pie", "-", "-"], "B/B/B": ["Pine", "ap", "ple"], "B/B/G": ["Yo", "gurt", "-"], "B/G/B": ["Le", "-", "mon"], "G/B/G": ["-", "Peas", "-"], "G/B/B": ["-", "Spi", "cy"], "G/G/B": ["-", "-", "Sweet"], "G/G/G": ["-", "-", "-"] },
+      "4": { "B/G/G/G": ["Pie", "-", "-", "-"], "B/G/B/G": ["Ap", "-", "ple", "-"], "B/B/B/B": ["Wa", "ter", "me", "lon"], "G/B/B/B": ["-", "To", "ma", "to"], "B/B/B/G": ["Co", "co", "nut", "-"], "B/B/G/B": ["Ba", "na", "-", "na"], "B/G/B/B": ["Blue", "-", "ber", "ry"], "B/B/G/G": ["Ki", "wi", "-", "-"], "G/B/B/G": ["-", "Fi", "let", "-"], "G/G/B/B": ["-", "-", "Ber", "ry"], "G/B/G/B": ["-", "Sal", "-", "sa"], "B/G/G/B": ["Cher", "-", "-", "ry"], "G/B/G/G": ["-", "Peas", "-", "-"], "G/G/B/G": ["-", "-", "Sweet", "-"], "G/G/G/B": ["-", "-", "-", "&"], "G/G/G/G": ["-", "-", "-", "-"] }
+    }
+  };
+
   let words = lyricsLibrary['hickory-dickory-dock'].slice(); // Start with default lyrics
   
   let syncopation = []; // Track syncopated positions
@@ -126,8 +154,8 @@
   let circleIconActive = true;
   let timeSignatureNumerator = 4;
   let timeSignatureDenominator = 4;
-  let sixteenthNoteModeActive = false;
-  let originalEighthNotePattern = []; // Store the original 8th note pattern
+  let subdivisionMode = 2; // 2 | 3 | 4, default eighths
+  let canonicals = { 2: [], 3: [], 4: [] }; // canonical timelines at 12 ticks per beat
   let hasPickupMeasure = false;
   let isFirstPlay = true;
   let isPlaying = false;
@@ -135,15 +163,47 @@
   let currentPlayPosition = 0;
   let selectedPlayStartPosition = null; // To store the selected starting beat
   let notesBoxElements = []; // Store references to notes boxes for highlighting
-  let beatEnabled = true; // Beat checkbox state
-  let rhythmEnabled = true; // Rhythm checkbox state
+  let beatEnabled = true; // Beat toggle state
+  let rhythmEnabled = true; // Rhythm toggle state
+  let introEnabled = true; // Intro count-in state
   let BPM = 82;
   let textImportMode = 'replace'; // 'add' or 'replace'
   let savedTextInput = ''; // Store the text from the modal
   let chantModeActive = false;
+  let currentRhythmSystem = 'Simplified Kodály';
+  let pitchMode = 'pitch'; // 'pitch' or 'drum'
+
+  // NEW: independent chant mode active states per subdivision (2,3,4)
+  let chantActiveBySubdivision = { 2: [], 3: [], 4: [] };
 
   // Audio context for generating sounds
   let audioContext = null;
+
+// --- NEW HELPERS FOR CHANT MODE ---
+
+  function deriveActiveStatesFromWords(wordArray) {
+    return wordArray.map(w => w !== '-' && w !== '');
+  }
+
+  function ensureChantArrayInitializedForCurrentView() {
+    const arr = chantActiveBySubdivision[subdivisionMode];
+    if (!arr || arr.length === 0) {
+      // Initialize from current words view without altering lyrics
+      chantActiveBySubdivision[subdivisionMode] = deriveActiveStatesFromWords(
+        fromCanonical12(canonicals[subdivisionMode], subdivisionMode)
+      );
+    }
+  }
+
+  function ensureChantArrayLengthForCurrentView(targetLen) {
+    const arr = chantActiveBySubdivision[subdivisionMode];
+    if (!arr) return;
+    if (arr.length < targetLen) {
+      arr.push(...new Array(targetLen - arr.length).fill(false));
+    } else if (arr.length > targetLen) {
+      arr.length = targetLen;
+    }
+  }
 
   function initAudioContext() {
     if (!audioContext) {
@@ -344,39 +404,120 @@
     return null;
   }
 
-  // Convert 8th note pattern to 16th note pattern by inserting inactive notes
-  function convertTo16thNotePattern(eighthNoteWords) {
-    const sixteenthNoteWords = [];
-    for (let i = 0; i < eighthNoteWords.length; i += 2) {
-      // For each beat (2 eighth notes), expand to 4 sixteenth notes
-      const firstEighth = eighthNoteWords[i] || '-';
-      const secondEighth = eighthNoteWords[i+1] || '-';
-      
-      // Add the first eighth note
-      sixteenthNoteWords.push(firstEighth);
-      // Add an inactive note after the first eighth note
-      sixteenthNoteWords.push('-');
-      // Add the second eighth note
-      sixteenthNoteWords.push(secondEighth);
-      // Add an inactive note after the second eighth note
-      sixteenthNoteWords.push('-');
-    }
-    return sixteenthNoteWords;
+  // Extract only the syllables/words that occupy active rhythm positions
+  function extractActiveTokens(wordArray) {
+    return wordArray.filter(word => word !== '-' && word !== '');
   }
 
-  // Convert 16th note pattern back to 8th note pattern by removing inactive notes
-  function convertTo8thNotePattern(sixteenthNoteWords) {
-    const eighthNoteWords = [];
-    for (let i = 0; i < sixteenthNoteWords.length; i += 4) {
-      // For each beat (4 sixteenth notes), compress to 2 eighth notes
-      eighthNoteWords.push(sixteenthNoteWords[i] || '-');
-      eighthNoteWords.push(sixteenthNoteWords[i+2] || '-');
+  // Count trailing rests so we can keep them anchored at the end of the timeline
+  function countTrailingRests(wordArray) {
+    let count = 0;
+    for (let i = wordArray.length - 1; i >= 0; i--) {
+      if (wordArray[i] === '-' || wordArray[i] === '') count++;
+      else break;
     }
-    return eighthNoteWords;
+    return count;
   }
+
+  // Rebuild the words array so that the supplied active states receive tokens in order
+  function rebuildWordsFromActiveStates(tokens, activeStates) {
+  const rebuilt = [];
+  let tokenIndex = 0;
+
+  for (let i = 0; i < activeStates.length; i++) {
+    if (activeStates[i]) {
+      if (tokenIndex < tokens.length) rebuilt.push(tokens[tokenIndex++]);
+      else rebuilt.push('-'); // Never create a "placeholder" active slot
+    } else {
+      rebuilt.push('-');
+    }
+  }
+
+  // If there are any remaining tokens (rare here), append them
+  while (tokenIndex < tokens.length) {
+    rebuilt.push(tokens[tokenIndex++]);
+  }
+
+  return rebuilt;
+}
+
+// Helper to trim any excess trailing rests while preserving the original tail
+function trimActiveStatesTail(activeStates, keepTrailingRests) {
+  let trailing = 0;
+  for (let i = activeStates.length - 1; i >= 0; i--) {
+    if (!activeStates[i]) trailing++;
+    else break;
+  }
+  const excess = trailing - keepTrailingRests;
+  if (excess > 0) {
+    activeStates.splice(activeStates.length - excess, excess);
+  }
+}
+
+// Replace the existing applyIsolatedRhythmChange with this version
+function applyIsolatedRhythmChange(position) {
+  if (syncopation.length > 0) return false; // Avoid breaking stored syncopation indices
+
+  const tokens = extractActiveTokens(words);
+  const activeStates = words.map(word => word !== '-' && word !== '');
+  const originalTrailingRests = countTrailingRests(words);
+
+  if (!activeStates[position] && tokens.length === 0 && position >= words.length) {
+    // Nothing to shift yet – fall back to legacy behaviour
+    return false;
+  }
+
+  const wasActive = activeStates[position] || false;
+  activeStates[position] = !wasActive;
+
+  const tokensLen = tokens.length;
+  let activeCount = activeStates.reduce((sum, state) => sum + (state ? 1 : 0), 0);
+
+  if (activeCount < tokensLen) {
+    // Need extra active slots to place all tokens; insert them just before trailing rests
+    const needed = tokensLen - activeCount;
+    let insertPos = Math.max(position + 1, activeStates.length - originalTrailingRests);
+    for (let i = 0; i < needed; i++) {
+      activeStates.splice(insertPos, 0, true);
+      insertPos++;
+    }
+  } else if (activeCount > tokensLen) {
+    // We have more active slots than tokens. Turn off one later slot (prefer the rightmost one before trailing rests).
+    let cutoff = Math.max(0, activeStates.length - originalTrailingRests - 1);
+    let turnedOff = false;
+    for (let i = cutoff; i >= 0; i--) {
+      if (i !== position && activeStates[i]) {
+        activeStates[i] = false;
+        turnedOff = true;
+        break;
+      }
+    }
+    if (!turnedOff) {
+      // Fallback: if everything else failed, turn off any earlier true
+      for (let i = cutoff; i >= 0; i--) {
+        if (activeStates[i]) {
+          activeStates[i] = false;
+          break;
+        }
+      }
+    }
+    // Ensure we don't keep new, unnecessary trailing rests (shrink back to original tail)
+    trimActiveStatesTail(activeStates, originalTrailingRests);
+  }
+
+  words = rebuildWordsFromActiveStates(tokens, activeStates);
+  return true;
+}
 
   // Check if a position should be considered active (for rhythm and display)
   function isPositionActive(position, wordArray) {
+    // NEW: In chant mode, use independent chant states only
+    if (chantModeActive) {
+      ensureChantArrayInitializedForCurrentView();
+      ensureChantArrayLengthForCurrentView(wordArray.length);
+      return !!chantActiveBySubdivision[subdivisionMode][position];
+    }
+
     if (isAffectedBySyncopation(position)) {
       return syncopationStates[position] || false;
     } else {
@@ -413,6 +554,49 @@
     source.stop(ctx.currentTime + 0.1);
   }
 
+  // Create a bass drum sound
+  function playBassDrum() {
+    if (!rhythmEnabled) return;
+    const ctx = initAudioContext();
+    const time = ctx.currentTime;
+
+    // Main oscillator for the "body" of the kick
+    const bodyOsc = ctx.createOscillator();
+    bodyOsc.type = 'sine';
+    bodyOsc.frequency.setValueAtTime(120, time);
+    bodyOsc.frequency.exponentialRampToValueAtTime(50, time + 0.2);
+
+    // Second oscillator for the "attack" or "beater" sound
+    const attackOsc = ctx.createOscillator();
+    attackOsc.type = 'triangle';
+    attackOsc.frequency.setValueAtTime(800, time);
+    attackOsc.frequency.exponentialRampToValueAtTime(50, time + 0.1);
+
+    // Gain node for the attack to give it a sharp decay
+    const attackGain = ctx.createGain();
+    attackGain.gain.setValueAtTime(0.8, time);
+    attackGain.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+
+    // Main gain node to shape the overall sound and prevent clicks
+    const mainGain = ctx.createGain();
+    mainGain.gain.setValueAtTime(0, time);
+    mainGain.gain.linearRampToValueAtTime(1, time + 0.01); // Quick ramp up
+    mainGain.gain.exponentialRampToValueAtTime(0.1, time + 0.3); // Body decay
+    mainGain.gain.linearRampToValueAtTime(0, time + 0.4); // Smooth ramp to 0 to avoid click
+
+    // Connect the nodes
+    bodyOsc.connect(mainGain);
+    attackOsc.connect(attackGain);
+    attackGain.connect(mainGain);
+    mainGain.connect(ctx.destination);
+
+    // Start and stop the oscillators
+    bodyOsc.start(time);
+    attackOsc.start(time);
+    bodyOsc.stop(time + 0.4);
+    attackOsc.stop(time + 0.4);
+  }
+
   // Play triangle wave tone at A2 (110 Hz)
   function playTriangleTone(duration = 0.2) {
     if (!rhythmEnabled) return;
@@ -433,6 +617,14 @@
 
   // Get rhythm pattern from current words including syncopation
   function getRhythmPattern() {
+    // NEW: In chant mode, playback should follow chant states directly
+    if (chantModeActive) {
+      ensureChantArrayInitializedForCurrentView();
+      ensureChantArrayLengthForCurrentView(words.length);
+      // Copy only the current visible length of the words array
+      return chantActiveBySubdivision[subdivisionMode].slice(0, words.length);
+    }
+
     const pattern = [];
     for (let i = 0; i < words.length; i++) {
       const hasWord = words[i] !== '-' && words[i] !== '';
@@ -479,6 +671,137 @@
     notesBoxElements.forEach(box => box.classList.remove('playing'));
   }
 
+const ALLOWED_SUBDIVISIONS = [2, 3, 4];
+const WINDOW_SIZES_PER_BEAT = { 2: 6, 3: 4, 4: 3 };
+
+function getWindowSize(subdivision) {
+  return WINDOW_SIZES_PER_BEAT[subdivision] || 6;
+}
+
+function totalBeatsForWords(viewWords, subdivision) {
+  return Math.ceil((viewWords.length || 0) / subdivision);
+}
+
+// Convert current view to 12-grid canonical (no merge)
+function toCanonical12(viewWords, subdivision) {
+  const beats = totalBeatsForWords(viewWords, subdivision);
+  const win = getWindowSize(subdivision);
+  const out = new Array(beats * 12).fill('-');
+
+  for (let b = 0; b < beats; b++) {
+    for (let s = 0; s < subdivision; s++) {
+      const viewIdx = b * subdivision + s;
+      const token = (viewWords[viewIdx] !== undefined) ? viewWords[viewIdx] : '-';
+      const wStart = b * 12 + s * win;
+      out[wStart] = (token && token !== '-') ? token : '-';
+      for (let t = 1; t < win; t++) {
+        out[wStart + t] = '-';
+      }
+    }
+  }
+  return out;
+}
+
+// Project 12-grid canonical to a target subdivision view
+function fromCanonical12(canon12, subdivision) {
+  const beats = Math.ceil((canon12.length || 0) / 12);
+  const win = getWindowSize(subdivision);
+  const out = [];
+
+  for (let b = 0; b < beats; b++) {
+    for (let s = 0; s < subdivision; s++) {
+      const wStart = b * 12 + s * win;
+      const wEnd = wStart + win;
+      let placed = '-';
+      for (let k = wStart; k < wEnd && k < canon12.length; k++) {
+        const tok = canon12[k];
+        if (tok && tok !== '-') { placed = tok; break; }
+      }
+      out.push(placed);
+    }
+  }
+  return out;
+}
+
+// Merge an edited view into canonical 12-grid, beat-by-beat
+function mergeViewIntoCanonical(canon12, viewWords, subdivision) {
+  const beats = totalBeatsForWords(viewWords, subdivision);
+  const win = getWindowSize(subdivision);
+  const next = canon12.slice();
+
+  for (let b = 0; b < beats; b++) {
+    // Slice the edited beat
+    const editedBeat = [];
+    for (let s = 0; s < subdivision; s++) {
+      editedBeat.push(viewWords[b * subdivision + s] ?? '-');
+    }
+
+    // Re-derive the projected beat from canonical
+    const derivedBeat = [];
+    for (let s = 0; s < subdivision; s++) {
+      const wStart = b * 12 + s * win;
+      const wEnd = wStart + win;
+      let placed = '-';
+      for (let k = wStart; k < wEnd && k < next.length; k++) {
+        const tok = next[k];
+        if (tok && tok !== '-') { placed = tok; break; }
+      }
+      derivedBeat.push(placed);
+    }
+
+    // Compare and optionally rewrite only this beat's windows
+    let equal = true;
+    for (let i = 0; i < subdivision; i++) {
+      if ((editedBeat[i] || '-') !== (derivedBeat[i] || '-')) { equal = false; break; }
+    }
+    if (!equal) {
+      for (let s = 0; s < subdivision; s++) {
+        const token = editedBeat[s] && editedBeat[s] !== '' ? editedBeat[s] : '-';
+        const wStart = b * 12 + s * win;
+        const wEnd = wStart + win;
+        // Clear window
+        for (let k = wStart; k < wEnd && k < next.length; k++) next[k] = '-';
+        // Place token at window start if active
+        if (token !== '-') next[wStart] = token;
+      }
+    }
+  }
+  return next;
+}
+
+function synchronizeLyrics() {
+    const sourceCanon = canonicals[subdivisionMode];
+    const activeTokens = extractActiveTokens(fromCanonical12(sourceCanon, subdivisionMode));
+
+    for (const s of [2, 3, 4]) {
+        if (s === subdivisionMode) continue;
+
+        const targetView = fromCanonical12(canonicals[s], s);
+        const targetActiveStates = targetView.map(w => w !== '-' && w !== '');
+        const newTargetView = rebuildWordsFromActiveStates(activeTokens, targetActiveStates);
+        canonicals[s] = mergeViewIntoCanonical(canonicals[s], newTargetView, s);
+    }
+}
+
+// Add this small sanitizer and call it in commitAndUpdateView to prevent phantom actives
+function sanitizeWordsArray(arr) {
+  return arr.map(w => (w === ' ' || w === '' ? '-' : w));
+}
+
+// Update commitAndUpdateView to sanitize words before merging
+function commitAndUpdateView() {
+  // Remove any accidental placeholders so canonical never grows from "active spaces"
+  words = sanitizeWordsArray(words);
+
+  canonicals[subdivisionMode] = mergeViewIntoCanonical(canonicals[subdivisionMode], words, subdivisionMode);
+  
+  // Sync lyrics to other canonicals
+  synchronizeLyrics();
+
+  words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode);
+  render();
+}
+
   function createImage(url) {
     const img = document.createElement('img');
     img.src = url;
@@ -488,12 +811,19 @@
   // Get layout configuration based on time signature and screen width
   function getLayoutConfig() {
     const screenWidth = window.innerWidth;
-    let circlesPerBeat = timeSignatureDenominator === 8 ? 3 : 2;
-    if (timeSignatureDenominator === 4 && sixteenthNoteModeActive) {
-        circlesPerBeat = 4;
+  
+    let circlesPerBeat;
+    if (timeSignatureDenominator === 8) {
+      circlesPerBeat = 3; // lock to triplets in compound time
+      subdivisionMode = 3; // ensure UI reflects this
+    } else {
+      circlesPerBeat = subdivisionMode; // allow 2, 3, 4 in 4/4
     }
-    const beatsPerMeasure = timeSignatureDenominator === 8 ? timeSignatureNumerator / 3 : timeSignatureNumerator;
-    
+  
+    const beatsPerMeasure = (timeSignatureDenominator === 8)
+      ? timeSignatureNumerator / 3
+      : timeSignatureNumerator;
+  
     let measuresPerLine = 1;
     if (timeSignatureDenominator === 4) { // Simple Time
       switch(timeSignatureNumerator) {
@@ -550,6 +880,8 @@
 
   // Lyrics Dropdown
   const lyricsDropdown = document.getElementById('lyrics-dropdown');
+  const rhythmSystemsDropdown = document.getElementById('rhythm-systems-dropdown');
+
   function populateLyricsDropdown() {
     lyricsDropdown.innerHTML = ''; // Clear existing options
     for (const key in lyricsLibrary) {
@@ -592,15 +924,24 @@
             }
         }
         
-        // Reset to 8th note mode when changing songs
-        if (sixteenthNoteModeActive) {
-            sixteenthNoteModeActive = false;
-            sixteenthNoteBtn.classList.remove('active');
-            originalEighthNotePattern = [];
-        }
-        
+        // Reset subdivision and initialize canonical
+        subdivisionMode = (timeSignatureDenominator === 8) ? 3 : 2;
+        canonicals[2] = toCanonical12(words, 2);
+        canonicals[3] = toCanonical12(words, 3);
+        canonicals[4] = toCanonical12(words, 4);
+        words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode); // Ensure words matches the default view
+
+        // NEW: reset chant arrays so they initialize from this new song
+        chantActiveBySubdivision = { 2: [], 3: [], 4: [] };
+
+        updateSubdivisionButtonVisual();
         render();
     }
+  });
+
+  rhythmSystemsDropdown.addEventListener('change', (e) => {
+    currentRhythmSystem = e.target.value;
+    render();
   });
 
 
@@ -608,21 +949,31 @@
   const poetryModeBtn = document.getElementById('poetry-mode-btn');
   const chantModeBtn = document.getElementById('chant-mode-btn');
 
+  function setMode(isChant) {
+    chantModeActive = isChant;
+
+    // NEW: ensure chant state is ready when switching into Chant mode
+    if (chantModeActive) {
+      ensureChantArrayInitializedForCurrentView();
+      ensureChantArrayLengthForCurrentView(words.length);
+    }
+
+    poetryModeBtn.classList.toggle('active', !isChant);
+    chantModeBtn.classList.toggle('active', isChant);
+    lyricsDropdown.classList.toggle('hidden', isChant);
+    rhythmSystemsDropdown.classList.toggle('hidden', !isChant);
+    render();
+  }
+
   poetryModeBtn.addEventListener('click', () => {
     if (chantModeActive) {
-      chantModeActive = false;
-      poetryModeBtn.classList.add('active');
-      chantModeBtn.classList.remove('active');
-      render();
+      setMode(false);
     }
   });
 
   chantModeBtn.addEventListener('click', () => {
     if (!chantModeActive) {
-      chantModeActive = true;
-      chantModeBtn.classList.add('active');
-      poetryModeBtn.classList.remove('active');
-      render();
+      setMode(true);
     }
   });
 
@@ -661,37 +1012,33 @@
     }
     timeSignatureTopBtn.textContent = timeSignatureNumerator;
     
-    // Reset to 8th note mode when changing time signature
-    if (sixteenthNoteModeActive) {
-        sixteenthNoteModeActive = false;
-        sixteenthNoteBtn.classList.remove('active');
-        words = originalEighthNotePattern.slice();
-        originalEighthNotePattern = [];
-    }
-    
     render();
   });
 
   timeSignatureBottomBtn.addEventListener('click', () => {
-    // Reset to 8th note mode when changing time signature
-    if (sixteenthNoteModeActive) {
-        sixteenthNoteModeActive = false;
-        sixteenthNoteBtn.classList.remove('active');
-        words = originalEighthNotePattern.slice();
-        originalEighthNotePattern = [];
-    }
+    // Commit current edits to canonical BEFORE changing denominator
+    canonicals[subdivisionMode] = mergeViewIntoCanonical(canonicals[subdivisionMode], words, subdivisionMode);
     
     if (timeSignatureDenominator === 4) {
       timeSignatureDenominator = 8;
       timeSignatureNumerator = 6; // Default for compound time
+      subdivisionMode = 3; // Force subdivisionMode = 3
     } else {
       timeSignatureDenominator = 4;
       timeSignatureNumerator = 4; // Default for simple time
+      subdivisionMode = 2; // Default to 8th notes for simple time
     }
+
+    // Derive new words view from canonical
+    words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode);
+
+    // NEW: reset chant arrays on major timebase switches
+    chantActiveBySubdivision = { 2: [], 3: [], 4: [] };
+
     timeSignatureTopBtn.textContent = timeSignatureNumerator;
     timeSignatureBottomBtn.textContent = timeSignatureDenominator;
     timeSignatureButton.classList.toggle('compound', timeSignatureDenominator === 8);
-    updateSixteenthNoteButtonState();
+    updateSubdivisionButtonVisual();
     render();
   });
 
@@ -743,11 +1090,43 @@
     if (isPlaying) stopPlayback(); else startPlayback();
   });
 
-  // Checkbox handlers
-  const beatCheckbox = document.getElementById('beat-checkbox');
-  const rhythmCheckbox = document.getElementById('rhythm-checkbox');
-  beatCheckbox.addEventListener('change', (e) => { beatEnabled = e.target.checked; });
-  rhythmCheckbox.addEventListener('change', (e) => { rhythmEnabled = e.target.checked; });
+  // Sound Toggle Buttons
+  const beatToggle = document.getElementById('beat-toggle');
+  const rhythmToggle = document.getElementById('rhythm-toggle');
+  const introToggle = document.getElementById('intro-toggle');
+  const pitchToggle = document.getElementById('pitch-toggle');
+
+  beatToggle.addEventListener('click', () => {
+    beatEnabled = !beatEnabled;
+    beatToggle.classList.toggle('active', beatEnabled);
+  });
+
+  rhythmToggle.addEventListener('click', () => {
+    rhythmEnabled = !rhythmEnabled;
+    rhythmToggle.classList.toggle('active', rhythmEnabled);
+  });
+
+  introToggle.addEventListener('click', () => {
+    introEnabled = !introEnabled;
+    introToggle.classList.toggle('active', introEnabled);
+  });
+
+  pitchToggle.addEventListener('click', () => {
+    if (pitchMode === 'pitch') {
+        pitchMode = 'drum';
+        pitchToggle.textContent = 'Drum';
+        pitchToggle.classList.remove('pitch');
+        pitchToggle.classList.add('drum');
+    } else {
+        pitchMode = 'pitch';
+        pitchToggle.textContent = 'Pitch';
+        pitchToggle.classList.remove('drum');
+        pitchToggle.classList.add('pitch');
+    }
+  });
+  
+  // Initialize pitch toggle state
+  pitchToggle.classList.add('pitch');
 
   // Copy Visual button
   const copyVisualBtn = document.getElementById('copy-visual-btn');
@@ -762,42 +1141,78 @@
   const modalCopyBtn = document.getElementById('modal-copy-btn');
   const toggleAddBtn = document.getElementById('toggle-add-btn');
   const toggleReplaceBtn = document.getElementById('toggle-replace-btn');
+  const save8thBtn = document.getElementById('save-8th-btn');
+  const save16thBtn = document.getElementById('save-16th-btn');
+  const saveTripletBtn = document.getElementById('save-triplet-btn');
 
-  function openModal() {
-      // Generate the metadata header
-      const timeSig = `${timeSignatureNumerator}/${timeSignatureDenominator}`;
-      let sixteenthStatus = 'no';
-      if (timeSignatureDenominator === 4 && sixteenthNoteModeActive) {
-          sixteenthStatus = 'yes';
-      }
-      const header = `[BPM:${BPM} \\ Time Signature: ${timeSig} \\ 16th notes: ${sixteenthStatus}]`;
+  function generateSaveText() {
+    let fullText = '';
+    const activeButtons = document.querySelectorAll('.save-option-btn.active');
+    
+    activeButtons.forEach(button => {
+        let section;
+        let wordsForView;
+        let timeSigForView;
 
-      // Generate the body text, handling pickup measures and syncopation
-      let bodyText;
-      const textWithSyncopation = wordsToText();
+        switch (button.id) {
+            case 'save-8th-btn':
+                section = '8th Notes';
+                wordsForView = fromCanonical12(canonicals[2], 2);
+                timeSigForView = '4/4';
+                break;
+            case 'save-16th-btn':
+                section = '16th Notes';
+                wordsForView = fromCanonical12(canonicals[4], 4);
+                timeSigForView = '4/4';
+                break;
+            case 'save-triplet-btn':
+                section = 'Triplet';
+                wordsForView = fromCanonical12(canonicals[3], 3);
+                timeSigForView = '6/8';
+                break;
+        }
 
-      if (hasPickupMeasure) {
-          const config = getLayoutConfig();
-          const wordTokens = textWithSyncopation.split(' ');
-          const pickupText = wordTokens.slice(0, config.circlesPerBeat).join(' ');
-          const remainingText = wordTokens.slice(config.circlesPerBeat).join(' ');
-          bodyText = `${pickupText} | ${remainingText}`;
-      } else {
-          bodyText = textWithSyncopation;
-      }
+        const header = `[BPM:${BPM} \\ Time Signature: ${timeSigForView} \\ Section: ${section}]`;
+        
+        // This is a simplified version of wordsToText for the specific view
+        const bodyText = wordsForView.map(word => (word === '-' || word === '') ? '\\' : word).join(' ');
 
-      const fullText = `${header}\n${bodyText}`;
-      multiLineInput.value = fullText;
-      
-      savedTextInput = fullText;
-      modal.style.display = 'flex';
+        fullText += `${header}\n${bodyText}\n\n`;
+    });
+
+    multiLineInput.value = fullText.trim();
   }
+
+
+function openModal() {
+  // Determine current section type (2: 8th, 4: 16th, 3: triplet)
+  const currentSectionType = (timeSignatureDenominator === 8) ? 3 : subdivisionMode;
+
+  // Activate only the current section tab on open
+  save8thBtn.classList.toggle('active', currentSectionType === 2);
+  save16thBtn.classList.toggle('active', currentSectionType === 4);
+  saveTripletBtn.classList.toggle('active', currentSectionType === 3);
+
+  // Generate text only for the active tab(s)
+  generateSaveText();
+
+  // Show modal
+  modal.style.display = 'flex';
+}
 
   function closeModal() {
       modal.style.display = 'none';
   }
 
   saveBtn.addEventListener('click', openModal);
+
+  [save8thBtn, save16thBtn, saveTripletBtn].forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        generateSaveText();
+    });
+  });
+
   modalCancelBtn.addEventListener('click', closeModal);
   let modalMousedownOnBackdrop = false;
   modal.addEventListener('mousedown', e => {
@@ -847,177 +1262,141 @@
       }, 1000);
   });
   
-  modalSubmitBtn.addEventListener('click', () => {
-      const text = multiLineInput.value;
-      if (text) {
-          savedTextInput = text;
-          const lines = text.split('\n');
-          let firstLine = lines[0];
-          let contentText;
-
-          if (firstLine.startsWith('[') && firstLine.endsWith(']')) {
-              const settingsStr = firstLine.slice(1, -1);
-              
-              const bpmMatch = settingsStr.match(/BPM:(\d+)/);
-              if (bpmMatch && bpmMatch[1]) {
-                  let newBPM = parseInt(bpmMatch[1], 10);
-                  if (!isNaN(newBPM)) {
-                      if (newBPM > 600) newBPM = 600;
-                      if (newBPM <= 20) newBPM = 21;
-                      BPM = newBPM;
-                      bpmValueSpan.textContent = BPM;
-                  }
-              }
-
-              const tsMatch = settingsStr.match(/Time Signature: (\d+)\/(\d+)/);
-              if (tsMatch && tsMatch[1] && tsMatch[2]) {
-                  const newNumerator = parseInt(tsMatch[1], 10);
-                  const newDenominator = parseInt(tsMatch[2], 10);
-                  if (!isNaN(newNumerator) && !isNaN(newDenominator)) {
-                      timeSignatureNumerator = newNumerator;
-                      timeSignatureDenominator = newDenominator;
-                      timeSignatureTopBtn.textContent = newNumerator;
-                      timeSignatureBottomBtn.textContent = newDenominator;
-                      timeSignatureButton.classList.toggle('compound', newDenominator === 8);
-                  }
-              }
-
-              const sixteenthMatch = settingsStr.match(/16th notes: (yes|no)/);
-              if (sixteenthMatch && sixteenthMatch[1]) {
-                  if (timeSignatureDenominator === 8) {
-                      sixteenthNoteModeActive = false;
-                  } else {
-                      const newSixteenthModeActive = (sixteenthMatch[1] === 'yes');
-                      // Don't toggle the 16th note mode yet; it will be handled properly when processing the content
-                      sixteenthNoteModeActive = newSixteenthModeActive;
-                      sixteenthNoteBtn.classList.toggle('active', newSixteenthModeActive);
-                  }
-              }
-              updateSixteenthNoteButtonState();
-              
-              contentText = lines.slice(1).join('\n');
-          } else {
-              contentText = text;
-          }
-          
-          if (contentText.includes('|')) {
-              hasPickupMeasure = true;
-              contentText = contentText.replace(/\|/g, ''); // Use regex to remove all instances
-          } else {
-              hasPickupMeasure = false;
-          }
-
-          const newSyncopation = [];
-          const newSyncopationStates = {};
-          const finalWords = [];
-          
-          const tokens = contentText.trim().replace(/\n/g, ' ').split(/(\[[^\]]+\])|\s+/).filter(Boolean);
-          const tempConfig = getLayoutConfig(); // Use a temporary config based on modal settings
-
-          for(let i=0; i<tokens.length; i++) {
-              let token = tokens[i].trim();
-              if (token.startsWith('[') && token.endsWith(']')) {
-                  const syncGroup = token.slice(1, -1).split(/\s+/).filter(Boolean);
-                  const w1 = syncGroup[0] || '-';
-                  const w2 = syncGroup[1] || '-';
-                  const w3 = syncGroup[2] || '-';
-
-                  // --- Start of Re-implemented Creation-Time Logic ---
-                  let currentPos = finalWords.length;
-                  let posInMeasure = currentPos % tempConfig.circlesPerMeasure;
-                  let beatInMeasure = Math.floor(posInMeasure / tempConfig.circlesPerBeat);
-
-                  let isValid = (currentPos % 2 === 0) && (beatInMeasure < tempConfig.beatsPerMeasure - 1);
-
-                  if (!isValid) {
-                      let nextPos = currentPos;
-                      if (nextPos % 2 !== 0) { // If it's on an upbeat, push to next downbeat
-                          nextPos++;
-                      }
-                      
-                      let nextPosInMeasure = nextPos % tempConfig.circlesPerMeasure;
-                      let nextBeatInMeasure = Math.floor(nextPosInMeasure / tempConfig.circlesPerBeat);
-                      
-                      // If it's on the last beat, push to the next measure
-                      if (nextBeatInMeasure >= tempConfig.beatsPerMeasure - 1) {
-                          nextPos = currentPos - posInMeasure + tempConfig.circlesPerMeasure;
-                      }
-
-                      for (let j = currentPos; j < nextPos; j++) {
-                          finalWords.push('-');
-                      }
-                  }
-                  // --- End of Re-implemented Creation-Time Logic ---
-
-                  const syncStartIndex = finalWords.length;
-                  const syncTriggerPos = syncStartIndex + 1;
-                  const affectedBeatStart = syncStartIndex + 2;
-
-                  newSyncopation.push(syncTriggerPos);
-                  
-                  finalWords.push(w1 === '\\' ? '-' : w1);
-                  finalWords.push(w2 === '\\' ? '-' : w2);
-                  finalWords.push('-');
-                  finalWords.push(w3 === '\\' ? '-' : w3);
-
-                  newSyncopationStates[affectedBeatStart] = false;
-                  newSyncopationStates[affectedBeatStart + 1] = (w3 !== '-' && w3 !== '\\');
-              } else {
-                  finalWords.push(token === '\\' ? '-' : token);
-              }
-          }
-
-          if (textImportMode === 'replace') {
-              words = finalWords;
-              syncopation = newSyncopation;
-              syncopationStates = newSyncopationStates;
-          } else {
-              words = words.concat(finalWords);
-              // Note: This doesn't adjust syncopation for the added part, but it's a minor case.
-          }
-          render();
-      }
-      closeModal();
-  });
-
-  // 16th Note Button
-  const sixteenthNoteBtn = document.getElementById('sixteenth-note-btn');
-  sixteenthNoteBtn.addEventListener('click', () => {
-      if (timeSignatureDenominator === 4) {
-          // Toggle 16th note mode
-          if (sixteenthNoteModeActive) {
-              // Switch back to 8th note mode
-              sixteenthNoteModeActive = false;
-              if (originalEighthNotePattern.length > 0) {
-                  words = originalEighthNotePattern.slice();
-                  originalEighthNotePattern = [];
-              } else {
-                  // Fallback: convert current pattern to 8th note pattern
-                  words = convertTo8thNotePattern(words);
-              }
-          } else {
-              // Switch to 16th note mode
-              sixteenthNoteModeActive = true;
-              // Store the original 8th note pattern
-              originalEighthNotePattern = words.slice();
-              // Convert to 16th note pattern
-              words = convertTo16thNotePattern(words);
-          }
-          
-          sixteenthNoteBtn.classList.toggle('active', sixteenthNoteModeActive);
-          render();
-      }
-  });
-
-  function updateSixteenthNoteButtonState() {
-      if (timeSignatureDenominator === 8) {
-          sixteenthNoteModeActive = false;
-          sixteenthNoteBtn.classList.remove('active');
-          sixteenthNoteBtn.classList.add('disabled');
-      } else {
-          sixteenthNoteBtn.classList.remove('disabled');
-      }
+modalSubmitBtn.addEventListener('click', () => {
+  const text = multiLineInput.value;
+  if (!text) {
+    closeModal();
+    return;
   }
+
+  savedTextInput = text;
+
+  // Split the text into sections based on the header lines
+  const sections = text.split(/(?=\[BPM:)/).filter(s => s.trim());
+
+  // IMPORTANT: Do NOT clear canonicals globally in 'replace' mode anymore.
+  // We will only update the specific sections the user included.
+  // if (textImportMode === 'replace') {
+  //   canonicals = { 2: [], 3: [], 4: [] };
+  //   words = [];
+  //   syncopation = [];
+  //   syncopationStates = {};
+  // }
+
+  const updatedSections = new Set();
+
+  sections.forEach(sectionText => {
+    const lines = sectionText.trim().split('\n');
+    const header = lines[0];
+    let contentText = lines.slice(1).join('\n');
+
+    if (!header.startsWith('[') || !header.endsWith(']')) return; // Skip invalid sections
+
+    const settingsStr = header.slice(1, -1);
+    let sectionType = 0;
+
+    // Determine the section type (subdivision)
+    const sectionMatch = settingsStr.match(/Section: (8th Notes|16th Notes|Triplet)/);
+    if (sectionMatch) {
+      switch (sectionMatch[1]) {
+        case '8th Notes': sectionType = 2; break;
+        case '16th Notes': sectionType = 4; break;
+        case 'Triplet': sectionType = 3; break;
+      }
+    }
+
+    if (sectionType === 0) return; // Skip if we can't identify the section
+
+    // Parse BPM and Time Signature from the header (apply last parsed section globally)
+    const bpmMatch = settingsStr.match(/BPM:(\d+)/);
+    if (bpmMatch && bpmMatch[1]) {
+      let newBPM = parseInt(bpmMatch[1], 10);
+      if (!isNaN(newBPM) && newBPM > 20 && newBPM <= 600) {
+        BPM = newBPM;
+        bpmValueSpan.textContent = BPM;
+      }
+    }
+
+    const tsMatch = settingsStr.match(/Time Signature: (\d+)\/(\d+)/);
+    if (tsMatch && tsMatch[1] && tsMatch[2]) {
+      const newNumerator = parseInt(tsMatch[1], 10);
+      const newDenominator = parseInt(tsMatch[2], 10);
+      // Only update global TS if it matches expected for the section
+      if ((sectionType === 3 && newDenominator === 8) || (sectionType !== 3 && newDenominator === 4)) {
+        timeSignatureNumerator = newNumerator;
+        timeSignatureDenominator = newDenominator;
+        timeSignatureTopBtn.textContent = newNumerator;
+        timeSignatureBottomBtn.textContent = newDenominator;
+        timeSignatureButton.classList.toggle('compound', newDenominator === 8);
+      }
+    }
+
+    // Parse words from the content
+    if (contentText.includes('|')) {
+      hasPickupMeasure = true; // Global; last parsed section wins
+      contentText = contentText.replace(/\|/g, '');
+    } else {
+      hasPickupMeasure = false;
+    }
+
+    const sectionWords = contentText.trim().split(/\s+/).map(token => token === '\\' ? '-' : token);
+
+    // UPDATE ONLY THE SPECIFIC CANONICAL; do not touch others
+    canonicals[sectionType] = toCanonical12(sectionWords, sectionType);
+    updatedSections.add(sectionType);
+  });
+
+  // After processing all sections, update the main view to reflect the current mode
+  words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode);
+
+  // Reset chant arrays to initialize fresh from imported content
+  chantActiveBySubdivision = { 2: [], 3: [], 4: [] };
+
+  updateSubdivisionButtonVisual();
+  render();
+  closeModal();
+});
+
+  // Subdivision Cycle Button
+  const sixteenthNoteBtn = document.getElementById('sixteenth-note-btn'); // reuse same element
+
+  function updateSubdivisionButtonVisual() {
+    // Set disabled state based on time signature
+    if (timeSignatureDenominator === 8) {
+        sixteenthNoteBtn.classList.add('disabled');
+    } else {
+        sixteenthNoteBtn.classList.remove('disabled');
+    }
+  
+    // Set active state based on subdivision mode (only for simple time)
+    if (subdivisionMode === 4) {
+        sixteenthNoteBtn.classList.add('active');
+    } else {
+        sixteenthNoteBtn.classList.remove('active');
+    }
+  }
+
+  sixteenthNoteBtn.addEventListener('click', () => {
+    if (timeSignatureDenominator === 8) return;
+
+    const oldMode = subdivisionMode;
+    canonicals[oldMode] = mergeViewIntoCanonical(canonicals[oldMode], words, oldMode);
+
+    // Toggle between 8th (2) and 16th (4) notes
+    const newMode = (subdivisionMode === 2) ? 4 : 2;
+    subdivisionMode = newMode;
+    words = fromCanonical12(canonicals[newMode], newMode);
+
+    // NEW: make sure chant states are present for the new view
+    if (!chantActiveBySubdivision[newMode] || chantActiveBySubdivision[newMode].length === 0) {
+      chantActiveBySubdivision[newMode] = deriveActiveStatesFromWords(words);
+    } else {
+      ensureChantArrayLengthForCurrentView(words.length);
+    }
+    
+    updateSubdivisionButtonVisual();
+    render();
+  });
 
 
   // --- PLAYBACK LOGIC ---
@@ -1072,7 +1451,13 @@
       rhythmPattern.slice(startCircle).forEach((hasSound, index) => {
         const timeDelay = delay + (index * noteInterval);
         const rhythmTimeout = setTimeout(() => {
-          if (isPlaying && hasSound) playTriangleTone(noteInterval * 0.8 / 1000);
+          if (isPlaying && hasSound) {
+            if (pitchMode === 'pitch') {
+              playTriangleTone(noteInterval * 0.8 / 1000);
+            } else {
+              playBassDrum();
+            }
+          }
         }, timeDelay);
         playTimeouts.push(rhythmTimeout);
       });
@@ -1087,8 +1472,8 @@
       playTimeouts.push(loopTimeout);
     };
 
-    // Play the count-in if it's the first play and beat is enabled
-    const shouldPlayCountIn = (isFirstPlay || selectedPlayStartPosition !== null) && beatEnabled;
+    // Play the count-in if intro is enabled, and it's the first play or starting from a selection
+    const shouldPlayCountIn = introEnabled && (isFirstPlay || selectedPlayStartPosition !== null);
 
     if (shouldPlayCountIn) {
       let countInBeats = 4;
@@ -1109,7 +1494,7 @@
       // Start the actual poetry after the count-in
       startPoetry(countInBeats * beatInterval, currentPlayPosition);
     } else {
-      // If it's not the first play or beat is disabled, start immediately
+      // Otherwise, start immediately
       startPoetry(0, currentPlayPosition);
     }
   }
@@ -1171,42 +1556,13 @@
       }
   }
 
-  function getChantText(activeStates) {
+  function getChantText(activeStates, system, circlesPerBeat) {
     const pattern = activeStates.map(a => a ? 'B' : 'G').join('/');
-    switch (pattern) {
-      // Two-circle
-      case 'B/G': return ['Ta', '-'];
-      case 'B/B': return ['Ti', 'ti'];
-      case 'G/B': return ['-', 'ti'];
-      case 'G/G': return ['-', '-'];
-      // Three-circle
-      case 'B/G/G': return ['Ta', '-', '-'];
-      case 'B/B/G': return ['Ti', 'Ta', '-'];
-      case 'B/B/B': return ['Ti', 'ti', 'ti'];
-      case 'G/B/G': return ['-', 'Ta', '-'];
-      case 'G/B/B': return ['-', 'ti', 'ti'];
-      case 'G/G/B': return ['-', '-', 'ti'];
-      case 'B/G/B': return ['Ta', '-', 'ti'];
-      case 'G/G/G': return ['-', '-', '-'];
-      // Four-circle
-      case 'B/G/G/G': return ['Ta', '-', '-', '-'];
-      case 'B/G/B/G': return ['Ti', '-', 'ti', '-'];
-      case 'B/B/B/B': return ['Ti', 'ki', 'ti', 'ki'];
-      case 'B/B/B/G': return ['Ti', 'ki', 'ti', '-'];
-      case 'B/G/B/B': return ['Ti', '-', 'ti', 'ki'];
-      case 'G/B/B/B': return ['-', 'ki', 'ti', 'ki'];
-      case 'G/B/G/G': return ['-', 'ki', '-', '-'];
-      case 'G/G/B/G': return ['-', '-', 'ti', '-'];
-      case 'G/G/G/B': return ['-', '-', '-', 'ki'];
-      case 'B/B/G/G': return ['Ti', 'ki', '-', '-'];
-      case 'G/B/G/B': return ['-', 'ki', '-', 'ki'];
-      case 'G/B/B/G': return ['-', 'ki', 'ti', '-'];
-      case 'B/B/G/B': return ['Ti', 'ki', '-', 'ti'];
-      case 'G/G/B/B': return ['-', '-', 'ti', 'ki'];
-      case 'G/G/G/G': return ['-', '-', '-', '-'];
-      case 'B/G/G/B': return ['Ti', '-', '-', 'ki'];
-      default: return [];
+    const systemData = rhythmSystems[system];
+    if (systemData && systemData[circlesPerBeat] && systemData[circlesPerBeat][pattern]) {
+      return systemData[circlesPerBeat][pattern];
     }
+    return activeStates.map(a => a ? '?' : '-'); // Default fallback
   }
 
   function createBeatGroup(beatStartPosition, config, displayWords) {
@@ -1244,12 +1600,20 @@
             circle.classList.add('active');
         }
         circle.addEventListener('click', () => {
+            // NEW: Chant mode click toggles only this circle; nothing else is affected.
+            if (chantModeActive) {
+              ensureChantArrayInitializedForCurrentView();
+              ensureChantArrayLengthForCurrentView(Math.max(idx + 1, displayWords.length));
+              chantActiveBySubdivision[subdivisionMode][idx] = !chantActiveBySubdivision[subdivisionMode][idx];
+              render();
+              return;
+            }
+
+            // Existing Lyric mode behavior (unchanged)
             // Proactively dismantle any syncopation that would be broken by this action.
-            // A syncopation is broken if a word is added/removed right before it.
             for (let i = syncopation.length - 1; i >= 0; i--) {
                 const syncTriggerPos = syncopation[i];
                 const syncStartIndex = syncTriggerPos - 1;
-                // If the click is right before a syncopation group, dismantle it first.
                 if (idx === syncStartIndex -1 || idx === syncStartIndex) {
                     dismantleSyncopation(syncStartIndex);
                 }
@@ -1259,10 +1623,14 @@
                 words.push('-');
             }
 
-            // If the user clicks the green syncopation trigger, undo it.
             if (syncopation.includes(idx)) {
-                dismantleSyncopation(idx - 1); // We need to pass the start index
-                render();
+                dismantleSyncopation(idx - 1);
+                commitAndUpdateView();
+                return;
+            }
+
+            if (!isAffectedBySyncopation(idx) && applyIsolatedRhythmChange(idx)) {
+                commitAndUpdateView();
                 return;
             }
 
@@ -1289,7 +1657,7 @@
                     words[idx] = '-';
                 }
             }
-            render();
+            commitAndUpdateView();
         });
         circlesDiv.appendChild(circle);
     }
@@ -1325,22 +1693,24 @@
         const active3 = isPositionActive(i + 2, displayWords);
         const active4 = isPositionActive(i + 3, displayWords);
         const pattern = (active1 ? 'X' : 'O') + (active2 ? 'X' : 'O') + (active3 ? 'X' : 'O') + (active4 ? 'X' : 'O');
-        const imageUrl = `assets/Wordrhythms-${pattern}.svg`;
+        const imageUrl = `https://visualmusicalminds.github.io/images/Wordrhythms-${pattern}.svg`;
         notesBox.appendChild(createImage(imageUrl));
     } else if (config.circlesPerBeat === 2) {
         const i = beatStartPosition;
         const active1 = isPositionActive(i, displayWords);
         const active2 = isPositionActive(i + 1, displayWords);
-        const isSyncopated = syncopation.includes(i + 1);
-        const syncopationType = getSyncopationType(i);
 
-        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateB.svg'));
-        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateC.svg'));
-        else if (isSyncopated) notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateA.svg'));
-        else if (active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarternote.svg'));
-        else if (active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthnotepair.svg'));
-        else if (!active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarterrest.svg'));
-        else if (!active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthrestnote.svg'));
+        // NEW: ignore syncopation visuals in chant mode
+        const isSyncopated = !chantModeActive && syncopation.includes(i + 1);
+        const syncopationType = chantModeActive ? null : getSyncopationType(i);
+
+        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateB.svg'));
+        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateC.svg'));
+        else if (isSyncopated) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateA.svg'));
+        else if (active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarternote.svg'));
+        else if (active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthnotepair.svg'));
+        else if (!active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarterrest.svg'));
+        else if (!active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthrestnote.svg'));
 
     } else if (config.circlesPerBeat === 3) {
         notesBox.classList.add('compound');
@@ -1353,14 +1723,14 @@
 
         let imageUrl = '';
         switch (pattern) {
-            case 'XXX': imageUrl = 'assets/Wordrhythms-XXX.svg'; break;
-            case 'OOO': imageUrl = 'assets/Wordrhythms-OOO.svg'; break;
-            case 'XOO': imageUrl = 'assets/Wordrhythms-XOO.svg'; break;
-            case 'XXO': imageUrl = 'assets/Wordrhythms-XXO.svg'; break;
-            case 'XOX': imageUrl = 'assets/Wordrhythms-XOX.svg'; break;
-            case 'OXO': imageUrl = 'assets/Wordrhythms-OXO.svg'; break;
-            case 'OOX': imageUrl = 'assets/Wordrhythms-OOX.svg'; break;
-            case 'OXX': imageUrl = 'assets/Wordrhythms-OXX.svg'; break;
+            case 'XXX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XXX.svg'; break;
+            case 'OOO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OOO.svg'; break;
+            case 'XOO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XOO.svg'; break;
+            case 'XXO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XXO.svg'; break;
+            case 'XOX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-XOX.svg'; break;
+            case 'OXO': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OXO.svg'; break;
+            case 'OOX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OOX.svg'; break;
+            case 'OXX': imageUrl = 'https://visualmusicalminds.github.io/images/Wordrhythms-OXX.svg'; break;
         }
         if (imageUrl) {
             notesBox.appendChild(createImage(imageUrl));
@@ -1369,21 +1739,44 @@
     group.appendChild(notesBox);
 
     if (chantModeActive) {
-        const chantSyllables = getChantText(activeStates);
+        const chantSyllables = getChantText(activeStates, currentRhythmSystem, config.circlesPerBeat);
         const chantDiv = document.createElement('div');
         chantDiv.className = 'words';
-        chantSyllables.forEach(syllable => {
+        if (config.circlesPerBeat === 4) {
+            chantDiv.classList.add('sixteenth-chant');
+        } else if (config.circlesPerBeat === 3) {
+            chantDiv.classList.add('triplet-chant');
+        } else if (config.circlesPerBeat === 2) {
+            chantDiv.classList.add('eighth-chant');
+        }
+
+        const pattern = activeStates.map(a => a ? 'B' : 'G').join('/');
+
+        if ((pattern === 'B/G/G/G' && config.circlesPerBeat === 4) || (pattern === 'B/G/G' && config.circlesPerBeat === 3)) {
+            chantDiv.classList.add('single-syllable-whole');
             const wc = document.createElement('span');
             wc.className = 'word-container';
+
             const span = document.createElement('span');
             span.className = 'word';
-            if (syllable === '-') {
-                span.classList.add('rest');
-            }
-            span.textContent = syllable;
+            span.textContent = chantSyllables[0];
             wc.appendChild(span);
             chantDiv.appendChild(wc);
-        });
+        } else {
+            chantSyllables.forEach((syllable, i) => {
+                const wc = document.createElement('span');
+                wc.className = 'word-container';
+
+                const span = document.createElement('span');
+                span.className = 'word';
+                if (syllable === '-') {
+                    span.classList.add('rest');
+                }
+                span.textContent = syllable;
+                wc.appendChild(span);
+                chantDiv.appendChild(wc);
+            });
+        }
         group.appendChild(chantDiv);
     } else {
         const wordsDiv = document.createElement('div');
@@ -1402,7 +1795,7 @@
                 setTimeout(() => { input.focus(); input.select(); });
                 function cleanup() { input.removeEventListener('keydown', onKey); input.removeEventListener('blur', onBlur); }
                 function onKey(e) {
-                    if (e.key === 'Enter') { e.preventDefault(); words[idx] = input.value; editingIndex = null; cleanup(); render(); }
+                    if (e.key === 'Enter') { e.preventDefault(); words[idx] = input.value; editingIndex = null; cleanup(); commitAndUpdateView(); }
                     else if (e.key === 'Escape') { e.preventDefault(); editingIndex = null; cleanup(); render(); }
                     else if (e.key === ' ' || e.code === 'Space') { 
                         e.preventDefault(); 
@@ -1412,7 +1805,7 @@
                             words.push('-');
                         }
                         cleanup(); 
-                        render();
+                        commitAndUpdateView();
                     }
                     else if ((e.key === 'Backspace' || e.key === 'Delete') && input.value === '') { 
                       e.preventDefault(); 
@@ -1422,10 +1815,10 @@
                         words.push('-');
                       }
                       cleanup(); 
-                      render(); 
+                      commitAndUpdateView(); 
                     }
                 }
-                function onBlur() { words[idx] = input.value; editingIndex = null; cleanup(); render(); }
+                function onBlur() { words[idx] = input.value; editingIndex = null; cleanup(); commitAndUpdateView(); }
                 input.addEventListener('keydown', onKey);
                 input.addEventListener('blur', onBlur);
             } else {
@@ -1458,6 +1851,73 @@
   function createDivider(isFinal = false) {
     const divider = document.createElement('div');
     divider.className = isFinal ? 'final-measure-divider' : 'measure-divider';
+
+    if (isFinal && words.length > 0) {
+      const deleteBtn = document.createElement('div');
+      deleteBtn.className = 'delete-measure-btn';
+      deleteBtn.textContent = 'X';
+      deleteBtn.title = 'Delete last measure';
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        const config = getLayoutConfig();
+        const currentCanon = canonicals[subdivisionMode];
+        const currentView = fromCanonical12(currentCanon, subdivisionMode);
+
+        if (currentView.length === 0) {
+          return; // Nothing to delete
+        }
+
+        let numCirclesToRemove;
+
+        if (hasPickupMeasure) {
+          const pickupSize = config.circlesPerBeat;
+          if (currentView.length <= pickupSize) {
+            numCirclesToRemove = currentView.length;
+          } else {
+            const bodyLength = currentView.length - pickupSize;
+            numCirclesToRemove = bodyLength % config.circlesPerMeasure;
+            if (numCirclesToRemove === 0) {
+              numCirclesToRemove = config.circlesPerMeasure;
+            }
+          }
+        } else {
+          numCirclesToRemove = currentView.length % config.circlesPerMeasure;
+          if (numCirclesToRemove === 0) {
+            numCirclesToRemove = config.circlesPerMeasure;
+          }
+        }
+
+        if (numCirclesToRemove > 0) {
+            const beatsToRemove = numCirclesToRemove / config.circlesPerBeat;
+            const ticksToRemove = beatsToRemove * 12;
+            
+            const newLength = Math.max(0, currentCanon.length - ticksToRemove);
+            canonicals[subdivisionMode].length = newLength;
+        }
+        
+        words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode);
+        render();
+      });
+      divider.appendChild(deleteBtn);
+
+      const addBtn = document.createElement('div');
+      addBtn.className = 'add-measure-btn';
+      addBtn.textContent = '+';
+      addBtn.title = 'Add a new measure';
+      addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const config = getLayoutConfig();
+        const ticksToAdd = config.beatsPerMeasure * 12;
+        for (let i = 0; i < ticksToAdd; i++) {
+          canonicals[subdivisionMode].push('-');
+        }
+        words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode);
+        render();
+      });
+      divider.appendChild(addBtn);
+    }
+
     return divider;
   }
 
@@ -1506,7 +1966,7 @@
 
     container.innerHTML = '';
     notesBoxElements = [];
-    updateSixteenthNoteButtonState();
+    updateSubdivisionButtonVisual();
     const config = getLayoutConfig();
 
     const displayWords = [...words];
@@ -1522,6 +1982,12 @@
         for (let i = 0; i < circlesToPad; i++) {
             displayWords.push('-');
         }
+    }
+
+    // NEW: keep chant array aligned with the displayed view length
+    if (chantModeActive) {
+      ensureChantArrayInitializedForCurrentView();
+      ensureChantArrayLengthForCurrentView(displayWords.length);
     }
     
     const allBeatGroups = [];
@@ -1611,5 +2077,19 @@
   });
   
   applyZoom();
+  setMode(chantModeActive); // Set initial mode
+  
+  // Initialize canonical timeline
+  subdivisionMode = (timeSignatureDenominator === 8) ? 3 : 2;
+  canonicals[2] = toCanonical12(words, 2);
+  canonicals[3] = toCanonical12(words, 3);
+  canonicals[4] = toCanonical12(words, 4);
+  words = fromCanonical12(canonicals[subdivisionMode], subdivisionMode);
+
+  // NEW: prepare chant arrays on load (they'll finalize when Chant mode is activated)
+  chantActiveBySubdivision = { 2: [], 3: [], 4: [] };
+
+  updateSubdivisionButtonVisual();
+
   render();
 })();
