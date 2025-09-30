@@ -624,7 +624,33 @@ function playBassDrum() {
     attackOsc.stop(time + 0.45);
     noiseSource.stop(time + 0.45);
 }
+  // Play triangle wave tone at A2 (110 Hz)
+  function playTriangleTone(duration = 0.2) {
+    if (!rhythmEnabled) return;
+    const ctx = initAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(110, ctx.currentTime);
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.02);
+    gainNode.gain.linearRampToValueAtTime(0.1, ctx.currentTime + duration - 0.05);
+    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + duration);
+  }
 
+  // Get rhythm pattern from current words including syncopation
+  function getRhythmPattern() {
+    // NEW: In chant mode, playback should follow chant states directly
+    if (chantModeActive) {
+      ensureChantArrayInitializedForCurrentView();
+      ensureChantArrayLengthForCurrentView(words.length);
+      // Copy only the current visible length of the words array
+      return chantActiveBySubdivision[subdivisionMode].slice(0, words.length);
+    }
 
     const pattern = [];
     for (let i = 0; i < words.length; i++) {
