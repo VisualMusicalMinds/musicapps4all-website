@@ -144,7 +144,7 @@
   let BPM = 82;
   let textImportMode = 'replace'; // 'add' or 'replace'
   let savedTextInput = ''; // Store the text from the modal
-  let rhythmSystem = 'kodaly';
+  let rhythmSystem = 'simple-kodaly';
 
   // Audio context for generating sounds
   let audioContext = null;
@@ -200,9 +200,15 @@
       }
       const noise = ctx.createBufferSource();
       noise.buffer = noiseBuffer;
+      
+      // Add a low-pass filter to soften the highs
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.value = 6000; // Taper down frequencies above 6kHz
+
       const noiseGain = ctx.createGain();
       noiseGain.gain.setValueAtTime(0, ctx.currentTime);
-      noiseGain.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.01);
+      noiseGain.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.01); // Softer high sounds
       noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + decayTime);
       
       // Tonal component
@@ -220,20 +226,28 @@
       bassOsc.frequency.setValueAtTime(60, ctx.currentTime);
       const bassGain = ctx.createGain();
       bassGain.gain.setValueAtTime(0, ctx.currentTime);
-      bassGain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.01);
+      bassGain.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.01); // More bass
       bassGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + decayTime);
       
-      noise.connect(noiseGain);
+      // Connect noise through the filter
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      
       osc.connect(oscGain);
       bassOsc.connect(bassGain);
 
-      noiseGain.connect(analyser);
-      oscGain.connect(analyser);
-      bassGain.connect(analyser);
+      // Master gain to control overall volume
+      const masterGain = ctx.createGain();
+      masterGain.gain.value = 0.75; //  quieter
 
-      noiseGain.connect(ctx.destination);
-      oscGain.connect(ctx.destination);
-      bassGain.connect(ctx.destination);
+      // Connect components to master gain
+      noiseGain.connect(masterGain);
+      oscGain.connect(masterGain);
+      bassGain.connect(masterGain);
+
+      // Connect master gain to output
+      masterGain.connect(analyser);
+      masterGain.connect(ctx.destination);
 
       noise.start();
       osc.start();
@@ -260,53 +274,6 @@
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 0.2);
-  }
-
-  // Sound 4: Hand Clap
-  function createHandClap() {
-      const ctx = initAudioContext();
-      const analyser = setupAnalyser(ctx);
-      const decayTime = 2.0; // Increased decay time for a longer tail
-
-      // We'll create multiple short bursts of noise
-      const burstCount = 3 + Math.floor(Math.random() * 2); // 3 or 4 bursts
-
-      for (let i = 0; i < burstCount; i++) {
-          const bufferSize = ctx.sampleRate * 0.1; // Short burst
-          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-          const output = buffer.getChannelData(0);
-          for (let j = 0; j < bufferSize; j++) {
-              output[j] = Math.random() * 2 - 1;
-          }
-
-          const noise = ctx.createBufferSource();
-          noise.buffer = buffer;
-
-          const filter = ctx.createBiquadFilter();
-          filter.type = 'bandpass';
-          // Randomize filter frequency slightly for each burst
-          filter.frequency.value = 1500 + (Math.random() - 0.5) * 500;
-          filter.Q.value = 1;
-
-          const envelope = ctx.createGain();
-          
-          // Each burst has its own envelope
-          const startTime = ctx.currentTime + i * (0.02 + Math.random() * 0.015);
-          const randomGain = 0.5 + Math.random() * 0.5;
-
-          envelope.gain.setValueAtTime(0, startTime);
-          envelope.gain.linearRampToValueAtTime(randomGain, startTime + 0.02);
-          // Switched to linear ramp for a more gradual decay
-          envelope.gain.linearRampToValueAtTime(0.01, startTime + decayTime);
-
-          noise.connect(filter);
-          filter.connect(envelope);
-          envelope.connect(analyser);
-          envelope.connect(ctx.destination);
-
-          noise.start(startTime);
-          noise.stop(startTime + decayTime);
-      }
   }
 
   // Sound 5: Claves
@@ -390,6 +357,109 @@
       osc.start();
       osc.stop(ctx.currentTime + decayTime);
   }
+
+// Sound 4: Improved Hand Clap
+function createHandClap() {
+    const ctx = initAudioContext();
+    const analyser = setupAnalyser(ctx);
+    
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 1.2; // Adjusted master gain
+    masterGain.connect(analyser);
+    masterGain.connect(ctx.destination);
+
+    // Low-frequency oscillator for the "thump"
+    const thumpOsc = ctx.createOscillator();
+    thumpOsc.type = 'sine';
+    thumpOsc.frequency.setValueAtTime(100, ctx.currentTime); // Deep bass frequency
+    const thumpGain = ctx.createGain();
+    thumpGain.gain.setValueAtTime(0, ctx.currentTime);
+    thumpGain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.01);
+    thumpGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    thumpOsc.connect(thumpGain);
+    thumpGain.connect(masterGain);
+    thumpOsc.start(ctx.currentTime);
+    thumpOsc.stop(ctx.currentTime + 0.1);
+
+    // Create multiple frequency bands to simulate real clap characteristics
+    const createFrequencyBand = (frequency, qValue, gain, startTime) => {
+        // Shorter, more focused noise burst
+        const bufferSize = ctx.sampleRate * 0.05; // Reduced from 0.1
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = buffer.getChannelData(0);
+        
+        // Create shaped noise instead of pure white noise
+        for (let j = 0; j < bufferSize; j++) {
+            const envelope = Math.exp(-j / bufferSize * 8); // Shape the noise
+            output[j] = (Math.random() * 2 - 1) * envelope;
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = frequency;
+        filter.Q.value = qValue;
+
+        const envelope = ctx.createGain();
+        envelope.gain.setValueAtTime(0, startTime);
+        envelope.gain.linearRampToValueAtTime(gain, startTime + 0.001); // Very fast attack
+        envelope.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15); // Exponential decay
+
+        noise.connect(filter);
+        filter.connect(envelope);
+        envelope.connect(masterGain);
+
+        noise.start(startTime);
+        noise.stop(startTime + 0.15);
+    };
+
+    const startTime = ctx.currentTime;
+    
+    // Layer multiple frequency bands for realistic clap
+    // Low thump (palm contact) - now handled by thumpOsc, but we can keep a bit of noise
+    createFrequencyBand(200, 1.0, 0.4, startTime); // Adjusted frequency and Q
+    
+    // Mid-range body
+    createFrequencyBand(800, 1.2, 0.5, startTime + 0.003); // New mid-range band
+    
+    // Mid crack (main clap sound)
+    createFrequencyBand(2200, 1.8, 0.7, startTime + 0.002); // Adjusted frequency
+    createFrequencyBand(2800, 1.5, 0.5, startTime + 0.004); // Adjusted frequency
+    
+    // High snap (finger/air interaction)
+    createFrequencyBand(6500, 2.5, 0.46, startTime + 0.001); // Adjusted frequency and Q, boosted gain
+    createFrequencyBand(8500, 2.0, 0.345, startTime + 0.003); // Adjusted frequency, boosted gain
+    
+    // Add a subtle reverb tail with filtered noise
+    const tailBufferSize = ctx.sampleRate * 0.3;
+    const tailBuffer = ctx.createBuffer(1, tailBufferSize, ctx.sampleRate);
+    const tailOutput = tailBuffer.getChannelData(0);
+    
+    for (let j = 0; j < tailBufferSize; j++) {
+        const envelope = Math.exp(-j / tailBufferSize * 6);
+        tailOutput[j] = (Math.random() * 2 - 1) * envelope * 0.1;
+    }
+    
+    const tailNoise = ctx.createBufferSource();
+    tailNoise.buffer = tailBuffer;
+    
+    const tailFilter = ctx.createBiquadFilter();
+    tailFilter.type = 'highpass';
+    tailFilter.frequency.value = 1000;
+    
+    const tailEnvelope = ctx.createGain();
+    tailEnvelope.gain.setValueAtTime(0.1, startTime + 0.01);
+    tailEnvelope.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+    
+    tailNoise.connect(tailFilter);
+    tailFilter.connect(tailEnvelope);
+    tailEnvelope.connect(masterGain);
+    
+    tailNoise.start(startTime + 0.01);
+    tailNoise.stop(startTime + 0.4);
+}
 
   // Sound 6: Hi-Hat
   function createHiHat() {
@@ -476,14 +546,14 @@
   }
 
   const soundBank = [
-    { name: 'Bass Drum', func: createBassDrum, image: 'assets/virtualdrums-bass.png' },
-    { name: 'Snare', func: createSnareDrum, image: 'assets/virtualdrums-snare.png' },
-    { name: 'Tom', func: createTomDrum, image: 'assets/virtualdrums-tom.png' },
-    { name: 'Hand Clap', func: createHandClap, image: 'assets/virtualdrums-clap.png' },
-    { name: 'Claves', func: createClaves, image: 'assets/virtualdrums-claves.png' },
-    { name: 'Hi-Hat', func: createHiHat, image: 'assets/virtualdrums-highhat.png' },
-    { name: 'Crash', func: createCrashCymbal, image: 'assets/virtualdrums-crash.png' },
-    { name: 'Shaker', func: createShaker, image: 'assets/virtualdrums-shaker.png' }
+    { name: 'Bass Drum', func: createBassDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-bass.png' },
+    { name: 'Snare', func: createSnareDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-snare.png' },
+    { name: 'Tom', func: createTomDrum, image: 'https://visualmusicalminds.github.io/images/virtualdrums-tom.png' },
+    { name: 'Hand Clap', func: createHandClap, image: 'https://visualmusicalminds.github.io/images/virtualdrums-clap.png' },
+    { name: 'Claves', func: createClaves, image: 'https://visualmusicalminds.github.io/images/virtualdrums-claves.png' },
+    { name: 'Hi-Hat', func: createHiHat, image: 'https://visualmusicalminds.github.io/images/virtualdrums-highhat.png' },
+    { name: 'Crash', func: createCrashCymbal, image: 'https://visualmusicalminds.github.io/images/virtualdrums-crash.png' },
+    { name: 'Shaker', func: createShaker, image: 'https://visualmusicalminds.github.io/images/virtualdrums-shaker.png' }
   ];
 
   // Copy text to clipboard
@@ -1347,47 +1417,134 @@
     return fruitRhythms[pattern] || [];
   }
 
+  function getBeatCenteredKodalyText(pattern) {
+    const rhythms = {
+      'B/G': ['Ta'],
+      'B/B': ['Ta', 'Ti'],
+      'G/B': ['-', 'Ti'],
+      'G/G': ['-', '-'],
+      'B/G/G/G': ['Ta'],
+      'B/G/B/G': ['Ta', '-', 'Ti', '-'],
+      'B/B/B/B': ['Ta', 'Ka', 'Ti', 'Ka'],
+      'G/B/B/B': ['-', 'Ka', 'Ti', 'Ka'],
+      'B/B/B/G': ['Ta', 'Ka', 'Ta', '-'],
+      'B/B/G/B': ['Ta', 'Ka', '-', 'Ka'],
+      'B/G/B/B': ['Ta', '-', 'Ti', 'Ka'],
+      'B/B/G/G': ['Ta', 'Ka', '-', '-'],
+      'G/B/B/G': ['-', 'Ka', 'Ti', '-'],
+      'G/G/B/B': ['-', '-', 'Ti', 'Ka'],
+      'G/B/G/B': ['-', 'Ka', '-', 'Ka'],
+      'B/G/G/B': ['Ta', '-', '-', 'Ka'],
+      'G/B/G/G': ['-', 'Ka', '-', '-'],
+      'G/G/B/G': ['-', '-', 'Ti', '-'],
+      'G/G/G/B': ['-', '-', '-', 'Ka'],
+    };
+    return rhythms[pattern] || [];
+  }
+
+  function getGordonSystemText(pattern) {
+    const rhythms = {
+      'B/G': ['Du'],
+      'B/B': ['Du', 'De'],
+      'G/B': ['-', 'De'],
+      'G/G': ['-', '-'],
+      'B/G/G/G': ['Du'],
+      'B/G/B/G': ['Du', '-', 'De', '-'],
+      'B/B/B/B': ['Du', 'Ta', 'De', 'Ta'],
+      'G/B/B/B': ['-', 'Ta', 'De', 'Ta'],
+      'B/B/B/G': ['Du', 'Ta', 'De', '-'],
+      'B/B/G/B': ['Du', 'Ta', '-', 'Ta'],
+      'B/G/B/B': ['Du', '-', 'De', 'Ta'],
+      'B/B/G/G': ['Du', 'Ta', '-', '-'],
+      'G/B/B/G': ['-', 'Ta', 'De', '-'],
+      'G/G/B/B': ['-', '-', 'De', 'Ta'],
+      'G/B/G/B': ['-', 'Ta', '-', 'Ta'],
+      'B/G/G/B': ['Du', '-', '-', 'Ta'],
+      'G/B/G/G': ['-', 'Ta', '-', '-'],
+      'G/G/B/G': ['-', '-', 'De', '-'],
+      'G/G/G/B': ['-', '-', '-', 'Ta'],
+    };
+    return rhythms[pattern] || [];
+  }
+
+  function getTakadimiSystemText(pattern) {
+    const rhythms = {
+      'B/G': ['Ta'],
+      'B/B': ['Ta', 'Di'],
+      'G/B': ['-', 'Di'],
+      'G/G': ['-', '-'],
+      'B/G/G/G': ['Ta'],
+      'B/G/B/G': ['Ta', '-', 'Di', '-'],
+      'B/B/B/B': ['Ta', 'Ka', 'Di', 'Mi'],
+      'G/B/B/B': ['-', 'Ka', 'Di', 'Mi'],
+      'B/B/B/G': ['Ta', 'Ka', 'Di', '-'],
+      'B/B/G/B': ['Ta', 'Ka', '-', 'Mi'],
+      'B/G/B/B': ['Ta', '-', 'Di', 'Mi'],
+      'B/B/G/G': ['Ta', 'Ka', '-', '-'],
+      'G/B/B/G': ['-', 'Ka', 'Di', '-'],
+      'G/G/B/B': ['-', '-', 'Di', 'Mi'],
+      'G/B/G/B': ['-', 'Ka', '-', 'Mi'],
+      'B/G/G/B': ['Ta', '-', '-', 'Mi'],
+      'G/B/G/G': ['-', 'Ka', '-', '-'],
+      'G/G/B/G': ['-', '-', 'Di', '-'],
+      'G/G/G/B': ['-', '-', '-', 'Mi'],
+    };
+    return rhythms[pattern] || [];
+  }
+
   function getChantText(activeStates) {
     const pattern = activeStates.map(a => a ? 'B' : 'G').join('/');
-    if (rhythmSystem === 'fruit-rhythms') {
-      return getFruitRhythmText(pattern);
-    }
-    switch (pattern) {
-      // Two-circle patterns (8th note mode)
-      case 'B/G': return ['Ta', '-'];        // Quarter note
-      case 'B/B': return ['Ti', 'ti'];       // Two eighth notes
-      case 'G/B': return ['-', 'ti'];        // Eighth rest + eighth note
-      case 'G/G': return ['-', '-'];         // Quarter rest
-      
-      // Three-circle patterns (compound time - 6/8, 9/8, 12/8)
-      case 'B/G/G': return ['Ta', '-', '-'];       // Dotted quarter note
-      case 'B/B/G': return ['Ti', 'Ta', '-'];      // Eighth + quarter
-      case 'B/B/B': return ['Ti', 'ti', 'ti'];     // Three eighth notes
-      case 'G/B/G': return ['-', 'Ta', '-'];       // Rest + quarter + rest
-      case 'G/B/B': return ['-', 'ti', 'ti'];      // Rest + two eighths
-      case 'G/G/B': return ['-', '-', 'ti'];       // Two rests + eighth
-      case 'B/G/B': return ['Ta', '-', 'ti'];      // Quarter + rest + eighth
-      case 'G/G/G': return ['-', '-', '-'];        // Three rests
-      
-      // Four-circle patterns (16th note mode)
-      case 'B/G/G/G': return ['Ta'];     // Quarter note
-      case 'B/G/B/G': return ['Ti', '-', 'ti', '-'];    // Two eighth notes
-      case 'B/B/B/B': return ['Ti', 'ki', 'ti', 'ki'];  // Four sixteenth notes
-      case 'B/B/B/G': return ['Ti', 'ki', 'ti', '-'];   // Three sixteenths + rest
-      case 'B/G/B/B': return ['Ti', '-', 'ti', 'ki'];   // Eighth + two sixteenths
-      case 'G/B/B/B': return ['-', 'ki', 'ti', 'ki'];   // Rest + three sixteenths
-      case 'G/B/G/G': return ['-', 'ki', '-', '-'];     // Rest + sixteenth + rests
-      case 'G/G/B/G': return ['-', '-', 'ti', '-'];     // Rests + eighth + rest
-      case 'G/G/G/B': return ['-', '-', '-', 'ki'];     // Three rests + sixteenth
-      case 'B/B/G/G': return ['Ti', 'ki', '-', '-'];    // Two sixteenths + rests
-      case 'G/B/G/B': return ['-', 'ki', '-', 'ki'];    // Rest + sixteenth + rest + sixteenth
-      case 'G/B/B/G': return ['-', 'ki', 'ti', '-'];    // Rest + two sixteenths + rest
-      case 'B/B/G/B': return ['Ti', 'ki', '-', 'ti'];   // Two sixteenths + rest + eighth
-      case 'G/G/B/B': return ['-', '-', 'ti', 'ki'];    // Rests + eighth + sixteenth
-      case 'G/G/G/G': return ['-', '-', '-', '-'];      // Four rests
-      case 'B/G/G/B': return ['Ti', '-', '-', 'ki'];    // Eighth + rests + sixteenth
-      
-      default: return [];
+    
+    switch (rhythmSystem) {
+      case 'none':
+        return [];
+      case 'fruit-rhythms':
+        return getFruitRhythmText(pattern);
+      case 'beat-centered-kodaly':
+        return getBeatCenteredKodalyText(pattern);
+      case 'gordon-system':
+        return getGordonSystemText(pattern);
+      case 'takadimi-system':
+        return getTakadimiSystemText(pattern);
+      case 'simple-kodaly':
+      default:
+        switch (pattern) {
+          // Two-circle patterns (8th note mode)
+          case 'B/G': return ['Ta'];        // Quarter note
+          case 'B/B': return ['Ti', 'ti'];       // Two eighth notes
+          case 'G/B': return ['-', 'ti'];        // Eighth rest + eighth note
+          case 'G/G': return ['-', '-'];         // Quarter rest
+          
+          // Three-circle patterns (compound time - 6/8, 9/8, 12/8)
+          case 'B/G/G': return ['Ta', '-', '-'];       // Dotted quarter note
+          case 'B/B/G': return ['Ti', 'Ta', '-'];      // Eighth + quarter
+          case 'B/B/B': return ['Ti', 'ti', 'ti'];     // Three eighth notes
+          case 'G/B/G': return ['-', 'Ta', '-'];       // Rest + quarter + rest
+          case 'G/B/B': return ['-', 'ti', 'ti'];      // Rest + two eighths
+          case 'G/G/B': return ['-', '-', 'ti'];       // Two rests + eighth
+          case 'B/G/B': return ['Ta', '-', 'ti'];      // Quarter + rest + eighth
+          case 'G/G/G': return ['-', '-', '-'];        // Three rests
+          
+          // Four-circle patterns (16th note mode)
+          case 'B/G/G/G': return ['Ta'];     // Quarter note
+          case 'B/G/B/G': return ['Ti', '-', 'ti', '-'];    // Two eighth notes
+          case 'B/B/B/B': return ['Ti', 'ki', 'ti', 'ki'];  // Four sixteenth notes
+          case 'B/B/B/G': return ['Ti', 'ki', 'ti', '-'];   // Three sixteenths + rest
+          case 'B/G/B/B': return ['Ti', '-', 'ti', 'ki'];   // Eighth + two sixteenths
+          case 'G/B/B/B': return ['-', 'ki', 'ti', 'ki'];   // Rest + three sixteenths
+          case 'G/B/G/G': return ['-', 'ki', '-', '-'];     // Rest + sixteenth + rests
+          case 'G/G/B/G': return ['-', '-', 'ti', '-'];     // Rests + eighth + rest
+          case 'G/G/G/B': return ['-', '-', '-', 'ki'];     // Three rests + sixteenth
+          case 'B/B/G/G': return ['Ti', 'ki', '-', '-'];    // Two sixteenths + rests
+          case 'G/B/G/B': return ['-', 'ki', '-', 'ki'];    // Rest + sixteenth + rest + sixteenth
+          case 'G/B/B/G': return ['-', 'ki', 'ti', '-'];    // Rest + two sixteenths + rest
+          case 'B/B/G/B': return ['Ti', 'ki', '-', 'ti'];   // Two sixteenths + rest + eighth
+          case 'G/G/B/B': return ['-', '-', 'ti', 'ki'];    // Rests + eighth + sixteenth
+          case 'G/G/G/G': return ['-', '-', '-', '-'];      // Four rests
+          case 'B/G/G/B': return ['Ti', '-', '-', 'ki'];    // Eighth + rests + sixteenth
+          
+          default: return [];
+        }
     }
   }
 
@@ -1468,7 +1625,7 @@
         const active3 = isPositionActive(lineIndex, i + 2, displayWords);
         const active4 = isPositionActive(lineIndex, i + 3, displayWords);
         const pattern = (active1 ? 'X' : 'O') + (active2 ? 'X' : 'O') + (active3 ? 'X' : 'O') + (active4 ? 'X' : 'O');
-        const imageUrl = `assets/Wordrhythms-${pattern}.svg`;
+        const imageUrl = `https://visualmusicalminds.github.io/images/Wordrhythms-${pattern}.svg`;
         notesBox.appendChild(createImage(imageUrl));
     } else {
         const i = beatStartPosition;
@@ -1477,13 +1634,13 @@
         const isSyncopated = syncopation[lineIndex].includes(i + 1);
         const syncopationType = getSyncopationType(lineIndex, i);
 
-        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateB.svg'));
-        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateC.svg'));
-        else if (isSyncopated) notesBox.appendChild(createImage('assets/Wordrhythms-SyncopateA.svg'));
-        else if (active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarternote.svg'));
-        else if (active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthnotepair.svg'));
-        else if (!active1 && !active2) notesBox.appendChild(createImage('assets/Wordrhythms-quarterrest.svg'));
-        else if (!active1 && active2) notesBox.appendChild(createImage('assets/Wordrhythms-eighthrestnote.svg'));
+        if (syncopationType === 'SyncopateB') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateB.svg'));
+        else if (syncopationType === 'SyncopateC') notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateC.svg'));
+        else if (isSyncopated) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-SyncopateA.svg'));
+        else if (active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarternote.svg'));
+        else if (active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthnotepair.svg'));
+        else if (!active1 && !active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-quarterrest.svg'));
+        else if (!active1 && active2) notesBox.appendChild(createImage('https://visualmusicalminds.github.io/images/Wordrhythms-eighthrestnote.svg'));
     }
 
     group.appendChild(notesBox);
@@ -1569,6 +1726,7 @@
     // This function is overhauled for the new 4-line structure.
     updateSixteenthNoteButtonState();
 
+    container.dataset.rhythmSystem = rhythmSystem;
     container.innerHTML = '';
     notesBoxElements = [[], [], [], []]; // 2D array for 4 lines
     const config = getLayoutConfig();
@@ -1641,6 +1799,7 @@
   }
 
   // --- INITIALIZATION ---
+  lyricsDropdown.value = rhythmSystem;
   updatePoemMargin();
   window.addEventListener('resize', updatePoemMargin);
 
