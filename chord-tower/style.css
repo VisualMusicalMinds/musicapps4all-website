@@ -379,7 +379,7 @@ html, body, #app-wrapper, .main-content {
 /* Menu toggle button */
 .menu-toggle {
   position: fixed;
-  top: 0;
+  top: 39px;
   left: 50%;
   transform: translateX(-50%);
   background: #fff;
