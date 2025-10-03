@@ -50,6 +50,9 @@ const keyNames = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B
 let currentKeyIndex = 0;
 let currentScale = 'major';
 
+// Define left-hand keys that should NOT be affected by octave shift
+const leftHandKeys = new Set(['z', 'x', 'c', 'v', 'a', 's', 'd', 'f', 'q', 'w', 'e', 'r', '1', '2', '3', '4']);
+
 // Base color mapping for keys, tied to the 7 note letters
 const KEY_COLORS = {
   'C': '#FF3B30', // Red
@@ -744,9 +747,12 @@ function handlePlayKey(key) {
   }
   
   let freq = noteFrequencies[btn.note] * Math.pow(2, accidental / 12);
-  if (octaveButtonActive) {
+  
+  // Only apply octave shift if NOT a left-hand key
+  if (octaveButtonActive && !leftHandKeys.has(key)) {
     freq *= 2;
   }
+  
   startNote(oscKey, freq);
 }
 
@@ -1537,6 +1543,38 @@ function resizeGrid() {
   if (toggleBtn) toggleBtn.style.fontSize = Math.max(fontSize * 1.1, 20) + 'px';
 }
 
+// Add this new function before the initialize() function
+function setupMenuToggle() {
+  const toggleBtn = document.getElementById('menu-toggle');
+  const body = document.body;
+  let menuVisible = true;
+
+  if (!toggleBtn) return;
+
+  toggleBtn.addEventListener('click', () => {
+    menuVisible = !menuVisible;
+    
+    if (menuVisible) {
+      body.classList.remove('menu-hidden');
+    } else {
+      body.classList.add('menu-hidden');
+    }
+    
+    // Trigger grid resize after transition completes
+    setTimeout(() => {
+      resizeGrid();
+    }, 350); // Wait for CSS transition (300ms) plus small buffer
+  });
+
+  // Keyboard support for accessibility
+  toggleBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleBtn.click();
+    }
+  });
+}
+
 // --- INITIALIZATION ---
 function initialize() {
   initializeGrid();
@@ -1547,6 +1585,7 @@ function initialize() {
   renderButtons();
   setupGlobalEventHandlers();
   setupSimulatedKeyboardEvents();
+  setupMenuToggle(); // Add this line
   
   window.addEventListener('resize', resizeGrid);
   window.addEventListener('DOMContentLoaded', () => { 
