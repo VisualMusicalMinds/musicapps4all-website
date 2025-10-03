@@ -14,6 +14,7 @@ const waveforms = ['sine', 'triangle', 'square', 'sawtooth', 'voice'];
 let currentWaveformIndex = 1;
 let currentWaveform = waveforms[currentWaveformIndex];
 let globalVolume = 0.4;
+let menuVisible = true;
 
 // Add touch tolerance variable
 let touchLeaveTimeout = null;
@@ -760,29 +761,33 @@ function updateKeyDisplay() {
     keyNameEl.textContent = displayName;
 }
 
-function renderToggleButton() {
-  const el = document.createElement('button');
-  el.className = 'chord-toggle-btn';
-  el.setAttribute('type', 'button');
-  el.setAttribute('aria-pressed', cButtonState === 'I');
-  el.innerText = cButtonState === 'C' ? 'I' : 'C';
-  el.addEventListener('click', () => {
-    cButtonState = (cButtonState === 'C') ? 'I' : 'C';
-    renderToggleButton();
-    updateBoxNames();
-  });
-  el.addEventListener('keydown', (e) => {
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      cButtonState = (cButtonState === 'C') ? 'I' : 'C';
-      renderToggleButton();
-      updateBoxNames();
-    }
-  });
-  cellRefs['5d'].innerHTML = '';
-  cellRefs['5d'].appendChild(el);
+const toggleButtonEl = document.createElement('button');
+toggleButtonEl.className = 'chord-toggle-btn';
+toggleButtonEl.setAttribute('type', 'button');
+
+function updateToggleButton() {
+  toggleButtonEl.setAttribute('aria-pressed', cButtonState === 'I');
+  toggleButtonEl.innerHTML = '<span class="music-symbol">&#9835;</span>';
 }
-renderToggleButton();
+
+toggleButtonEl.addEventListener('click', () => {
+  cButtonState = (cButtonState === 'C') ? 'I' : 'C';
+  updateToggleButton();
+  updateBoxNames();
+});
+
+toggleButtonEl.addEventListener('keydown', (e) => {
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    cButtonState = (cButtonState === 'C') ? 'I' : 'C';
+    updateToggleButton();
+    updateBoxNames();
+  }
+});
+
+cellRefs['5d'].innerHTML = '';
+cellRefs['5d'].appendChild(toggleButtonEl);
+updateToggleButton(); // Set initial state
 
 cellRefs['6d'].innerHTML = '';
 cellRefs['7d'].innerHTML = '';
@@ -839,7 +844,13 @@ const keyHeldDown = {};
 
 window.addEventListener('keydown', function(e) {
   if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "SELECT" || document.activeElement.isContentEditable)) return;
-  let key = e.key;
+  
+  const key = e.key;
+
+  if (key === 'm') {
+    menuToggle.click();
+  }
+
   // Also handle simulated keyboard keydown
   const keyElement = document.querySelector(`#simulated-keyboard .key[data-key="${key.toLowerCase()}"]`);
   if (keyElement) keyElement.classList.add('pressed');
@@ -855,7 +866,7 @@ window.addEventListener('keydown', function(e) {
   }
   if (key === "#" || key === "ArrowUp") { accidentalHeld.sharp = true; sharpTouchHeld = true; reTriggerHeldKeysAccidentals(); }
   if (key === "b" || key === "ArrowDown") { accidentalHeld.flat = true; flatTouchHeld = true; reTriggerHeldKeysAccidentals(); }
-  if (key === "c" || key === "C") { cButtonState = (cButtonState === 'C') ? 'I' : 'C'; renderToggleButton(); updateBoxNames(); }
+  if (key === "c" || key === "C") { cButtonState = (cButtonState === 'C') ? 'I' : 'C'; updateToggleButton(); updateBoxNames(); }
 });
 
 window.addEventListener('keyup', function(e) {
@@ -1052,9 +1063,10 @@ function resizeGrid() {
   const originalGridWidth = gridWidth;
   const originalGridHeight = gridHeight;
 
-  // Increase grid size by 10%
-  gridWidth *= 1.1;
-  gridHeight *= 1.1;
+  // Increase grid size based on menu visibility
+  const sizeMultiplier = menuVisible ? 1.1 : 1.2;
+  gridWidth *= sizeMultiplier;
+  gridHeight *= sizeMultiplier;
 
   gridEl.style.width = gridWidth + 'px';
   gridEl.style.height = gridHeight + 'px';
@@ -1090,3 +1102,29 @@ updateSolfegeColors();
 updateBoxNames();
 updateControlsBarColor();
 resizeGrid();
+
+// Menu toggle functionality
+const menuToggle = document.getElementById('menu-toggle');
+const controlsBarEl = document.getElementById('controls-bar');
+const mainContent = document.querySelector('.main-content');
+
+menuToggle.addEventListener('click', () => {
+  menuVisible = !menuVisible;
+  
+  if (menuVisible) {
+    // Show menu
+    controlsBarEl.classList.remove('hidden');
+    menuToggle.classList.remove('menu-hidden');
+    mainContent.classList.remove('menu-hidden');
+  } else {
+    // Hide menu
+    controlsBarEl.classList.add('hidden');
+    menuToggle.classList.add('menu-hidden');
+    mainContent.classList.add('menu-hidden');
+  }
+  
+  // Resize grid to fill new available space
+  setTimeout(resizeGrid, 350); // Wait for animation to complete
+});
+
+// Redundant keydown listener removed
