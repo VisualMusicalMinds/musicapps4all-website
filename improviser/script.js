@@ -373,17 +373,20 @@ function setupMenuToggle() {
   const toggleBtn = document.getElementById('menu-toggle');
   const body = document.body;
   const controlsBar = document.querySelector('.master-controls-bar');
+  const header = document.getElementById('app-header');
   let menuVisible = true;
 
-  if (!toggleBtn || !controlsBar) return;
+  if (!toggleBtn || !controlsBar || !header) return;
 
   const updateButtonPosition = () => {
+    const headerHeight = header.offsetHeight;
     const isMenuHidden = body.classList.contains('menu-hidden');
+
     if (isMenuHidden) {
-      toggleBtn.style.top = '0';
+      toggleBtn.style.top = `${headerHeight}px`;
     } else {
       const barHeight = controlsBar.offsetHeight;
-      toggleBtn.style.top = `${barHeight}px`;
+      toggleBtn.style.top = `${headerHeight + barHeight}px`;
     }
   };
 
