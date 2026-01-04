@@ -1202,7 +1202,11 @@ function commitAndUpdateView() {
         const header = `[BPM:${BPM} \\ Time Signature: ${timeSigForView} \\ Section: ${section}]`;
         
         // This is a simplified version of wordsToText for the specific view
-        const bodyText = wordsForView.map(word => (word === '-' || word === '') ? '\\' : word).join(' ');
+        let bodyText = wordsForView.map(word => (word === '-' || word === '') ? '\\' : word).join(' ');
+
+        if (hasPickupMeasure) {
+            bodyText = '* ' + bodyText;
+        }
 
         fullText += `${header}\n${bodyText}\n\n`;
     });
@@ -1359,7 +1363,10 @@ modalSubmitBtn.addEventListener('click', () => {
     }
 
     // Parse words from the content
-    if (contentText.includes('|')) {
+    if (contentText.includes('*')) {
+      hasPickupMeasure = true;
+      contentText = contentText.replace(/\*/g, '');
+    } else if (contentText.includes('|')) {
       hasPickupMeasure = true; // Global; last parsed section wins
       contentText = contentText.replace(/\|/g, '');
     } else {
@@ -1541,7 +1548,7 @@ modalSubmitBtn.addEventListener('click', () => {
 
   function updateCircleVisibility() {
     document.querySelectorAll('.circles').forEach(box => {
-      box.classList.toggle('hidden', !circleIconActive);
+      box.classList.toggle('circles-hidden', !circleIconActive);
     });
   }
 
@@ -1607,7 +1614,7 @@ modalSubmitBtn.addEventListener('click', () => {
 
     const circlesDiv = document.createElement('div');
     circlesDiv.className = 'circles';
-    if (!circleIconActive) circlesDiv.classList.add('hidden');
+    if (!circleIconActive) circlesDiv.classList.add('circles-hidden');
     
     if (beatStartPosition === 0 && hasPickupMeasure) {
         circlesDiv.classList.add('pickup');
