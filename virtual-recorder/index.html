@@ -33,6 +33,7 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
+      box-sizing: border-box;
     }
     .scaling-outer {
       display: flex;
@@ -101,9 +102,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
 <!-- Header -->
-<div style="position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 9999; background-color: #e69e22; padding: 5px 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+<div id="app-header" style="position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 9999; background-color: #e69e22; padding: 5px 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
     <a href="https://www.musicapps4all.com" rel="noopener noreferrer" style="text-decoration: none; color: white;">
-        <h1 style="font-family: 'Lobster', cursive; margin: 0; font-size: 24px; font-weight: normal;">
+        <h1 style="font-family: 'Lobster', cursive; margin: 0; font-size: clamp(16px, 5vw, 24px); white-space: nowrap; font-weight: normal;">
             <!-- !!! IMPORTANT: Change this to the name of your app !!! -->
           Virtual Recorder
         </h1>
@@ -276,11 +277,33 @@
     // Responsive scaling: shrink the whole app proportionally if needed (height only)
     function updateScale() {
       const outer = document.getElementById('scaling-outer');
-      // DESIGN SIZE: height = 500px (matches recorder image)
-      const designHeight = 500;
-      const availableHeight = window.innerHeight * 0.98;
-      const scale = Math.min(1, availableHeight / designHeight);
-      outer.style.transform = `scale(${scale})`;
+      const wrapper = document.getElementById('scaling-wrapper');
+      const header = document.getElementById('app-header');
+
+      // Adjust container padding to account for header
+      const container = document.querySelector('.app-center-container');
+      const headerHeight = header ? header.offsetHeight : 0;
+      if (container) {
+        container.style.paddingTop = headerHeight + 'px';
+      }
+
+      // DESIGN SIZE: Measure wrapper or fallback
+      const designHeight = wrapper.offsetHeight || 500;
+      const designWidth = wrapper.offsetWidth || 300;
+
+      const availableHeight = window.innerHeight - headerHeight - 20;
+      const availableWidth = window.innerWidth - 20;
+
+      const scaleHeight = availableHeight / designHeight;
+      const scaleWidth = availableWidth / designWidth;
+
+      // Fit within frame, but allow scaling up
+      const scale = Math.min(scaleHeight, scaleWidth);
+
+      // Prevent negative or zero scale
+      const finalScale = Math.max(0.1, scale);
+
+      outer.style.transform = `scale(${finalScale})`;
     }
     window.addEventListener('resize', updateScale);
     window.addEventListener('load', updateScale);
